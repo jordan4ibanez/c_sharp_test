@@ -15,5 +15,28 @@ public static class CameraHandler {
         camera.Projection = CameraProjection.Perspective;
     }
 
+    static void SetPosition(Vector3 newPosition) {
+        camera.Position = newPosition;
+    }
+
+    static void SetTarget(Vector3 newTarget) {
+        camera.Target = newTarget;
+    }
+
+    static float GetFOV() {
+        return camera.FovY;
+    }
+
+    static void SetFOV(float newFOV) {
+        camera.FovY = newFOV;
+    }
+
+    static Camera3D Get() {
+        return camera;
+    }
+
+    // static unsafe void DoFreeCam() {
+    //     Raylib.UpdateCamera(&camera, CameraMode.Free);
+    // }
 
 }
