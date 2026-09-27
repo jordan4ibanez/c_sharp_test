@@ -3,7 +3,7 @@ using Raylib_cs;
 
 namespace FishGame.Graphics;
 
-public static class CameraHandler {
+public static class CameraManager {
 
     static Camera3D camera = new();
 
