@@ -57,3 +57,5 @@ Desktop.ini
 
 # Logs & temp files
 *.log
+
+*.blend[0-9]
