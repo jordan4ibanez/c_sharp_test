@@ -21,17 +21,17 @@ public static class Delta {
         _lastTimestamp = currentTimestamp;
     }
 
-    public static double GetDelta() {
-        return _delta;
+    public static float Get() {
+        return (float)_delta;
     }
 
-    public static void SetMaxDelta(double newDeltaMax) {
-        _maxDelta = newDeltaMax;
-    }
+    // public static void SetMaxDelta(double newDeltaMax) {
+    //     _maxDelta = newDeltaMax;
+    // }
 
-    public static void SetMaxDeltaFps(double fps) {
-        if (fps > 0) {
-            _maxDelta = 1.0 / fps;
-        }
-    }
+    // public static void SetMaxDeltaFps(double fps) {
+    //     if (fps > 0) {
+    //         _maxDelta = 1.0 / fps;
+    //     }
+    // }
 }
