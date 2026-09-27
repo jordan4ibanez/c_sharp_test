@@ -1,0 +1,59 @@
+# ==========================================
+# .NET / C# Build & Publish Outputs
+# ==========================================
+[Bb]in/
+[Oo]bj/
+out/
+publish/
+
+# NativeAOT temporary object files & artifacts
+*.aot.o
+*.aot.so
+
+# Package restore & local NuGet cache
+.nuget/
+*.nuget.props
+*.nuget.targets
+project.assets.json
+project.nuget.cache
+
+# ==========================================
+# IDE & Tooling
+# ==========================================
+# VS Code (ignore local state, keep shared tasks/launch configs)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+_ReSharper.*/
+*.DotSettings.user
+
+# Visual Studio / User overrides
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ==========================================
+# OS & Environment Files
+# ==========================================
+# Linux / Fedora
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# macOS / Windows leftovers
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs & temp files
+*.log
