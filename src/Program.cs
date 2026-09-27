@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using FishGame.Graphics;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -76,6 +77,7 @@ internal static class Program {
 
         while (!Raylib.WindowShouldClose()) {
             Delta.CalculateDelta();
+            GUI.Update();
             game.MainLoop();
         }
 
