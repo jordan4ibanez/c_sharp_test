@@ -1,7 +1,5 @@
 ﻿using System.Numerics;
-using System.Runtime.CompilerServices;
 using FishGame.Utility;
-using Microsoft.VisualBasic;
 using Raylib_cs;
 
 namespace FishGame;
@@ -21,9 +19,29 @@ class Game : IDisposable {
     }
 
     void Setup() {
-        Raylib.InitWindow((int)windowSize.X, (int)windowSize.Y, windowTitle);
+
+        Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
+        Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
+
+        Raylib.InitWindow(1, 1, windowTitle);
+        CenterWindow();
+
         Raylib.InitAudioDevice();
         Raylib.SetTargetFPS(60);
+    }
+
+    void CenterWindow() {
+        int currentMonitor = Raylib.GetCurrentMonitor();
+        int monitorWidth = Raylib.GetMonitorWidth(currentMonitor);
+        int monitorHeight = Raylib.GetMonitorHeight(currentMonitor);
+        int halfMonitorWidth = monitorWidth / 2;
+        int halfMonitorHeight = monitorHeight / 2;
+        // Console.WriteLine($"Monitor Resolution: {monitorWidth}x{monitorHeight}");
+        Raylib.SetWindowSize(halfMonitorWidth, halfMonitorHeight);
+        Vector2 monitorPos = Raylib.GetMonitorPosition(currentMonitor);
+        int startX = ((monitorWidth - halfMonitorWidth) / 2) + (int)monitorPos.X;
+        int startY = (monitorHeight - halfMonitorHeight) / 2 + (int)monitorPos.Y;
+        Raylib.SetWindowPosition(startX, startY);
     }
 
     public void MainLoop() {
