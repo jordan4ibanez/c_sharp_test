@@ -13,8 +13,7 @@ public static class ShaderManager {
             throw new Exception("[ShaderHandler]: Tried to overwrite shader " + shaderName);
         }
 
-        Shader thisShader = new();
-        thisShader = Raylib.LoadShader(vertCodeLocation, fragCodeLocation);
+        Shader thisShader = Raylib.LoadShader(vertCodeLocation, fragCodeLocation);
 
         if (!Raylib.IsShaderValid(thisShader)) {
             throw new Exception("[ShaderHandler]: Invalid shader. " + shaderName);
@@ -24,32 +23,35 @@ public static class ShaderManager {
     }
 
     static int GetUniformLocation(string shaderName, string uniformName) {
-        if (!database.ContainsKey(shaderName)) {
+        if (database.TryGetValue(shaderName, out Shader shader)) {
+
+            int val = Raylib.GetShaderLocation(shader, uniformName);
+
+            if (val == -1) {
+                throw new Exception("[ShaderHandler]: Uniform " + uniformName + " does not exist for shader. " + shaderName);
+            }
+
+            return val;
+
+        } else {
             throw new Exception("[ShaderHandler]: Tried to get non-existent shader. " + shaderName);
         }
-
-        int val = Raylib.GetShaderLocation(database[shaderName], uniformName);
-
-        if (val == -1) {
-            throw new Exception("[ShaderHandler]: Uniform " + uniformName + " does not exist for shader. " + shaderName);
-        }
-
-        return val;
     }
 
     static Shader GetShaderPointer(string shaderName) {
-        if (!database.ContainsKey(shaderName)) {
+        if (database.TryGetValue(shaderName, out Shader shader)) {
+            return shader;
+        } else {
             throw new Exception("[ShaderHandler]: Tried to get non-existent shader pointer. " + shaderName);
         }
-        return database[shaderName];
     }
 
     static void SetFloatUniformFloat(string shaderName, int location, float value) {
-        if (!database.ContainsKey(shaderName)) {
+        if (database.TryGetValue(shaderName, out Shader shader)) {
+            Raylib.SetShaderValue(shader, location, value, ShaderUniformDataType.Float);
+        } else {
             throw new Exception("[ShaderHandler]: Tried to set uniform in non-existent shader. " + shaderName);
         }
-
-        Raylib.SetShaderValue(database[shaderName], location, value, ShaderUniformDataType.Float);
     }
 
     static void Terminate() {
