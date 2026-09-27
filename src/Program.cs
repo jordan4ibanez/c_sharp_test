@@ -27,6 +27,10 @@ class Game : IDisposable {
     }
 
     void MainLoop() {
+        Raylib.BeginDrawing();
+
+
+        Raylib.EndDrawing();
 
     }
 
