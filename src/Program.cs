@@ -3,9 +3,6 @@ using Raylib_cs;
 
 namespace FishGame;
 
-// See https://aka.ms/new-console-template for more information
-// Console.WriteLine("Hello, World!");
-
 class Game : IDisposable {
 
     public Game() {
