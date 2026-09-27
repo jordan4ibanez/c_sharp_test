@@ -1,27 +1,48 @@
-﻿using Raylib_cs;
+﻿using FishGame.Utility;
+using Raylib_cs;
 
 namespace FishGame;
 
 // See https://aka.ms/new-console-template for more information
 // Console.WriteLine("Hello, World!");
 
+class Game : IDisposable {
+
+    public Game() {
+        System.Console.WriteLine("created");
+    }
+
+    public void Dispose() {
+        System.Console.WriteLine("Destroyed");
+    }
+}
+
 
 
 internal static class Program {
     [STAThread]
     public static void Main() {
-        const int screenWidth = 800;
-        const int screenHeight = 450;
-
-        Raylib.InitWindow(screenWidth, screenHeight, "Simple Raylib Project");
-        Raylib.SetTargetFPS(60);
-
-        while (!Raylib.WindowShouldClose()) {
+        using Game game = new();
 
 
-            Raylib.EndDrawing();
-        }
+        // const int screenWidth = 800;
+        // const int screenHeight = 450;
 
-        Raylib.CloseWindow();
+        // Raylib.InitWindow(screenWidth, screenHeight, "Simple Raylib Project");
+        // Raylib.SetTargetFPS(60);
+
+        // while (!Raylib.WindowShouldClose()) {
+        //     Delta.CalculateDelta();
+
+        //     System.Console.WriteLine("test");
+
+        //     System.Console.WriteLine(Delta.GetDelta());
+
+
+        //     Raylib.EndDrawing();
+        // }
+
+        // Raylib.CloseWindow();
     }
 }
+
