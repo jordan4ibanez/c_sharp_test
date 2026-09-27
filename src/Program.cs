@@ -1,16 +1,38 @@
-﻿using FishGame.Utility;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
+using FishGame.Utility;
+using Microsoft.VisualBasic;
 using Raylib_cs;
 
 namespace FishGame;
 
 class Game : IDisposable {
 
+    Vector2 windowSize = new(800, 450);
+    readonly String windowTitle = "Fish Game";
+
+
     public Game() {
         System.Console.WriteLine("created");
+        Setup();
+        while (!Raylib.WindowShouldClose()) {
+            Delta.CalculateDelta();
+            MainLoop();
+        }
+    }
+
+    void Setup() {
+        Raylib.InitWindow((int)windowSize.X, (int)windowSize.Y, windowTitle);
+        Raylib.InitAudioDevice();
+    }
+
+    void MainLoop() {
+
     }
 
     public void Dispose() {
-        System.Console.WriteLine("Destroyed");
+        Raylib.CloseAudioDevice();
+        Raylib.CloseWindow();
     }
 }
 
