@@ -56,7 +56,7 @@ class Game : IDisposable {
         if (timer >= 1.0) {
             timer -= 1.0;
             Console.WriteLine("woosh");
-            SoundManager.Play("casting_woosh.ogg");
+            // SoundManager.Play("casting_woosh.ogg");
         }
 
         Raylib.BeginDrawing();
