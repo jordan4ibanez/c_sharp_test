@@ -1,9 +1,13 @@
+using Raylib_cs;
+
 namespace FishGame.Graphics;
 
 public static class ShaderManager {
-    Shader*[string] database;
 
-    void newShader(string shaderName, string vertCodeLocation, string fragCodeLocation) {
+    static Dictionary<string, Shader> database = [];
+
+
+    static void NewShader(string shaderName, string vertCodeLocation, string fragCodeLocation) {
 
         if (shaderName in database) {
             throw new Error("[ShaderHandler]: Tried to overwrite shader " ~shaderName);
@@ -19,7 +23,7 @@ public static class ShaderManager {
         database[shaderName] = thisShader;
     }
 
-    int getUniformLocation(string shaderName, string uniformName) {
+    static int GetUniformLocation(string shaderName, string uniformName) {
         if (shaderName!in database) {
             throw new Error(
                 "[ShaderHandler]: Tried to get non-existent shader. " ~shaderName);
@@ -35,7 +39,7 @@ public static class ShaderManager {
         return val;
     }
 
-    Shader* getShaderPointer(string shaderName) {
+    static Shader* GetShaderPointer(string shaderName) {
         if (shaderName!in database) {
             throw new Error(
                 "[ShaderHandler]: Tried to get non-existent shader pointer. " ~shaderName);
@@ -43,7 +47,7 @@ public static class ShaderManager {
         return database[shaderName];
     }
 
-    void setFloatUniformFloat(string shaderName, int location, float value) {
+    static void SetFloatUniformFloat(string shaderName, int location, float value) {
         if (shaderName!in database) {
             throw new Error(
                 "[ShaderHandler]: Tried to set uniform in non-existent shader. " ~shaderName);
@@ -53,7 +57,7 @@ public static class ShaderManager {
             ShaderUniformDataType.SHADER_UNIFORM_FLOAT);
     }
 
-    void terminate() {
+    static void Terminate() {
         foreach (shaderName, thisShader; database) {
             UnloadShader(*thisShader);
         }
