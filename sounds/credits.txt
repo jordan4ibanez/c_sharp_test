@@ -1,0 +1,14 @@
+lure_scrape_ground
+https://freesound.org/people/Squidems/sounds/709965/
+
+casting_woosh
+https://freesound.org/people/florianreichelt/sounds/683101/
+
+diver_lure_rattle
+https://freesound.org/people/nathanmanaker/sounds/486950/
+
+reel_open_bail
+https://freesound.org/people/imnotdubMass/sounds/679982/
+
+lure_hit_water
+https://freesound.org/people/Kraftaggregat/sounds/737644/
