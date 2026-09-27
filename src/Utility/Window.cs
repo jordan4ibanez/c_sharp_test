@@ -8,59 +8,59 @@ static class Window {
     static bool maximized = false;
     static bool mouseLocked = false;
 
-    public static int getWidth() {
+    public static int GetWidth() {
         return Raylib.GetRenderWidth();
     }
 
-    public static int getHeight() {
+    public static int GetHeight() {
         return Raylib.GetRenderHeight();
     }
 
-    public static Vector2 getSize() {
-        return new Vector2(getWidth(), getHeight());
+    public static Vector2 GetSize() {
+        return new Vector2(GetWidth(), GetHeight());
     }
 
-    public static bool shouldStayOpen() {
+    public static bool ShouldStayOpen() {
         return !Raylib.WindowShouldClose();
     }
 
-    public static void maximize() {
+    public static void Maximize() {
         maximized = true;
         Raylib.MaximizeWindow();
     }
 
-    public static void unmaximize() {
+    public static void Unmaximize() {
         maximized = false;
         Raylib.RestoreWindow();
     }
 
-    public static void toggleMaximize() {
+    public static void ToggleMaximize() {
         if (maximized) {
-            unmaximize();
+            Unmaximize();
         } else {
-            maximize();
+            Maximize();
         }
     }
 
-    public static void lockMouse() {
+    public static void LockMouse() {
         mouseLocked = true;
         Raylib.DisableCursor();
     }
 
-    public static void unlockMouse() {
+    public static void UnlockMouse() {
         mouseLocked = false;
         Raylib.EnableCursor();
     }
 
-    public static void toggleMouseLock() {
+    public static void ToggleMouseLock() {
         if (mouseLocked) {
-            unlockMouse();
+            UnlockMouse();
         } else {
-            lockMouse();
+            LockMouse();
         }
     }
 
-    public static bool isMouseLocked() {
+    public static bool IsMouseLocked() {
         return mouseLocked;
     }
 

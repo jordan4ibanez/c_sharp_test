@@ -13,7 +13,7 @@ static class GUI {
     }
 
     public static void Update() {
-        Vector2 windowSize = Window.getSize();
+        Vector2 windowSize = Window.GetSize();
         // Find out which GUI scale is smaller so things can be scaled around it.
         Vector2 scales = new(windowSize.X / standardSize.X, windowSize.Y / standardSize.Y);
         if (scales.X >= scales.Y) {
