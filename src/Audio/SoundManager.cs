@@ -45,6 +45,42 @@ class SoundPool : IDisposable {
 }
 
 public static class SoundManager {
+    private static readonly Dictionary<string, SoundPool> _database = new(StringComparer.OrdinalIgnoreCase);
 
+    public static void Load() {
+        string currentDir = Directory.GetCurrentDirectory();
 
+        // Recursively scan all .ogg files in the directory tree
+        foreach (string filePath in Directory.GetFiles(currentDir, "*.ogg", SearchOption.AllDirectories)) {
+            string fileName = Path.GetFileName(filePath);
+            Console.WriteLine($"Loading {filePath}");
+
+            if (_database.ContainsKey(fileName)) {
+                throw new InvalidOperationException($"{fileName} is a duplicate! Hit in: {filePath}");
+            }
+
+            _database[fileName] = new SoundPool(filePath);
+        }
+    }
+
+    public static void Terminate() {
+        foreach (var pool in _database.Values) {
+            pool.Dispose();
+        }
+        _database.Clear();
+    }
+
+    public static void Play(string name, float volume = 1.0f, float pitch = 1.0f) {
+        if (!_database.TryGetValue(name, out var pool)) {
+            throw new KeyNotFoundException($"{name} is not a sound.");
+        }
+        pool.Play(volume, pitch);
+    }
+
+    public static void PlayPitched(string name, float volume = 1.0f, float pitchVariance = 0.1f) {
+        if (!_database.TryGetValue(name, out var pool)) {
+            throw new KeyNotFoundException($"{name} is not a sound.");
+        }
+        pool.PlayPitched(volume, pitchVariance);
+    }
 }
