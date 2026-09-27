@@ -31,7 +31,7 @@ class Game : IDisposable {
         Raylib.SetTargetFPS(60);
     }
 
-    void CenterWindow() {
+    static void CenterWindow() {
         int currentMonitor = Raylib.GetCurrentMonitor();
         int monitorWidth = Raylib.GetMonitorWidth(currentMonitor);
         int monitorHeight = Raylib.GetMonitorHeight(currentMonitor);
