@@ -78,6 +78,7 @@ internal static class Program {
         while (!Raylib.WindowShouldClose()) {
             Delta.CalculateDelta();
             GUI.Update();
+            FontManager.Update();
             game.MainLoop();
         }
 
