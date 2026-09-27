@@ -19,32 +19,22 @@ internal static class Program
         Raylib.InitWindow(screenWidth, screenHeight, "Simple Raylib Project");
         Raylib.SetTargetFPS(60);
 
-        Vector2 ballPosition = new(screenWidth / 2f, screenHeight / 2f);
-        Vector2 ballSpeed = new(300f, 200f);
-        const float ballRadius = 20f;
+        var ballSpeed = new Vector2(300f, 200f);
+        Ball ball = new(new(200, 200), new(300, 200), 20, Color.Red, screenWidth, screenHeight);
+
+
 
         while (!Raylib.WindowShouldClose())
         {
             float dt = Raylib.GetFrameTime();
 
-            // Update ball position
-            ballPosition += ballSpeed * dt;
-
-            // Bounce off wall boundaries
-            if (ballPosition.X + ballRadius >= screenWidth || ballPosition.X - ballRadius <= 0)
-            {
-                ballSpeed.X *= -1;
-            }
-            if (ballPosition.Y + ballRadius >= screenHeight || ballPosition.Y - ballRadius <= 0)
-            {
-                ballSpeed.Y *= -1;
-            }
+            ball.Update(dt);
 
             // Render frame
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.RayWhite);
 
-            Raylib.DrawCircleV(ballPosition, ballRadius, Color.Maroon);
+            Raylib.DrawCircleV(ball.Position, ball.Radius, Color.Maroon);
             Raylib.DrawText("Press ESC or close window to exit", 10, 10, 20, Color.DarkGray);
 
             Raylib.EndDrawing();
