@@ -44,19 +44,13 @@ public class Ball : Entity {
             Position.Y = 0;
         }
 
-
-
         // System.Console.WriteLine(Velocity);
-
-
 
         // Wall collisions
         if (Position.X + Radius >= _screenWidth || Position.X - Radius <= 0) {
             Velocity.X *= -1;
             // Position.X = _screenWidth / 2;
         }
-
-
 
         if (Position.Y + Radius >= _screenHeight || Position.Y - Radius <= 0) {
             Velocity.Y *= -1;
