@@ -47,7 +47,7 @@ class SoundPool : IDisposable {
 public static class SoundManager {
     private static readonly Dictionary<string, SoundPool> _database = new(StringComparer.OrdinalIgnoreCase);
 
-    public static void Load() {
+    public static void Initialize() {
         string currentDir = Directory.GetCurrentDirectory();
 
         // Recursively scan all .ogg files in the directory tree

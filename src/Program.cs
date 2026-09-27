@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using FishGame.Audio;
 using FishGame.Graphics;
 using FishGame.Utility;
 using Raylib_cs;
@@ -30,6 +31,7 @@ class Game : IDisposable {
         Raylib.InitAudioDevice();
         Raylib.SetTargetFPS(60);
 
+        SoundManager.Initialize();
         FontManager.Initialize();
     }
 
@@ -48,16 +50,20 @@ class Game : IDisposable {
     }
 
     public void MainLoop() {
-        Raylib.BeginDrawing();
-
-        // System.Console.WriteLine(Delta.Get());
 
         timer += Delta.Get();
 
         if (timer >= 1.0) {
             timer -= 1.0;
-            Console.WriteLine("noise");
+            Console.WriteLine("woosh");
+            SoundManager.Play("casting_woosh.ogg");
         }
+
+        Raylib.BeginDrawing();
+
+        // System.Console.WriteLine(Delta.Get());
+
+
 
 
         Raylib.EndDrawing();
@@ -66,6 +72,7 @@ class Game : IDisposable {
 
     public void Dispose() {
         FontManager.Terminate();
+        SoundManager.Terminate();
 
         Raylib.CloseAudioDevice();
         Raylib.CloseWindow();
