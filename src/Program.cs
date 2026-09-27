@@ -11,23 +11,32 @@ class Game : IDisposable {
     Vector2 windowSize = new(800, 450);
     readonly String windowTitle = "Fish Game";
 
+    double timer = 0;
+
 
     public Game() {
         System.Console.WriteLine("created");
         Setup();
-        while (!Raylib.WindowShouldClose()) {
-            Delta.CalculateDelta();
-            MainLoop();
-        }
+
     }
 
     void Setup() {
         Raylib.InitWindow((int)windowSize.X, (int)windowSize.Y, windowTitle);
         Raylib.InitAudioDevice();
+        Raylib.SetTargetFPS(60);
     }
 
-    void MainLoop() {
+    public void MainLoop() {
         Raylib.BeginDrawing();
+
+        // System.Console.WriteLine(Delta.Get());
+
+        timer += Delta.Get();
+
+        if (timer >= 1.0) {
+            timer -= 1.0;
+            Console.WriteLine("noise");
+        }
 
 
         Raylib.EndDrawing();
@@ -46,6 +55,11 @@ internal static class Program {
     [STAThread]
     public static void Main() {
         using Game game = new();
+
+        while (!Raylib.WindowShouldClose()) {
+            Delta.CalculateDelta();
+            game.MainLoop();
+        }
 
 
         // const int screenWidth = 800;
