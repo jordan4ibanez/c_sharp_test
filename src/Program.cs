@@ -29,6 +29,8 @@ class Game : IDisposable {
 
         Raylib.InitAudioDevice();
         Raylib.SetTargetFPS(60);
+
+        FontManager.Initialize();
     }
 
     static void CenterWindow() {
@@ -63,6 +65,8 @@ class Game : IDisposable {
     }
 
     public void Dispose() {
+        FontManager.Terminate();
+
         Raylib.CloseAudioDevice();
         Raylib.CloseWindow();
     }
