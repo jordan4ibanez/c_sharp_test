@@ -1,3 +1,6 @@
+using System.Numerics;
+using Raylib_cs;
+
 namespace FishGame.Utility;
 
 static class Window {
@@ -6,32 +9,29 @@ static class Window {
     static bool mouseLocked = false;
 
     public static int getWidth() {
-        return GetRenderWidth();
+        return Raylib.GetRenderWidth();
     }
 
     public static int getHeight() {
-        return GetRenderHeight();
+        return Raylib.GetRenderHeight();
     }
 
     public static Vector2 getSize() {
-        return Vector2(getWidth(), getHeight());
+        return new Vector2(getWidth(), getHeight());
     }
 
     public static bool shouldStayOpen() {
-        // This calls the update system to automatically make common utilities run.
-        updateSystem();
-
-        return !WindowShouldClose();
+        return !Raylib.WindowShouldClose();
     }
 
     public static void maximize() {
         maximized = true;
-        MaximizeWindow();
+        Raylib.MaximizeWindow();
     }
 
     public static void unmaximize() {
         maximized = false;
-        RestoreWindow();
+        Raylib.RestoreWindow();
     }
 
     public static void toggleMaximize() {
@@ -44,12 +44,12 @@ static class Window {
 
     public static void lockMouse() {
         mouseLocked = true;
-        DisableCursor();
+        Raylib.DisableCursor();
     }
 
     public static void unlockMouse() {
         mouseLocked = false;
-        EnableCursor();
+        Raylib.EnableCursor();
     }
 
     public static void toggleMouseLock() {
