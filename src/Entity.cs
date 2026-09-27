@@ -3,14 +3,12 @@ using System.Numerics;
 
 namespace RaylibGame;
 
-public abstract class Entity
-{
+public abstract class Entity {
     public Vector2 Position;
     public Vector2 Velocity;
     public bool IsActive = true;
 
-    protected Entity(Vector2 position)
-    {
+    protected Entity(Vector2 position) {
         Position = position;
     }
 
@@ -18,8 +16,7 @@ public abstract class Entity
     public abstract void Draw();
 }
 
-public class Ball : Entity
-{
+public class Ball : Entity {
     public float Radius;
     public Color Color;
 
@@ -27,8 +24,7 @@ public class Ball : Entity
     private readonly int _screenHeight;
 
     public Ball(Vector2 position, Vector2 velocity, float radius, Color color, int screenWidth, int screenHeight)
-        : base(position)
-    {
+        : base(position) {
         Velocity = velocity;
         Radius = radius;
         Color = color;
@@ -36,18 +32,15 @@ public class Ball : Entity
         _screenHeight = screenHeight;
     }
 
-    public override void Update(float dt)
-    {
+    public override void Update(float dt) {
         Position += Velocity * dt;
 
-        System.Console.WriteLine(this.Position);
+        // System.Console.WriteLine(this.Position);
 
-        if (float.IsNaN(Position.X) || float.IsInfinity(Position.X))
-        {
+        if (float.IsNaN(Position.X) || float.IsInfinity(Position.X)) {
             Position.X = 0;
         }
-        if (float.IsNaN(Position.Y) || float.IsInfinity(Position.Y))
-        {
+        if (float.IsNaN(Position.Y) || float.IsInfinity(Position.Y)) {
             Position.Y = 0;
         }
 
@@ -58,23 +51,20 @@ public class Ball : Entity
 
 
         // Wall collisions
-        if (Position.X + Radius >= _screenWidth || Position.X - Radius <= 0)
-        {
+        if (Position.X + Radius >= _screenWidth || Position.X - Radius <= 0) {
             Velocity.X *= -1;
             // Position.X = _screenWidth / 2;
         }
 
 
 
-        if (Position.Y + Radius >= _screenHeight || Position.Y - Radius <= 0)
-        {
+        if (Position.Y + Radius >= _screenHeight || Position.Y - Radius <= 0) {
             Velocity.Y *= -1;
             // Position.Y = _screenHeight / 2;
         }
     }
 
-    public override void Draw()
-    {
+    public override void Draw() {
         Raylib.DrawCircleV(Position, Radius, Color);
     }
 }

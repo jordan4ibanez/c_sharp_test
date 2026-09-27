@@ -8,11 +8,9 @@ namespace RaylibGame;
 
 
 
-internal static class Program
-{
+internal static class Program {
     [STAThread]
-    public static void Main()
-    {
+    public static void Main() {
         const int screenWidth = 800;
         const int screenHeight = 450;
 
@@ -24,8 +22,7 @@ internal static class Program
 
 
 
-        while (!Raylib.WindowShouldClose())
-        {
+        while (!Raylib.WindowShouldClose()) {
             float dt = Raylib.GetFrameTime();
 
             ball.Update(dt);
