@@ -1,4 +1,5 @@
 using System.Numerics;
+using FishGame.Utility;
 
 namespace FishGame.Graphics;
 
@@ -11,9 +12,10 @@ static class GUI {
         return currentGUIScale;
     }
 
-    public static void Update(Vector2 newWindowSize) {
+    public static void Update() {
+        Vector2 windowSize = Window.getSize();
         // Find out which GUI scale is smaller so things can be scaled around it.
-        Vector2 scales = new(newWindowSize.X / standardSize.X, newWindowSize.Y / standardSize.Y);
+        Vector2 scales = new(windowSize.X / standardSize.X, windowSize.Y / standardSize.Y);
         if (scales.X >= scales.Y) {
             currentGUIScale = scales.Y;
         } else {
