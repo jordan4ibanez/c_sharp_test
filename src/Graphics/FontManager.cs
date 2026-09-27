@@ -44,6 +44,6 @@ public static class FontManager {
 
     static void __update() {
         // This allows the font to look slightly off, like it's a texture font.
-        currentFontSize = font.BaseSize * (GUI.getGUIScale() * 0.75);
+        currentFontSize = (float)(font.BaseSize * (GUI.GetGUIScale() * 0.75));
     }
 }
