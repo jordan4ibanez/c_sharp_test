@@ -1,6 +1,7 @@
 using System.Numerics;
 using FishGame.Graphics;
 using FishGame.Utility;
+using Raylib_cs;
 
 namespace FishGame.Level;
 
@@ -93,24 +94,24 @@ public static class Ground {
         int x = (int)Math.Floor(point.X);
         int y = (int)Math.Floor(point.Y);
 
-        Vector2[4] pData = [
-            Vector2(x, y),
-            Vector2(x, y + 1),
-            Vector2(x + 1, y + 1),
-            Vector2(x + 1, y),
+        Vector2[] pData = [
+            new Vector2(x, y),
+            new Vector2(x, y + 1),
+            new Vector2(x + 1, y + 1),
+            new Vector2(x + 1, y),
         ];
 
-        const int inPoint = () {
-            if (pointInTriangle(Vector2(point.X, point.Y), pData[0], pData[1], pData[2])) {
+        int GetInPoint() {
+            if (CollisionMath.PointInTriangle(new Vector2(point.X, point.Y), pData[0], pData[1], pData[2])) {
                 return 1;
-            } else if (pointInTriangle(Vector2(point.X, point.Y), pData[2], pData[3], pData[0])) {
+            } else if (CollisionMath.PointInTriangle(new Vector2(point.X, point.Y), pData[2], pData[3], pData[0])) {
                 return 2;
             }
-            throw new Error("In non-existent position.");
+            throw new Exception("In non-existent position.");
         }
-        ();
+        int inPoint = GetInPoint();
 
-        float[4] heightData = [
+        float[] heightData = [
             GetHeightAtNode(x, y),
             GetHeightAtNode(x, y + 1),
             GetHeightAtNode(x + 1, y + 1),
@@ -119,30 +120,30 @@ public static class Ground {
 
         if (inPoint == 1) {
 
-            Vector3[3] positionData = [
-                Vector3(pData[0].X, heightData[0], pData[0].Y),
-                Vector3(pData[1].X, heightData[1], pData[1].Y),
-                Vector3(pData[2].X, heightData[2], pData[2].Y),
+            Vector3[] positionData = [
+                new Vector3(pData[0].X, heightData[0], pData[0].Y),
+                new Vector3(pData[1].X, heightData[1], pData[1].Y),
+                new Vector3(pData[2].X, heightData[2], pData[2].Y),
             ];
 
-            DrawLine3D(positionData[0], positionData[1], Colors.RED);
-            DrawLine3D(positionData[1], positionData[2], Colors.RED);
-            DrawLine3D(positionData[0], positionData[2], Colors.RED);
+            Raylib.DrawLine3D(positionData[0], positionData[1], Color.Red);
+            Raylib.DrawLine3D(positionData[1], positionData[2], Color.Red);
+            Raylib.DrawLine3D(positionData[0], positionData[2], Color.Red);
 
-            return calculateY(positionData[0], positionData[1], positionData[2], point);
+            return CollisionMath.CalculateY(positionData[0], positionData[1], positionData[2], point);
 
         } else {
-            Vector3[3] positionData = [
-                Vector3(pData[2].X, heightData[2], pData[2].Y),
-                Vector3(pData[3].X, heightData[3], pData[3].Y),
-                Vector3(pData[0].X, heightData[0], pData[0].Y),
+            Vector3[] positionData = [
+                new Vector3(pData[2].X, heightData[2], pData[2].Y),
+                new Vector3(pData[3].X, heightData[3], pData[3].Y),
+                new Vector3(pData[0].X, heightData[0], pData[0].Y),
             ];
 
-            DrawLine3D(positionData[0], positionData[1], Colors.RED);
-            DrawLine3D(positionData[1], positionData[2], Colors.RED);
-            DrawLine3D(positionData[0], positionData[2], Colors.RED);
+            Raylib.DrawLine3D(positionData[0], positionData[1], Color.Red);
+            Raylib.DrawLine3D(positionData[1], positionData[2], Color.Red);
+            Raylib.DrawLine3D(positionData[0], positionData[2], Color.Red);
 
-            return calculateY(positionData[0], positionData[1], positionData[2], point);
+            return CollisionMath.CalculateY(positionData[0], positionData[1], positionData[2], point);
         }
     }
 
