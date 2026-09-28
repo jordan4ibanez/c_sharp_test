@@ -92,45 +92,46 @@ public static class Water {
     static float waveSpeed = 0.5f;
     static byte skip = 0;
 
-    static void Update() {
+    static unsafe void Update() {
 
         float delta = Delta.Get();
 
         waterUpdateTimer += delta;
 
-        waterRoll += (delta * waveSpeed);
+        waterRoll += delta * waveSpeed;
 
         if (waterUpdateTimer <= targetTime) {
             return;
         }
         waterUpdateTimer -= targetTime;
 
-        foreach (x; 0..waterWidth + 1) {
-            foreach (y; 0..waterHeight + 1) {
-
-                waterData[x][y] = waterLevel + (noise.fnlGetNoise2D(((x * tileWidth) * waveScale) + waterRoll, (
-                        (y * tileWidth) * waveScale) + waterRoll) * waveMagnitude);
-
+        for (int x = 0; x < waterWidth + 1; x++) {
+            for (int y = 0; y < waterHeight + 1; y++) {
+                waterData[x, y] = waterLevel + (noise.GetNoise((x * tileWidth * waveScale) + waterRoll, (y * tileWidth * waveScale) + waterRoll) * waveMagnitude);
             }
         }
 
         // This also automatically uploads the new water data into the gpu.
-        Model* thisModel = ModelManager.getModelPointer("water");
-        Mesh* thisMesh = thisModel.meshes;
+        Model thisModel = ModelManager.GetModel("water");
+        Mesh thisMesh = thisModel.Meshes[0];
 
-        float[] blah = thisMesh.vertices[0..thisMesh.vertexCount * 3];
+        // float[] blah = thisMesh.Vertices[0..thisMesh.VertexCount * 3];
+
+        int totalFloats = thisMesh.VertexCount * 3;
+        ReadOnlySpan<float> verticesSpan = new(thisMesh.Vertices, totalFloats);
+        Span<float> blah = new(thisMesh.Vertices, totalFloats);
 
         // writeln("blah: ", blah.length);
 
-        uint i = 0;
-        foreach (x; 0..waterWidth) {
-            foreach (y; 0..waterHeight) {
+        int i = 0;
+        for (int x = 0; x < waterWidth; x++) {
+            for (int y = 0; y < waterHeight; y++) {
 
-                const float[4] vData = [
-                    waterData[x][y], // 0
-                    waterData[x][y + 1], // 1
-                    waterData[x + 1][y + 1], // 2
-                    waterData[x + 1][y], // 3
+                float[] vData = [
+                   waterData[x,y], // 0
+                    waterData[x,y + 1], // 1
+                    waterData[x + 1,y + 1], // 2
+                    waterData[x + 1,y], // 3
                 ];
                 // x0, y1,  z2
                 // x3, y4,  z5
@@ -152,7 +153,7 @@ public static class Water {
             }
         }
 
-        ModelManager.updateModelPositionsInGPU("water");
+        ModelManager.UpdateModelPositionsInGPU("water");
     }
 
     static float getCollisionPoint(float x, float y) {
