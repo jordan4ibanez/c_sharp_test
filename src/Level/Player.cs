@@ -414,7 +414,7 @@ public static class Player {
                 }
                 break;
             case PlayerState.Water: {
-                    if (Mouse.IsButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
+                    if (Mouse.IsButtonDown(MouseButton.Left)) {
                         Lure.Reel();
                     }
                 }
