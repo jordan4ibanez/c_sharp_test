@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace FishGame.Level;
 
 public enum PlayerState {
@@ -27,12 +29,12 @@ public static class Player {
     // Casting variables.
     static bool firstCastFrame = true;
     static double castTimer = 0.0;
-    immutable static int castFrameMax = 230;
-    immutable static int castFrameMiddle = 230 / 2;
-    immutable static double castingDistanceMin = 10;
-    immutable static double castingDistanceMax = 30;
+    readonly static int castFrameMax = 230;
+    readonly static int castFrameMiddle = 230 / 2;
+    readonly static double castingDistanceMin = 10;
+    readonly static double castingDistanceMax = 30;
     // This is how wide of a triangulation you can cast.
-    immutable static double maxAngle = (40 * DEG2RAD);
+    readonly static double maxAngle = (40 * DEG2RAD);
 
     static double castTumblePitch = 0;
     static double castTumbleYaw = 0;
@@ -200,7 +202,7 @@ public static class Player {
 
         Vector3 lureTranslation = translationSpace;
 
-        immutable float poleSize = 1.635;
+        readonly float poleSize = 1.635;
         Vector3 directionOfPole = Vector3Multiply(Vector3Normalize(Vector3(matrixTransform.m8, matrixTransform.m9,
                 matrixTransform.m10)), Vector3(poleSize, poleSize, poleSize));
 
@@ -329,9 +331,9 @@ public static class Player {
                 break;
             case PlayerState.CastingArc: {
 
-                    immutable float waterLevel = Water.getWaterLevel();
+                    readonly float waterLevel = Water.getWaterLevel();
 
-                    // immutable double max = cast(double)(cast(int) lineData.length);
+                    // readonly double max = cast(double)(cast(int) lineData.length);
 
                     // Try to interpolate to a line that's falling onto the water.
                     foreach (i, ref v; lineData) {
@@ -576,7 +578,7 @@ public static class Player {
     static void doCameraPositioning() {
         switch (state) {
             case PlayerState.Aiming: {
-                    immutable float waterLevel = Water.getWaterLevel();
+                    readonly float waterLevel = Water.getWaterLevel();
                     Vector3 newCameraPosition = Vector3();
                     newCameraPosition.x = position.x;
                     // This is at the level of the player's chest but it looks better.
@@ -598,9 +600,9 @@ public static class Player {
                 }
                 break;
             case PlayerState.Casting, PlayerState.CastingArc: {
-                    immutable float shift = 2.6;
-                    immutable float distance = 2;
-                    immutable float waterLevel = Water.getWaterLevel();
+                    readonly float shift = 2.6;
+                    readonly float distance = 2;
+                    readonly float waterLevel = Water.getWaterLevel();
 
                     float rotated = (rotation.y + (PI / shift)) + castingYaw;
                     float x = cos(rotated) * distance;
@@ -627,10 +629,10 @@ public static class Player {
                 }
                 break;
             case PlayerState.Menu: {
-                    immutable float shiftFront = 5;
-                    immutable float shiftBack = 1.05;
-                    immutable float distance = 8;
-                    immutable float waterLevel = Water.getWaterLevel();
+                    readonly float shiftFront = 5;
+                    readonly float shiftBack = 1.05;
+                    readonly float distance = 8;
+                    readonly float waterLevel = Water.getWaterLevel();
 
                     float rotated = (-rotation.y) - (PI / shiftFront);
                     float x = cos(rotated) * distance;
