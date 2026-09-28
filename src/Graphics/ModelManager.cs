@@ -144,7 +144,7 @@ static class ModelManager {
                 thisModel.Materials[i].Shader = thisShader;
             }
     }
-    }
+
 
     static Model getModel(string modelName) {
         if (!database.ContainsKey(modelName)) {
@@ -221,24 +221,25 @@ static class ModelManager {
 
 
 
-    static void destroyModel(string modelName, Model thisModel) {
+    static unsafe void destroyModel(string modelName, Model thisModel) {
         // If we were using the D runtime to make this model, we'll customize
         // the way we free the items. This makes the GC auto clear.
         if (isCustomDatabase[modelName]) {
-            Mesh thisMeshInModel = thisModel.meshes[0];
-            thisMeshInModel.vertexCount = 0;
-            thisMeshInModel.vertices = null;
-            thisMeshInModel.texcoords = null;
-            UnloadMesh(thisMeshInModel);
-            thisModel.meshes = null;
-            thisModel.meshCount = 0;
-            UnloadModel(*thisModel);
+            Mesh thisMeshInModel = thisModel.Meshes[0];
+            thisMeshInModel.VertexCount = 0;
+            thisMeshInModel.Vertices = null;
+            thisMeshInModel.TexCoords = null;
+            Raylib.UnloadMesh(thisMeshInModel);
+            thisModel.Meshes = null;
+            thisModel.MeshCount = 0;
+            Raylib.UnloadModel(thisModel);
         } else {
-            UnloadModel(*thisModel);
+            Raylib.UnloadModel(thisModel);
             AnimationContainer thisAnimations = animationDatabase[modelName];
-            if (thisAnimations! is null && thisAnimations.hasAnimation) {
-                UnloadModelAnimations(thisAnimations.animationData, animationDatabase[modelName]
-                        .animationCount);
+            if (thisAnimations != null && thisAnimations.hasAnimation) {
+                fixed (ModelAnimation* ptr = thisAnimations.animationData) {
+                    Raylib.UnloadModelAnimations(ptr, animationDatabase[modelName].animationCount);
+                }
             }
         }
     }
