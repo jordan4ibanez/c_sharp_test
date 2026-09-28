@@ -391,7 +391,7 @@ public static class Player {
                         lineCreationProgress += increase;
 
                         if (lineCreationProgress >= 1.0) {
-                            lineData = lineData.Concat(Lure.GetPosition()).ToArray();
+                            lineData = lineData.Concat([Lure.GetPosition()]).ToArray();
                             lineCreationProgress = 0;
                         }
 
