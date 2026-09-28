@@ -50,13 +50,13 @@ public static class Water {
 
         (int, int) groundSize = Ground.GetSize();
 
-        if (loaded) {
-            throw new Exception("Clean up the water gpu memory or reuse it.");
-        } else {
-            // foreach (i; minWaterTextureFrame .. maxWaterTextureFrame + 1) {
-            TextureManager.LoadTexture("textures/water.png");
-            // }
-        }
+        // if (loaded) {
+        //     throw new Exception("Clean up the water gpu memory or reuse it.");
+        // } else {
+        //     // foreach (i; minWaterTextureFrame .. maxWaterTextureFrame + 1) {
+        //     // TextureManager.LoadTexture("textures/water.png");
+        //     // }
+        // }
 
 
 
