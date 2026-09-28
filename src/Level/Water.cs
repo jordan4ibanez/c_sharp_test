@@ -27,7 +27,7 @@ public static class Water {
 
     static float[,] waterData = new float[0, 0];
 
-    static FNLState* noise = null;
+    static FastNoiseLite noise = new();
 
     static int waterHeightUniformLocation = -1;
 
