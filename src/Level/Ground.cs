@@ -21,11 +21,11 @@ public static class Ground {
 
     readonly static float groundScale = 7.0f;
 
-    static void Draw() {
+    public static void Draw() {
         ModelManager.Draw("ground", new Vector3(0, 0, 0));
     }
 
-    static void Load(string levelLocation) {
+    public static void Load(string levelLocation) {
         if (loaded) {
             throw new Exception("[Ground]: Clean up the ground.");
         }
@@ -50,31 +50,31 @@ public static class Ground {
         loaded = true;
     }
 
-    static void SetWaterLevel(float newWaterLevel) {
+    public static void SetWaterLevel(float newWaterLevel) {
         ShaderManager.SetFloatUniformFloat("ground", waterHeightUniformLocation, newWaterLevel);
     }
 
-    static (int, int) GetSize() {
+    public static (int, int) GetSize() {
         return (mapWidth, mapHeight);
     }
 
-    static Vector2 GetSizeFloating() {
+    public static Vector2 GetSizeFloating() {
         return new Vector2(mapWidth, mapHeight);
     }
 
-    static float GetWidth() {
+    public static float GetWidth() {
         return mapWidth;
     }
 
-    static float GetHeight() {
+    public static float GetHeight() {
         return mapHeight;
     }
 
-    static float GetCollisionPoint(float x, float y) {
+    public static float GetCollisionPoint(float x, float y) {
         return HeightCalculation(new Vector2(x, y));
     }
 
-    static void Update() {
+    public static void Update() {
         float delta = Delta.Get();
         groundShimmerRoll += delta / 2.0f;
         ShaderManager.SetFloatUniformFloat("ground", shimmerRollUniformLocation, groundShimmerRoll);
