@@ -2,6 +2,7 @@
 using System.Reflection;
 using FishGame.Audio;
 using FishGame.Graphics;
+using FishGame.Level;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -43,6 +44,8 @@ class Game : IDisposable {
         CameraManager.Initialize();
 
         Rlgl.DisableBackfaceCulling();
+
+        LevelManager.Load("levels/map_lake/");
     }
 
     void CenterWindow() {
