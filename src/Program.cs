@@ -47,21 +47,18 @@ class Game : IDisposable {
 
         Rlgl.DisableBackfaceCulling();
 
-        // ModelManager.LoadModelFromFile("models/largemouth.glb");
-        // ModelManager.setModelTexture("largemouth.glb", "largemouth.png");
-        // ModelManager.setModelShader("largemouth.glb", "normal");
 
-        // ModelManager.loadModelFromFile("models/boat.glb");
-        // ModelManager.setModelTexture("boat.glb", "boat.png");
+        // Todo: Maybe a thing to set the texture automatically if the model has a matching texture name.
+        ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
 
-        // ModelManager.loadModelFromFile("models/person.glb");
-        // ModelManager.setModelTexture("person.glb", "person.png");
+        ModelManager.SetModelTexture("largemouth.glb", "largemouth.png");
+        ModelManager.SetModelShader("largemouth.glb", "normal");
 
-        // ModelManager.loadModelFromFile("models/fishing_rod.glb");
-        // ModelManager.setModelTexture("fishing_rod.glb", "fishing_rod.png");
+        ModelManager.SetModelTexture("boat.glb", "boat.png");
 
-        ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
+        ModelManager.SetModelTexture("person.glb", "person.png");
 
+        ModelManager.SetModelTexture("fishing_rod.glb", "fishing_rod.png");
 
     }
 
