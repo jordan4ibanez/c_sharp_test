@@ -18,6 +18,16 @@ static class ModelManager {
     static Dictionary<string, bool> isCustomDatabase = [];
     static Dictionary<string, AnimationContainer> animationDatabase = [];
 
+    static public void Initialize() {
+        string[] folders = ["models"];
+        foreach (string dir in folders) {
+            // Console.WriteLine(dir);
+            foreach (string filePath in Directory.EnumerateFiles(dir, "*.glb", SearchOption.AllDirectories)) {
+                LoadModelFromFile(filePath);
+            }
+        }
+    }
+
     public static void Draw(string modelName, Vector3 position) {
         Draw(modelName, position, new Vector3(0, 0, 0), 1.0f, Color.White);
     }
