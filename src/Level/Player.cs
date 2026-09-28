@@ -60,13 +60,13 @@ public static class Player {
 
 
 
-    static void update() {
+    static void Update() {
         double delta = Delta.Get();
 
-        updateFloating();
-        doControls();
-        doLogic(delta);
-        doAnimation();
+        UpdateFloating();
+        DoControls();
+        DoLogic(delta);
+        DoAnimation();
 
         //? This is for debugging in freecam. So you don't have to fly across the map.
         // if (inittrigger) {
@@ -75,23 +75,23 @@ public static class Player {
         // }
     }
 
-    static void cameraUpdate() {
-        doCameraPositioning();
+    static void CameraUpdate() {
+        DoCameraPositioning();
     }
 
-    static void setPosition(float x, float y, float z) {
+    static void SetPosition(float x, float y, float z) {
         position = Vector3(x, y, z);
     }
 
-    static Vector3 getPosition() {
+    static Vector3 GetPosition() {
         return position;
     }
 
-    static Vector3 getPoleTipPosition() {
+    static Vector3 GetPoleTipPosition() {
         return poleTipRealtimePosition;
     }
 
-    static void triggerEmptyReelCompletion() {
+    static void TriggerEmptyReelCompletion() {
         state = PlayerState.Aiming;
         castTimer = 0;
         // This instantly triggers a frame update.
@@ -100,8 +100,8 @@ public static class Player {
         Lure.setOutOfWater();
     }
 
-    static void setDefaultPosition() {
-        Vector2 groundSize = Ground.getSizeFloating();
+    static void SetDefaultPosition() {
+        Vector2 groundSize = Ground.GetSizeFloating();
         position.x = groundSize.x / 2.0;
         position.z = groundSize.y / 2.0;
         ModelHandler.playAnimation("person.glb", 0, 0);
@@ -118,14 +118,14 @@ public static class Player {
         }
     }
 
-    static void updateFloating() {
+    static void UpdateFloating() {
         position.y = Water.getCollisionPoint(position.x, position.z);
         position.y -= 0.1;
 
         // rotation.y += Delta.getDelta();
     }
 
-    static void draw() {
+    static void Draw() {
         ModelHandler.draw("boat.glb", position, rotation);
 
         Vector3 playerOnBoat = position;
@@ -219,7 +219,7 @@ public static class Player {
 
         // Only draw the target when aiming.
         if (state == PlayerState.Aiming) {
-            DrawSphere(getCastTarget(), 0.1, Colors.RED);
+            DrawSphere(GetCastTarget(), 0.1, Colors.RED);
         }
 
         switch (state) {
@@ -275,7 +275,7 @@ public static class Player {
 
                     arcHeight -= Lerp(0.1, 0.0, castProgress);
 
-                    Vector3 progress = Vector3Lerp(lureTranslation, getCastTarget(), castProgress);
+                    Vector3 progress = Vector3Lerp(lureTranslation, GetCastTarget(), castProgress);
                     progress.y += arcHeight;
 
                     Lure.setPosition(progress);
@@ -308,9 +308,9 @@ public static class Player {
         }
     }
 
-    private:
+    //? Begin private section of class.
 
-    static void doLogic(double delta) {
+    static void DoLogic(double delta) {
         switch (state) {
             case PlayerState.Aiming: {
 
@@ -414,14 +414,14 @@ public static class Player {
         }
     }
 
-    static void doAnimation() {
+    static void DoAnimation() {
         switch (state) {
             case PlayerState.Aiming: {
 
                 }
                 break;
             case PlayerState.Casting: {
-                    doCastAnimation();
+                    DoCastAnimation();
                 }
                 break;
             case PlayerState.CastingArc: {
@@ -443,7 +443,7 @@ public static class Player {
         }
     }
 
-    static void doControls() {
+    static void DoControls() {
 
         double delta = Delta.getDelta();
 
@@ -466,7 +466,7 @@ public static class Player {
                     }
 
                     // Don't let it go into the shore.
-                    if (lureCollidesWithShore()) {
+                    if (LureCollidesWithShore()) {
                         castingDistance = oldCastingDistance;
                     }
 
@@ -485,14 +485,14 @@ public static class Player {
                     }
 
                     // Don't let it go into the shore.
-                    if (lureCollidesWithShore()) {
+                    if (LureCollidesWithShore()) {
                         // First, try to bump the distance back.
                         // This hardcode also creates a jolty effect.
                         castingDistance -= 0.7;
 
                         castingYaw = oldCastingYaw;
 
-                        if (lureCollidesWithShore()) {
+                        if (LureCollidesWithShore()) {
                             // Welp that failed, move everything back.  
                             castingYaw = oldCastingYaw;
                             castingDistance += 0.7;
@@ -556,7 +556,7 @@ public static class Player {
 
     const targetFrameTime = 1.0 / 60.0;
 
-    static void doCastAnimation() {
+    static void DoCastAnimation() {
 
         double delta = Delta.getDelta();
 
@@ -577,7 +577,7 @@ public static class Player {
         }
     }
 
-    static void doCameraPositioning() {
+    static void DoCameraPositioning() {
         switch (state) {
             case PlayerState.Aiming: {
                     readonly float waterLevel = Water.getWaterLevel();
@@ -597,7 +597,7 @@ public static class Player {
 
                     // CameraHandler.setPosition(target);
 
-                    CameraHandler.setTarget(getCastTarget());
+                    CameraHandler.setTarget(GetCastTarget());
 
                 }
                 break;
@@ -701,7 +701,7 @@ public static class Player {
     }
 
     // This will compose the imaginary yaw and distance into the real world position.
-    static Vector3 getCastTarget() {
+    static Vector3 GetCastTarget() {
         Vector3 castTarget;
 
         double totalYaw = (rotation.y + castingYaw) - (PI / 2);
@@ -714,7 +714,7 @@ public static class Player {
         return castTarget;
     }
 
-    static bool lureCollidesWithShore() {
+    static bool LureCollidesWithShore() {
 
         double totalYaw = (rotation.y + castingYaw) - (PI / 2);
 
