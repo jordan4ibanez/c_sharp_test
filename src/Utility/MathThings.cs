@@ -14,10 +14,5 @@ static class MathThings {
         }
     }
 
-    public static double NextDouble(double min, double max) {
-        return min + (Random.Shared.NextDouble() * (max - min));
-    }
-    public static float NextFloat(float min, float max) {
-        return min + (Random.Shared.NextSingle() * (max - min));
-    }
+
 }
