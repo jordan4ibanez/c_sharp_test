@@ -47,6 +47,8 @@ public static class Player {
     static float castProgress = 0;
 
     static float lineCreationProgress = 0;
+
+    // Todo: Make this a list!!!!!!!
     static Vector3[] lineData = [];
     static float lineFallRestTimer = 0;
     static bool lureSplashPlayed = false;
@@ -72,7 +74,7 @@ public static class Player {
 
         //? This is for debugging in freecam. So you don't have to fly across the map.
         // if (inittrigger) {
-        //     CameraHandler.setPosition(position);
+        //     CameraManager.setPosition(position);
         //     inittrigger = false;
         // }
     }
@@ -288,28 +290,29 @@ public static class Player {
 
                     // Draw the line.
 
-                    if (lineData.length > 0) {
-                        DrawLine3D(lureTranslation, lineData[0], Colors.BLACK);
-                        foreach (i; 0..(lineData.length) - 1) {
+                    if (lineData.Length > 0) {
+                        Raylib.DrawLine3D(lureTranslation, lineData[0], Color.Black);
+
+                        for (int i = 0; i < lineData.Length - 1; i++) {
                             Vector3 current = lineData[i];
                             Vector3 next = lineData[i + 1];
 
-                            DrawLine3D(current, next, Colors.BLACK);
+                            Raylib.DrawLine3D(current, next, Color.Black);
                         }
-                        DrawLine3D(lineData[(lineData.length) - 1], progress, Colors.BLACK);
+                        Raylib.DrawLine3D(lineData[lineData.Length - 1], progress, Color.Black);
                     } else {
-                        DrawLine3D(lureTranslation, progress, Colors.BLACK);
+                        Raylib.DrawLine3D(lureTranslation, progress, Color.Black);
                     }
 
                     // DrawSphere(progress, 0.1, Colors.ORANGE);
                 }
                 break;
             case PlayerState.Water: {
-                    DrawLine3D(lureTranslation, Lure.getPosition(), Colors.BLACK);
+                    Raylib.DrawLine3D(lureTranslation, Lure.getPosition(), Color.Black);
                 }
                 break;
             default: {
-                    throw new Error("Oops");
+                    throw new Exception("Oops");
                 }
         }
     }
@@ -327,27 +330,27 @@ public static class Player {
                         state = PlayerState.CastingArc;
                         castProgress = 0;
 
-                        auto rnd = Random(unpredictableSeed());
-                        castTumblePitch = uniform(0.1, 10.0, rnd);
-                        castTumbleYaw = uniform(0.1, 10.0, rnd);
+                        castTumblePitch = Randy.NextFloat(0.1f, 10.0f);
+                        castTumbleYaw = Randy.NextFloat(0.1f, 10.0f);
 
                         lineCreationProgress = 0;
-                        lineData = new Vector3[](0);
+                        lineData = [];
                         lineCreationProgress = 0;
                     }
                 }
                 break;
             case PlayerState.CastingArc: {
 
-                    readonly float waterLevel = Water.getWaterLevel();
+                    float waterLevel = Water.GetWaterLevel();
 
                     // readonly float max = cast(double)(cast(int) lineData.length);
 
                     // Try to interpolate to a line that's falling onto the water.
-                    foreach (i, ref v; lineData) {
+                    for (int i = 0; i < lineData.Length; i++) {
+                        ref var v = ref lineData[i];
                         // todo: test out messing with the max to make a cool looking falling line.
-                        float current = cast(double) i + 1;
-                        float application = current * 0.1;
+                        float current = (float)i + 1;
+                        float application = (float)(current * 0.1f);
 
                         v.Y -= delta * application;
                         if (v.Y <= waterLevel) {
@@ -360,7 +363,7 @@ public static class Player {
                         lineFallRestTimer += delta;
 
                         if (!lureSplashPlayed) {
-                            SoundManager.play("lure_hit_water.ogg", 0.1);
+                            SoundManager.Play("lure_hit_water.ogg", 0.1f);
                             lureSplashPlayed = true;
                         }
 
@@ -368,33 +371,33 @@ public static class Player {
                         if (lineFallRestTimer >= 1.5) {
                             state = PlayerState.Water;
                             // todo: don't delete the line data.
-                            lineData = null;
+                            lineData = [];
 
                             // When the state changes into the water state, we do some "magic" to snap everything into place.
 
                             Vector3 lurePosition = Lure.getPosition();
                             float x = position.X - lurePosition.X;
                             float z = position.Z - lurePosition.Z;
-                            float lureYaw = atan2(x, z);
-                            Lure.setRotation(Vector3(0, lureYaw, 0));
+                            float lureYaw = (float)Math.Atan2(x, z);
+                            Lure.setRotation(new Vector3(0, lureYaw, 0));
 
                             Lure.setInWater();
                         }
                     } else {
 
-                        float increase = delta * 12.0;
+                        float increase = delta * 12.0f;
                         castProgressDistance += increase;
                         lineCreationProgress += increase;
 
                         if (lineCreationProgress >= 1.0) {
-                            lineData ~= Lure.getPosition();
+                            lineData = lineData.Concat(Lure.GetPosition()).ToArray();
                             lineCreationProgress = 0;
                         }
 
                         Vector3 currentRotation = Lure.getRotation();
 
-                        currentRotation.Y += Delta.getDelta() * castTumbleYaw;
-                        currentRotation.X += Delta.getDelta() * castTumblePitch;
+                        currentRotation.Y += Delta.Get() * castTumbleYaw;
+                        currentRotation.X += Delta.Get() * castTumblePitch;
 
                         Lure.setRotation(currentRotation);
 
@@ -409,13 +412,14 @@ public static class Player {
                 }
                 break;
             case PlayerState.Water: {
+                    // todo: mouse, bleh.
                     if (Mouse.isButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
                         Lure.reel();
                     }
                 }
                 break;
             default: {
-                    throw new Error("Oops");
+                    throw new Exception("Oops");
                 }
         }
     }
@@ -444,14 +448,14 @@ public static class Player {
                 }
                 break;
             default: {
-                    throw new Error("Oops");
+                    throw new Exception("Oops");
                 }
         }
     }
 
     static void DoControls() {
 
-        float delta = Delta.getDelta();
+        float delta = Delta.Get();
 
         switch (state) {
             case PlayerState.Aiming: {
@@ -462,7 +466,7 @@ public static class Player {
 
                     float oldCastingDistance = castingDistance;
 
-                    castingDistance -= mouseDelta.Y / 100.0;
+                    castingDistance -= mouseDelta.Y / 100.0f;
 
                     // Keep the distance within range.
                     if (castingDistance < castingDistanceMin) {
@@ -482,7 +486,7 @@ public static class Player {
 
                     float oldCastingYaw = castingYaw;
 
-                    castingYaw += mouseDelta.X / 1500.0;
+                    castingYaw += mouseDelta.X / 1500.0f;
 
                     if (castingYaw < -maxAngle) {
                         castingYaw = -maxAngle;
@@ -494,18 +498,18 @@ public static class Player {
                     if (LureCollidesWithShore()) {
                         // First, try to bump the distance back.
                         // This hardcode also creates a jolty effect.
-                        castingDistance -= 0.7;
+                        castingDistance -= 0.7f;
 
                         castingYaw = oldCastingYaw;
 
                         if (LureCollidesWithShore()) {
                             // Welp that failed, move everything back.  
                             castingYaw = oldCastingYaw;
-                            castingDistance += 0.7;
+                            castingDistance += 0.7f;
                         }
                     }
 
-                    if (Mouse.isButtonPressed(MouseButton.MOUSE_BUTTON_LEFT)) {
+                    if (Mouse.isButtonPressed(MouseButton.Left)) {
                         state = PlayerState.Casting;
                         castTimer = 0;
                         castProgressDistance = 0;
@@ -549,24 +553,24 @@ public static class Player {
                 }
                 break;
             case PlayerState.Water: {
-                    if (Mouse.isButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
+                    if (Mouse.isButtonDown(MouseButton.Left)) {
                         Lure.reel();
                     }
                 }
                 break;
             default: {
-                    throw new Error("Oops");
+                    throw new Exception("Oops");
                 }
         }
     }
 
-    const targetFrameTime = 1.0 / 60.0;
+    const float targetFrameTime = 1.0f / 60.0f;
 
     static void DoCastAnimation() {
 
-        float delta = Delta.getDelta();
+        float delta = Delta.Get();
 
-        auto oldState = animationFrame;
+        var oldState = animationFrame;
 
         if (animationFrame < castFrameMiddle) {
             animationFrame += 100 * delta;
@@ -575,7 +579,7 @@ public static class Player {
         }
 
         if (oldState < castFrameMiddle && animationFrame >= castFrameMiddle) {
-            SoundManager.play("casting_woosh.ogg");
+            SoundManager.Play("casting_woosh.ogg");
         }
 
         if (animationFrame >= castFrameMax) {
@@ -586,14 +590,14 @@ public static class Player {
     static void DoCameraPositioning() {
         switch (state) {
             case PlayerState.Aiming: {
-                    readonly float waterLevel = Water.getWaterLevel();
-                    Vector3 newCameraPosition = Vector3();
+                    float waterLevel = Water.GetWaterLevel();
+                    Vector3 newCameraPosition = new();
                     newCameraPosition.X = position.X;
                     // This is at the level of the player's chest but it looks better.
-                    newCameraPosition.Y = waterLevel + 1.6;
+                    newCameraPosition.Y = waterLevel + 1.6f;
                     newCameraPosition.Z = position.Z;
 
-                    CameraHandler.setPosition(newCameraPosition);
+                    CameraManager.SetPosition(newCameraPosition);
 
                     //! Debugging.
                     // Vector3 target = getCastTarget();
@@ -601,101 +605,102 @@ public static class Player {
                     // target.Y += 0.5;
                     // target.Z -= 0.5;
 
-                    // CameraHandler.setPosition(target);
+                    // CameraManager.setPosition(target);
 
-                    CameraHandler.setTarget(GetCastTarget());
+                    CameraManager.SetTarget(GetCastTarget());
 
                 }
                 break;
-            case PlayerState.Casting, PlayerState.CastingArc: {
-                    readonly float shift = 2.6;
-                    readonly float distance = 2;
-                    readonly float waterLevel = Water.getWaterLevel();
+            case PlayerState.Casting or PlayerState.CastingArc: {
+                    float shift = 2.6f;
+                    float distance = 2f;
+                    float waterLevel = Water.GetWaterLevel();
 
-                    float rotated = (rotation.Y + (PI / shift)) + castingYaw;
-                    float x = cos(rotated) * distance;
-                    float z = sin(rotated) * distance;
+                    float rotated = (float)(rotation.Y + (Math.PI / shift)) + castingYaw;
+                    float x = (float)Math.Cos(rotated) * distance;
+                    float z = (float)Math.Sin(rotated) * distance;
 
-                    Vector3 newCameraPosition = Vector3();
+                    Vector3 newCameraPosition = new();
                     newCameraPosition.X = position.X + x;
-                    newCameraPosition.Y = waterLevel + 1.6;
+                    newCameraPosition.Y = waterLevel + 1.6f;
                     newCameraPosition.Z = position.Z + z;
 
-                    CameraHandler.setPosition(newCameraPosition);
+                    CameraManager.SetPosition(newCameraPosition);
 
-                    rotated -= PI / 1.25;
+                    rotated -= (float)Math.PI / 1.25f;
 
-                    x = cos(rotated) * distance;
-                    z = sin(rotated) * distance;
+                    x = (float)Math.Cos(rotated) * distance;
+                    z = (float)Math.Sin(rotated) * distance;
 
-                    Vector3 newTargetPosition = Vector3();
+                    Vector3 newTargetPosition = new();
                     newTargetPosition.X = position.X + x;
-                    newTargetPosition.Y = waterLevel + 1.6;
+                    newTargetPosition.Y = waterLevel + 1.6f;
                     newTargetPosition.Z = position.Z + z;
 
-                    CameraHandler.setTarget(newTargetPosition);
+                    CameraManager.SetTarget(newTargetPosition);
                 }
                 break;
             case PlayerState.Menu: {
-                    readonly float shiftFront = 5;
-                    readonly float shiftBack = 1.05;
-                    readonly float distance = 8;
-                    readonly float waterLevel = Water.getWaterLevel();
+                    float shiftFront = 5;
+                    float shiftBack = 1.05f;
+                    float distance = 8;
+                    float waterLevel = Water.GetWaterLevel();
 
-                    float rotated = (-rotation.Y) - (PI / shiftFront);
-                    float x = cos(rotated) * distance;
-                    float z = sin(rotated) * distance;
+                    float rotated = (float)((-rotation.Y) - (Math.PI / shiftFront));
+                    float x = (float)Math.Cos(rotated) * distance;
+                    float z = (float)Math.Sin(rotated) * distance;
 
-                    Vector3 newCameraPosition = Vector3();
+                    Vector3 newCameraPosition = new();
                     newCameraPosition.X = position.X + x;
                     newCameraPosition.Y = waterLevel + 2;
                     newCameraPosition.Z = position.Z + z;
 
-                    CameraHandler.setPosition(newCameraPosition);
+                    CameraManager.SetPosition(newCameraPosition);
 
-                    rotated = (-rotation.Y) + (PI / shiftBack);
+                    rotated = (float)((-rotation.Y) + (Math.PI / shiftBack));
 
-                    x = cos(rotated) * distance;
-                    z = sin(rotated) * distance;
+                    x = (float)Math.Cos(rotated) * distance;
+                    z = (float)Math.Sin(rotated) * distance;
 
-                    Vector3 newTargetPosition = Vector3();
+                    Vector3 newTargetPosition = new();
                     newTargetPosition.X = position.X + x;
                     newTargetPosition.Y = waterLevel + 2;
                     newTargetPosition.Z = position.Z + z;
 
-                    CameraHandler.setTarget(newTargetPosition);
+                    CameraManager.SetTarget(newTargetPosition);
                 }
                 break;
             case PlayerState.Water: {
 
                     Vector3 lurePosition = Lure.getPosition();
 
-                    Fish fish = FishTank.getFish(0);
+                    // todo: create debug thing to get any fish.
+                    Fish fish = FishTank.GetFish(0);
 
-                    auto fishYaw = ((RAD2DEG * fish.getRotation().Y) + 195) * DEG2RAD;
+                    var fishYaw = (float)(((Raylib.RAD2DEG * fish.GetRotation().Y) + 195) * Raylib.DEG2RAD);
 
-                    auto fishDir = Vector3(sin(fishYaw), 0.0f, cos(fishYaw));
+                    var fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
 
-                    CameraHandler.setPosition(fish.getPosition().Vector3Add(fishDir));
+                    CameraManager.SetPosition(Raymath.Vector3Add(fish.GetPosition(), fishDir));
 
                     // Now rotate this 180 degrees.
-                    fishYaw += PI;
-                    writeln(fishYaw);
-                    fishDir = Vector3(sin(fishYaw), 0.0f, cos(fishYaw));
+                    fishYaw += (float)Math.PI;
+                    Console.WriteLine(fishYaw);
+                    fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
 
-                    CameraHandler.setTarget(fish.getPosition().Vector3Add(fishDir));
+                    CameraManager.SetTarget(Raymath.Vector3Add(fish.GetPosition(), fishDir));
 
-                    // CameraHandler.setTarget(lurePosition);
+                    // CameraManager.setTarget(lurePosition);
                     // lurePosition.X -= 1;
                     // lurePosition.Y += 1;
                     // lurePosition.Z -= 1;
-                    // CameraHandler.setPosition(lurePosition);
-                    // CameraHandler.setTarget(FishTank.whereDatFish());
+                    // CameraManager.setPosition(lurePosition);
+                    // CameraManager.setTarget(FishTank.whereDatFish());
 
                 }
                 break;
             default: {
-                    throw new Error("Oops");
+                    throw new Exception("Oops");
                 }
         }
 
@@ -710,25 +715,25 @@ public static class Player {
     static Vector3 GetCastTarget() {
         Vector3 castTarget;
 
-        float totalYaw = (rotation.Y + castingYaw) - (PI / 2);
+        float totalYaw = (float)((rotation.Y + castingYaw) - (Math.PI / 2));
 
-        castTarget.X = (cos(totalYaw) * castingDistance) + position.X;
-        castTarget.Z = (sin(totalYaw) * castingDistance) + position.Z;
+        castTarget.X = (float)(Math.Cos(totalYaw) * castingDistance) + position.X;
+        castTarget.Z = (float)(Math.Sin(totalYaw) * castingDistance) + position.Z;
 
-        castTarget.Y = Water.getCollisionPoint(castTarget.X, castTarget.Z);
+        castTarget.Y = Water.GetCollisionPoint(castTarget.X, castTarget.Z);
 
         return castTarget;
     }
 
     static bool LureCollidesWithShore() {
 
-        float totalYaw = (rotation.Y + castingYaw) - (PI / 2);
+        float totalYaw = (float)((rotation.Y + castingYaw) - (Math.PI / 2));
 
-        float x = (cos(totalYaw) * castingDistance) + position.X;
-        float z = (sin(totalYaw) * castingDistance) + position.Z;
+        float x = (float)(Math.Cos(totalYaw) * castingDistance) + position.X;
+        float z = (float)(Math.Sin(totalYaw) * castingDistance) + position.Z;
 
-        float waterHeight = Water.getCollisionPoint(x, z);
-        float groundHeight = Ground.getCollisionPoint(x, z);
+        float waterHeight = Water.GetCollisionPoint(x, z);
+        float groundHeight = Ground.GetCollisionPoint(x, z);
 
         return (waterHeight - groundHeight) < 0.3;
     }
