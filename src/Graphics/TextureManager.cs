@@ -11,13 +11,11 @@ static class TextureManager {
         string[] folders = ["models", "textures"];
 
         foreach (string dir in folders) {
-            Console.WriteLine(dir);
+            // Console.WriteLine(dir);
+            foreach (string filePath in Directory.EnumerateFiles(dir, "*.png", SearchOption.AllDirectories)) {
+                LoadTexture(filePath);
+            }
         }
-
-        // foreach (string filePath in Directory.EnumerateFiles(folderPath, "*.png", SearchOption.AllDirectories)) {
-        //     Console.WriteLine(filePath);
-        // }
-
     }
 
     public static void LoadTexture(string path) {
@@ -47,6 +45,7 @@ static class TextureManager {
         }
 
         database[fileName] = thisTexture;
+        // Console.WriteLine($"[TextureManager]: Loaded {path} as {fileName}");
     }
 
     public static Texture2D GetTexture(string textureName) {
