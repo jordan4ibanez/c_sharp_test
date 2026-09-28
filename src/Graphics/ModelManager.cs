@@ -18,7 +18,7 @@ static class ModelManager {
     static Dictionary<string, bool> isCustomDatabase = [];
     static Dictionary<string, AnimationContainer> animationDatabase = [];
 
-    static public void Initialize() {
+    public static void Initialize() {
         string[] folders = ["models"];
         foreach (string dir in folders) {
             // Console.WriteLine(dir);
