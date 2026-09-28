@@ -118,6 +118,7 @@ class Game : IDisposable {
 
         ModelManager.Destroy("deep_c_110.glb");
         ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
+        ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
 
 
 
