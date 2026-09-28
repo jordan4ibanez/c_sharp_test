@@ -27,42 +27,42 @@ public static class Player {
     static PlayerState state = PlayerState.Aiming;
     static int playerHandBoneIndex = -1;
 
-    static double animationFrame = 0f;
+    static float animationFrame = 0f;
 
     // Casting variables.
     static bool firstCastFrame = true;
-    static double castTimer = 0.0;
+    static float castTimer = 0.0;
     readonly static int castFrameMax = 230;
     readonly static int castFrameMiddle = 230 / 2;
-    readonly static double castingDistanceMin = 10;
-    readonly static double castingDistanceMax = 30;
+    readonly static float castingDistanceMin = 10;
+    readonly static float castingDistanceMax = 30;
     // This is how wide of a triangulation you can cast.
-    readonly static double maxAngle = 40 * Raylib.DEG2RAD;
+    readonly static float maxAngle = 40 * Raylib.DEG2RAD;
 
-    static double castTumblePitch = 0;
-    static double castTumbleYaw = 0;
+    static float castTumblePitch = 0;
+    static float castTumbleYaw = 0;
 
-    static double castProgressDistance = 0;
-    static double castProgress = 0;
+    static float castProgressDistance = 0;
+    static float castProgress = 0;
 
-    static double lineCreationProgress = 0;
+    static float lineCreationProgress = 0;
     static Vector3[] lineData = [];
-    static double lineFallRestTimer = 0;
+    static float lineFallRestTimer = 0;
     static bool lureSplashPlayed = false;
 
     //! Note: these need to be reset when the player changes spots.
-    static double castingYaw = 0.0;
-    static double castingDistance = castingDistanceMin;
+    static float castingYaw = 0.0f;
+    static float castingDistance = castingDistanceMin;
 
     //!! NOTE:
-    // Animation seems to be double the blender keyframes. So frame 30 is 60-ish. 
+    // Animation seems to be float the blender keyframes. So frame 30 is 60-ish. 
 
     static bool inittrigger = true;
 
 
 
     static void Update() {
-        double delta = Delta.Get();
+        float delta = Delta.Get();
 
         UpdateFloating();
         DoControls();
@@ -121,33 +121,36 @@ public static class Player {
     }
 
     static void UpdateFloating() {
-        position.Y = Water.getCollisionPoint(position.X, position.Z);
-        position.Y -= 0.1;
+        position.Y = Water.GetCollisionPoint(position.X, position.Z);
+        position.Y -= 0.1f;
 
         // rotation.Y += Delta.getDelta();
     }
 
     static void Draw() {
-        ModelManager.draw("boat.glb", position, rotation);
+        ModelManager.Draw("boat.glb", position, rotation);
 
         Vector3 playerOnBoat = position;
-        playerOnBoat.Y += 0.6;
+        playerOnBoat.Y += 0.6f;
 
-        ModelManager.playAnimation("person.glb", 0, cast(int) floor(animationFrame));
+        ModelManager.PlayAnimation("person.glb", 0, (int)Math.Floor(animationFrame));
 
         // Make the player turn with the casting angle if they're in an interaction state.
         // Also, do not render the player if aiming. (first person mode)
-        if (!state == PlayerState.Aiming) {
+        if (state != PlayerState.Aiming) {
             switch (state) {
-                case PlayerState.Casting, PlayerState.CastingArc, PlayerState.Water: {
+                case PlayerState.Casting:
+                case PlayerState.CastingArc:
+                case PlayerState.Water: {
                         Vector3 combinedRotation = rotation;
                         combinedRotation.Y -= castingYaw;
-                        ModelManager.draw("person.glb", playerOnBoat, combinedRotation);
+                        ModelManager.Draw("person.glb", playerOnBoat, combinedRotation);
                     }
                     break;
                 default: {
-                        ModelManager.draw("person.glb", playerOnBoat, rotation);
+                        ModelManager.Draw("person.glb", playerOnBoat, rotation);
                     }
+                    break;
             }
         }
 
@@ -268,8 +271,8 @@ public static class Player {
                 break;
             case PlayerState.CastingArc: {
 
-                    double currentProgressModified = (castProgress * PI);
-                    double arcHeight = (sin(currentProgressModified));
+                    float currentProgressModified = (castProgress * PI);
+                    float arcHeight = (sin(currentProgressModified));
 
                     if (abs(arcHeight) < 0.001) {
                         arcHeight = 0;
@@ -312,7 +315,7 @@ public static class Player {
 
     //? Begin private section of class.
 
-    static void DoLogic(double delta) {
+    static void DoLogic(float delta) {
         switch (state) {
             case PlayerState.Aiming: {
 
@@ -337,13 +340,13 @@ public static class Player {
 
                     readonly float waterLevel = Water.getWaterLevel();
 
-                    // readonly double max = cast(double)(cast(int) lineData.length);
+                    // readonly float max = cast(double)(cast(int) lineData.length);
 
                     // Try to interpolate to a line that's falling onto the water.
                     foreach (i, ref v; lineData) {
                         // todo: test out messing with the max to make a cool looking falling line.
-                        double current = cast(double) i + 1;
-                        double application = current * 0.1;
+                        float current = cast(double) i + 1;
+                        float application = current * 0.1;
 
                         v.Y -= delta * application;
                         if (v.Y <= waterLevel) {
@@ -369,16 +372,16 @@ public static class Player {
                             // When the state changes into the water state, we do some "magic" to snap everything into place.
 
                             Vector3 lurePosition = Lure.getPosition();
-                            double x = position.X - lurePosition.X;
-                            double z = position.Z - lurePosition.Z;
-                            double lureYaw = atan2(x, z);
+                            float x = position.X - lurePosition.X;
+                            float z = position.Z - lurePosition.Z;
+                            float lureYaw = atan2(x, z);
                             Lure.setRotation(Vector3(0, lureYaw, 0));
 
                             Lure.setInWater();
                         }
                     } else {
 
-                        double increase = delta * 12.0;
+                        float increase = delta * 12.0;
                         castProgressDistance += increase;
                         lineCreationProgress += increase;
 
@@ -447,7 +450,7 @@ public static class Player {
 
     static void DoControls() {
 
-        double delta = Delta.getDelta();
+        float delta = Delta.getDelta();
 
         switch (state) {
             case PlayerState.Aiming: {
@@ -456,7 +459,7 @@ public static class Player {
 
                     // Begin forwards/backwards lure aiming control.
 
-                    double oldCastingDistance = castingDistance;
+                    float oldCastingDistance = castingDistance;
 
                     castingDistance -= mouseDelta.Y / 100.0;
 
@@ -476,7 +479,7 @@ public static class Player {
 
                     // Begin side/side radial lure aiming control.
 
-                    double oldCastingYaw = castingYaw;
+                    float oldCastingYaw = castingYaw;
 
                     castingYaw += mouseDelta.X / 1500.0;
 
@@ -560,7 +563,7 @@ public static class Player {
 
     static void DoCastAnimation() {
 
-        double delta = Delta.getDelta();
+        float delta = Delta.getDelta();
 
         auto oldState = animationFrame;
 
@@ -706,7 +709,7 @@ public static class Player {
     static Vector3 GetCastTarget() {
         Vector3 castTarget;
 
-        double totalYaw = (rotation.Y + castingYaw) - (PI / 2);
+        float totalYaw = (rotation.Y + castingYaw) - (PI / 2);
 
         castTarget.X = (cos(totalYaw) * castingDistance) + position.X;
         castTarget.Z = (sin(totalYaw) * castingDistance) + position.Z;
@@ -718,7 +721,7 @@ public static class Player {
 
     static bool LureCollidesWithShore() {
 
-        double totalYaw = (rotation.Y + castingYaw) - (PI / 2);
+        float totalYaw = (rotation.Y + castingYaw) - (PI / 2);
 
         float x = (cos(totalYaw) * castingDistance) + position.X;
         float z = (sin(totalYaw) * castingDistance) + position.Z;
