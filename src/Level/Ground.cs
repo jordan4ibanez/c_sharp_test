@@ -1,10 +1,14 @@
+using System.Numerics;
+using FishGame.Graphics;
+
 namespace FishGame.Level;
 
+// todo: rename this to GroundManager.
 public static class Ground {
     static float[][] mapData;
     static int mapWidth = 0;
     static int mapHeight = 0;
-    static string currentMap = null;
+    static string currentMap = "";
     static bool loaded = false;
 
     static float groundShimmerRoll = 0.0f;
@@ -16,12 +20,12 @@ public static class Ground {
     readonly static float groundScale = 7.0f;
 
     static void draw() {
-        ModelManager.draw("ground", Vector3(0, 0, 0));
+        ModelManager.Draw("ground", new Vector3(0, 0, 0));
     }
 
     static void load(string levelLocation) {
         if (loaded) {
-            throw new Error("Clean up the ground.");
+            throw new Exception("[Ground]: Clean up the ground.");
         }
         loadMapData(levelLocation ~"height_map.png");
         createGroundMesh();
