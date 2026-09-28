@@ -33,6 +33,8 @@ public static class Ground {
 
         CreateGroundMesh();
 
+
+
         TextureManager.LoadTexture(levelLocation + "texture_map.png");
 
         ModelManager.SetModelTexture("ground", "texture_map.png");
