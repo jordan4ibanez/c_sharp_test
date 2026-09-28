@@ -13,6 +13,4 @@ static class MathThings {
             axis = new Vector3(q.X / s, q.Y / s, q.Z / s);
         }
     }
-
-
 }
