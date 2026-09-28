@@ -1,4 +1,5 @@
 using System.Numerics;
+using FishGame.Audio;
 using FishGame.Graphics;
 using FishGame.Utility;
 using Raylib_cs;
@@ -163,97 +164,99 @@ public static class Player {
 
         Transform transform = animation[0].FramePoses[(int)Math.Floor(animationFrame)][playerHandBoneIndex];
 
-        Quaternion inRotation = model.bindPose[playerHandBoneIndex].rotation;
+        Quaternion inRotation = model.BindPose[playerHandBoneIndex].Rotation;
 
-        Quaternion outRotation = transform.rotation;
+        Quaternion outRotation = transform.Rotation;
 
         // Calculate socket rotation (angle between bone in initial pose and same bone in current animation frame)
-        Quaternion matrixRotate = QuaternionMultiply(outRotation, QuaternionInvert(inRotation));
+        Quaternion matrixRotate = Raymath.QuaternionMultiply(outRotation, Raymath.QuaternionInvert(inRotation));
 
-        Matrix matrixTransform = QuaternionToMatrix(matrixRotate);
+        Matrix4x4 matrixTransform = Raymath.QuaternionToMatrix(matrixRotate);
 
         // Translate socket to its position in the current animation
-        matrixTransform = MatrixMultiply(matrixTransform, MatrixTranslate(transform.translation.X, transform
-                .translation.Y, transform.translation.Z));
+        matrixTransform = Raymath.MatrixMultiply(matrixTransform, Raymath.MatrixTranslate(transform.Translation.X, transform.Translation.Y, transform.Translation.Z));
 
         // If the player is in an interactive state, we want the animation components to rotate with their
         // aiming yaw. So we shall do that.
         switch (state) {
-            case PlayerState.Aiming, PlayerState.Casting, PlayerState.CastingArc, PlayerState.Water: {
-                    matrixTransform = MatrixMultiply(matrixTransform, MatrixRotateY(
-                            rotation.Y - castingYaw));
+            case PlayerState.Aiming:
+            case PlayerState.Casting:
+            case PlayerState.CastingArc:
+            case PlayerState.Water: {
+                    matrixTransform = Raymath.MatrixMultiply(matrixTransform, Raymath.MatrixRotateY(rotation.Y - castingYaw));
                 }
                 break;
             default: {
-                    matrixTransform = MatrixMultiply(matrixTransform, MatrixRotateY(rotation.Y));
+                    matrixTransform = Raymath.MatrixMultiply(matrixTransform, Raymath.MatrixRotateY(rotation.Y));
                 }
+                break;
         }
 
         // Transform the socket using the transform of the character (angle and translate)
-        matrixTransform = MatrixMultiply(matrixTransform, model.transform);
+        matrixTransform = Raymath.MatrixMultiply(matrixTransform, model.Transform);
 
         Vector3 translationSpace;
         Quaternion quaternionRotation;
         Vector3 scaleSpace;
-        MatrixDecompose(matrixTransform, &translationSpace, &quaternionRotation, &scaleSpace);
+        Raymath.MatrixDecompose(matrixTransform, &translationSpace, &quaternionRotation, &scaleSpace);
 
-        Vector3 rotationSpace = QuaternionToEuler(quaternionRotation);
+        Vector3 rotationSpace = Raymath.QuaternionToEuler(quaternionRotation);
 
-        translationSpace = Vector3Add(translationSpace, playerOnBoat);
+        translationSpace = Raymath.Vector3Add(translationSpace, playerOnBoat);
 
-        ModelManager.draw("fishing_rod.glb", translationSpace, rotationSpace);
+        ModelManager.Draw("fishing_rod.glb", translationSpace, rotationSpace);
 
         //? The lure gets kind of complicated lol.
 
         Vector3 lureTranslation = translationSpace;
 
-        readonly float poleSize = 1.635;
-        Vector3 directionOfPole = Vector3Multiply(Vector3Normalize(Vector3(matrixTransform.m8, matrixTransform.m9,
-                matrixTransform.m10)), Vector3(poleSize, poleSize, poleSize));
+        float poleSize = 1.635f;
+        Vector3 zVector = new(matrixTransform.M13, matrixTransform.M23, matrixTransform.M33);
+        Vector3 directionOfPole = Raymath.Vector3Normalize(zVector) * new Vector3(poleSize);
 
         // todo: fix these variable names, this is a mess.
         // todo: this is supposed to be the pole tip position.
-        lureTranslation = Vector3Add(lureTranslation, directionOfPole);
+        lureTranslation = Raymath.Vector3Add(lureTranslation, directionOfPole);
         poleTipRealtimePosition = lureTranslation;
 
         // This is a trick to simulate the lure swinging during a cast.
-        Vector2 poleTipPosition = Vector2(lureTranslation.X, lureTranslation.Z);
-        float poleTipDeltaDistance = Vector2Distance(poleTipPosition, oldPoleTipPosition);
+        Vector2 poleTipPosition = new(lureTranslation.X, lureTranslation.Z);
+        float poleTipDeltaDistance = Raymath.Vector2Distance(poleTipPosition, oldPoleTipPosition);
 
         // Only draw the target when aiming.
         if (state == PlayerState.Aiming) {
-            DrawSphere(GetCastTarget(), 0.1, Colors.RED);
+            Raylib.DrawSphere(GetCastTarget(), 0.1f, Color.Red);
         }
 
         switch (state) {
-            case PlayerState.Aiming, PlayerState.Menu: {
-                    lureTranslation.Y -= 0.1;
+            case PlayerState.Aiming or PlayerState.Menu: {
+                    lureTranslation.Y -= 0.1f;
                     Lure.setPosition(lureTranslation);
-                    Lure.setRotation(Vector3(0, rotation.Y + -castingYaw, 0));
+                    Lure.setRotation(new Vector3(0, rotation.Y + -castingYaw, 0));
                 }
                 break;
             case PlayerState.Casting: {
 
                     // If this is the first cast tick, save and abort.
                     if (firstCastFrame) {
-                        oldPoleTipPosition = Vector2(lureTranslation.X, lureTranslation.Z);
+                        oldPoleTipPosition = new Vector2(lureTranslation.X, lureTranslation.Z);
                         firstCastFrame = false;
-                        SoundManager.play("reel_open_bail.ogg");
+                        SoundManager.Play("reel_open_bail.ogg");
                         break;
                     }
 
                     if (poleTipDeltaDistance > 0) {
 
-                        Vector2 poleTipSwingDirection = Vector2Normalize(Vector2Subtract(oldPoleTipPosition,
+                        Vector2 poleTipSwingDirection = Raymath.Vector2Normalize(Raymath.Vector2Subtract(oldPoleTipPosition,
                                 poleTipPosition));
 
                         float dx = oldPoleTipPosition.X - poleTipPosition.X;
                         float dy = oldPoleTipPosition.Y - poleTipPosition.Y;
-                        float yaw = (-atan2(dy, dx)) - (PI / 2);
+                        float yaw = (float)((-Math.Atan2(dy, dx)) - (Math.PI / 2f));
 
-                        oldPoleTipPosition = Vector2(lureTranslation.X, lureTranslation.Z);
+                        oldPoleTipPosition = new Vector2(lureTranslation.X, lureTranslation.Z);
 
-                        lureTranslation.Y -= 0.1;
+                        lureTranslation.Y -= 0.1f;
 
                         float swingX = poleTipSwingDirection.X * poleTipDeltaDistance;
                         float swingZ = poleTipSwingDirection.Y * poleTipDeltaDistance;
@@ -263,22 +266,22 @@ public static class Player {
 
                         Lure.setPosition(lureTranslation);
 
-                        Lure.setRotation(Vector3(0, yaw, 0));
+                        Lure.setRotation(new Vector3(0, yaw, 0));
                     }
                 }
                 break;
             case PlayerState.CastingArc: {
 
-                    float currentProgressModified = (castProgress * PI);
-                    float arcHeight = (sin(currentProgressModified));
+                    float currentProgressModified = (float)(castProgress * Math.PI);
+                    float arcHeight = (float)(Math.Sin(currentProgressModified));
 
-                    if (abs(arcHeight) < 0.001) {
+                    if (Math.Abs(arcHeight) < 0.001) {
                         arcHeight = 0;
                     }
 
-                    arcHeight -= Lerp(0.1, 0.0, castProgress);
+                    arcHeight -= Raymath.Lerp(0.1f, 0.0f, castProgress);
 
-                    Vector3 progress = Vector3Lerp(lureTranslation, GetCastTarget(), castProgress);
+                    Vector3 progress = Raymath.Vector3Lerp(lureTranslation, GetCastTarget(), castProgress);
                     progress.Y += arcHeight;
 
                     Lure.setPosition(progress);
