@@ -1,5 +1,6 @@
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Text;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -135,7 +136,7 @@ static class ModelManager {
 
         int animationCount = 0;
         ModelAnimation[] animationArray;
-        fixed (byte* ptr = "my_model.obj"u8) {
+        fixed (byte* ptr = Encoding.UTF8.GetBytes(path + '\0')) {
             ModelAnimation* animsPtr = Raylib.LoadModelAnimations((sbyte*)ptr, &animationCount);
             animationArray = new Span<ModelAnimation>(animsPtr, animationCount).ToArray();
         }
