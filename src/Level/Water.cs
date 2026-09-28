@@ -298,6 +298,6 @@ public static class Water {
             }
         }
 
-        return textureCoordinates;
+        return textureCoordinates.ToArray();
     }
 }
