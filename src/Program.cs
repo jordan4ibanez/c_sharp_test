@@ -25,17 +25,19 @@ class Game : IDisposable {
         // Console.WriteLine($"Raylib-cs: {typeof(Raylib_cs.Raylib).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion}");
 
         Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
-        Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
+        Raylib.SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.VSyncHint);
 
         Raylib.InitWindow(1, 1, windowTitle);
         CenterWindow();
 
         Raylib.InitAudioDevice();
-        Raylib.SetTargetFPS(60);
+
+        Raylib.SetTargetFPS(0);
 
         SoundManager.Initialize();
         FontManager.Initialize();
         TextureManager.Initialize();
+        ModelManager.Initialize();
 
         CameraManager.Initialize();
 
