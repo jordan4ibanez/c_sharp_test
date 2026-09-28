@@ -146,7 +146,7 @@ public abstract class Fish {
 
     }
 
-    void turnToTarget(float delta) {
+    void TurnToTarget(float delta) {
         // Calculating yaw.
         Vector2 goalDir = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(lookTarget.X, lookTarget.Z), new Vector2(position.X, position.Z)));
 
@@ -199,7 +199,7 @@ public abstract class Fish {
         rotation.Y = targetYaw;
     }
 
-    void selectRandomTargetPosition() {
+    void SelectRandomTargetPosition() {
         // todo: fix this when the ground is added.
         // Vector2 map2dRange = Ground.getSizeFloating();
 
@@ -241,7 +241,7 @@ public abstract class Fish {
         return __model;
     }
 
-    void update(float delta) {
+    void Update(float delta) {
 
         // todo: implement this when the Lure is added.
 
@@ -294,7 +294,7 @@ public abstract class Fish {
         // }
     }
 
-    void idle(float delta) {
+    void Idle(float delta) {
         // todo: idle animation.
 
         if (recalculateTimer) {
@@ -317,7 +317,7 @@ public abstract class Fish {
         }
     }
 
-    void looking(float delta) {
+    void Looking(float delta) {
         // todo: tail turning animation.
 
         if (behaviorTimer <= 0) {
@@ -334,7 +334,7 @@ public abstract class Fish {
                 } else {
                     behaviorTimer = Randy.NextFloat(5, 12);
                 }
-                selectRandomTargetPosition();
+                SelectRandomTargetPosition();
                 retrigger = true;
             }
         }
@@ -349,7 +349,7 @@ public abstract class Fish {
         behaviorTimer -= delta;
     }
 
-    void randomTarget(float delta) {
+    void RandomTarget(float delta) {
 
         // todo: Use swimming animation.
 
@@ -359,7 +359,7 @@ public abstract class Fish {
             tightTurn = 0;
             recalculateTimer = false;
             behaviorTimer = Randy.NextFloat(8.0f, 15.0f);
-            selectRandomTargetPosition();
+            SelectRandomTargetPosition();
         }
 
         if (movementSpeed < maxSpeedRelaxed) {
@@ -369,7 +369,7 @@ public abstract class Fish {
         float distance = Raymath.Vector3Distance(position, lookTarget);
 
         if (distance <= 1.5) {
-            selectRandomTargetPosition();
+            SelectRandomTargetPosition();
             ResetStateData();
         } else if (distance < 3.0) {
             tightTurn = 1;
@@ -377,12 +377,12 @@ public abstract class Fish {
 
         if (behaviorTimer <= 0.0) {
             state = RandomState();
-            selectRandomTargetPosition();
+            SelectRandomTargetPosition();
             ResetStateData();
         }
     }
 
-    void following(float delta) {
+    void Following(float delta) {
 
         // todo: implement this when the lure is implemented.
 
@@ -426,7 +426,7 @@ public abstract class Fish {
         // }
     }
 
-    void fight(float delta) {
+    void Fight(float delta) {
         // todo: something something here
     }
 }
