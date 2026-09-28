@@ -1,4 +1,5 @@
 using System.Numerics;
+using FishGame.Audio;
 using FishGame.Graphics;
 using FishGame.Utility;
 using Raylib_cs;
@@ -55,13 +56,13 @@ public static class Lure {
         Vector3 poleTipPosition = Player.GetPoleTipPosition();
         float x = poleTipPosition.X - position.X;
         float z = poleTipPosition.Z - position.Z;
-        float lureYaw = Math.Atan2(x, z);
+        float lureYaw = (float)Math.Atan2(x, z);
         rotation.Y = lureYaw;
 
         //? This is the prototype logic for the deep-c 110 and deep-c 220 lures.
         if (reeling) {
-            float newAngle = lerp(rotationAnimated.X, targetAngle, delta * reelAcceleration);
-            if (newAngle == float.nan) {
+            float newAngle = Raymath.Lerp(rotationAnimated.X, targetAngle, delta * reelAcceleration);
+            if (float.IsNaN(newAngle)) {
                 newAngle = targetAngle;
             }
             rotationAnimated.X = newAngle;
@@ -72,8 +73,8 @@ public static class Lure {
                 reelSpeed = reelTargetSpeed;
             }
         } else {
-            float newAngle = lerp(rotationAnimated.X, restingAngle, delta * reelAcceleration);
-            if (newAngle == float.nan) {
+            float newAngle = Raymath.Lerp(rotationAnimated.X, restingAngle, delta * reelAcceleration);
+            if (float.IsNaN(newAngle)) {
                 newAngle = targetAngle;
             }
             rotationAnimated.X = newAngle;
@@ -89,14 +90,14 @@ public static class Lure {
         float swimSpeed = rotationAnimated.X / targetAngle;
         float swimSpeedMultiplier = 40;
         swimAnimation += delta * swimSpeedMultiplier * swimSpeed;
-        if (swimAnimation >= PI * 2) {
-            swimAnimation -= PI * 2;
+        if (swimAnimation >= Math.PI * 2.0f) {
+            swimAnimation -= (float)Math.PI * 2.0f;
         }
-        float swimAngle = cos(swimAnimation) / 3.0;
+        float swimAngle = (float)Math.Cos(swimAnimation) / 3.0f;
         rotationAnimated.Y = rotation.Y + swimAngle;
 
         if ((swimAngle > 0 && oldSwimAngle < 0) || (swimAngle < 0 && oldSwimAngle > 0)) {
-            SoundManager.play("diver_lure_rattle_" ~to!string(uniform(1, 4)) ~".ogg", 0.3, 0.9);
+            SoundManager.Play("diver_lure_rattle_" + Randy.NextInt(1, 4) + ".ogg", 0.3f, 0.9f);
         }
 
         oldSwimAngle = swimAngle;
@@ -104,10 +105,10 @@ public static class Lure {
         //? The lure uses a combination of animated rotation along with static rotation to not make the player motion sick.
 
         // The horizontal movement of the Deep-C 110 and Deep-C 220.
-        Vector3 velocity = Vector3();
-        float lureInternalYaw = rotation.Y - (PI / 2);
-        velocity.X = cos(lureInternalYaw);
-        velocity.Z = sin(-lureInternalYaw);
+        Vector3 velocity = new();
+        float lureInternalYaw = (float)(rotation.Y - (Math.PI / 2f));
+        velocity.X = (float)Math.Cos(lureInternalYaw);
+        velocity.Z = (float)Math.Sin(-lureInternalYaw);
 
         // Lure dives down when reeled.
         if (reeling) {
@@ -118,12 +119,12 @@ public static class Lure {
         }
 
         float reelSpeedInTime = reelSpeed * delta;
-        velocity = Vector3Multiply(velocity, Vector3(reelSpeedInTime, reelSpeedInTime, reelSpeedInTime));
-        readonly float lureMaxFloatVelocity = 0.5;
+        velocity = Raymath.Vector3Multiply(velocity, new Vector3(reelSpeedInTime, reelSpeedInTime, reelSpeedInTime));
+        float lureMaxFloatVelocity = 0.5f;
 
         // Lure floats back up smoothly when not reeling.
         if (!reeling) {
-            lureFloatVelocity += delta * 0.5;
+            lureFloatVelocity += delta * 0.5f;
 
             if (lureFloatVelocity >= lureMaxFloatVelocity) {
                 lureFloatVelocity = lureMaxFloatVelocity;
@@ -133,21 +134,21 @@ public static class Lure {
         }
 
         // When you get within 5 units of the pole, you start to reel straight up towards the water.
-        Vector2 lurePosition2d = Vector2(position.X, position.Z);
-        Vector2 poleTipPosition2d = Vector2(poleTipPosition.X, poleTipPosition.Z);
-        float distanceFromTip2d = Vector2Distance(lurePosition2d, poleTipPosition2d);
+        Vector2 lurePosition2d = new(position.X, position.Z);
+        Vector2 poleTipPosition2d = new(poleTipPosition.X, poleTipPosition.Z);
+        float distanceFromTip2d = Raymath.Vector2Distance(lurePosition2d, poleTipPosition2d);
         if (reeling && distanceFromTip2d < 5) {
 
             // This calculation is not even remotely accurate but it works.
             float pitch = (poleTipPosition.Y - position.Y) / (distanceFromTip2d * 2);
-            pitch = pitch * Vector2Length(Vector2(velocity.X, velocity.Z));
+            pitch *= Raymath.Vector2Length(new Vector2(velocity.X, velocity.Z));
             velocity.Y = pitch;
         }
 
         position += velocity;
 
         // Do not let the lure fly (literally) out of the water.
-        float waterHeighAtPosition = Water.getCollisionPoint(position.X, position.Z);
+        float waterHeighAtPosition = Water.GetCollisionPoint(position.X, position.Z);
 
         if (position.Y >= waterHeighAtPosition) {
             position.Y = waterHeighAtPosition;
@@ -155,7 +156,7 @@ public static class Lure {
         }
 
         // Do not let the lure sink through the ground.
-        float groundHeightAtPosition = Ground.getCollisionPoint(position.X, position.Z);
+        float groundHeightAtPosition = Ground.GetCollisionPoint(position.X, position.Z);
         if (position.Y <= groundHeightAtPosition) {
             // + 0.1 to simulate a "bounce"
             position.Y = groundHeightAtPosition;
@@ -163,53 +164,53 @@ public static class Lure {
             if (hitThingSoundTimer > frequencySoundHitThings) {
                 hitThingSoundTimer = 0;
 
-                SoundManager.playPitched("lure_scrape_ground_" ~to!string(uniform(1, 4)) ~".ogg", 0.5);
+                SoundManager.PlayPitched("lure_scrape_ground_" + Randy.NextInt(1, 4) + ".ogg", 0.5f);
 
             }
             lureFloatVelocity = 0;
         }
 
         if (distanceFromTip2d < 0.5) {
-            Player.triggerEmptyReelCompletion();
+            Player.TriggerEmptyReelCompletion();
         }
 
         reeling = false;
     }
 
-    static void reel() {
+    static void Reel() {
         reeling = true;
     }
 
-    static void draw() {
+    static void Draw() {
         ModelManager.Draw("deep_c_110.glb", position, rotationAnimated);
     }
 
-    static void setPosition(Vector3 newPosition) {
+    static void SetPosition(Vector3 newPosition) {
         position = newPosition;
     }
 
-    static void setRotation(Vector3 newRotation) {
+    static void SetRotation(Vector3 newRotation) {
         rotation = newRotation;
         rotationAnimated = newRotation;
     }
 
-    static Vector3 getRotation() {
+    static Vector3 GetRotation() {
         return rotation;
     }
 
-    static Vector3 getPosition() {
+    static Vector3 GetPosition() {
         return position;
     }
 
-    static void setInWater() {
+    static void SetInWater() {
         inWater = true;
     }
 
-    static bool isInWater() {
+    static bool IsInWater() {
         return inWater;
     }
 
-    static void setOutOfWater() {
+    static void SetOutOfWater() {
         inWater = false;
     }
 }

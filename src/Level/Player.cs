@@ -102,7 +102,7 @@ public static class Player {
         // This instantly triggers a frame update.
         animationFrame = 0;
         firstCastFrame = true;
-        Lure.setOutOfWater();
+        Lure.SetOutOfWater();
     }
 
     public static unsafe void SetDefaultPosition() {
@@ -234,8 +234,8 @@ public static class Player {
         switch (state) {
             case PlayerState.Aiming or PlayerState.Menu: {
                     lureTranslation.Y -= 0.1f;
-                    Lure.setPosition(lureTranslation);
-                    Lure.setRotation(new Vector3(0, rotation.Y + -castingYaw, 0));
+                    Lure.SetPosition(lureTranslation);
+                    Lure.SetRotation(new Vector3(0, rotation.Y + -castingYaw, 0));
                 }
                 break;
             case PlayerState.Casting: {
@@ -267,9 +267,9 @@ public static class Player {
                         lureTranslation.X += swingX;
                         lureTranslation.Z += swingZ;
 
-                        Lure.setPosition(lureTranslation);
+                        Lure.SetPosition(lureTranslation);
 
-                        Lure.setRotation(new Vector3(0, yaw, 0));
+                        Lure.SetRotation(new Vector3(0, yaw, 0));
                     }
                 }
                 break;
@@ -287,7 +287,7 @@ public static class Player {
                     Vector3 progress = Raymath.Vector3Lerp(lureTranslation, GetCastTarget(), castProgress);
                     progress.Y += arcHeight;
 
-                    Lure.setPosition(progress);
+                    Lure.SetPosition(progress);
 
                     // Draw the line.
 
@@ -309,7 +309,7 @@ public static class Player {
                 }
                 break;
             case PlayerState.Water: {
-                    Raylib.DrawLine3D(lureTranslation, Lure.getPosition(), Color.Black);
+                    Raylib.DrawLine3D(lureTranslation, Lure.GetPosition(), Color.Black);
                 }
                 break;
             default: {
@@ -376,13 +376,13 @@ public static class Player {
 
                             // When the state changes into the water state, we do some "magic" to snap everything into place.
 
-                            Vector3 lurePosition = Lure.getPosition();
+                            Vector3 lurePosition = Lure.GetPosition();
                             float x = position.X - lurePosition.X;
                             float z = position.Z - lurePosition.Z;
                             float lureYaw = (float)Math.Atan2(x, z);
-                            Lure.setRotation(new Vector3(0, lureYaw, 0));
+                            Lure.SetRotation(new Vector3(0, lureYaw, 0));
 
-                            Lure.setInWater();
+                            Lure.SetInWater();
                         }
                     } else {
 
@@ -395,12 +395,12 @@ public static class Player {
                             lineCreationProgress = 0;
                         }
 
-                        Vector3 currentRotation = Lure.getRotation();
+                        Vector3 currentRotation = Lure.GetRotation();
 
                         currentRotation.Y += Delta.Get() * castTumbleYaw;
                         currentRotation.X += Delta.Get() * castTumblePitch;
 
-                        Lure.setRotation(currentRotation);
+                        Lure.SetRotation(currentRotation);
 
                         lineFallRestTimer = 0;
                     }
@@ -415,7 +415,7 @@ public static class Player {
             case PlayerState.Water: {
                     // todo: mouse, bleh.
                     if (Mouse.isButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
-                        Lure.reel();
+                        Lure.Reel();
                     }
                 }
                 break;
@@ -553,7 +553,7 @@ public static class Player {
                 break;
             case PlayerState.Water: {
                     if (Mouse.isButtonDown(MouseButton.Left)) {
-                        Lure.reel();
+                        Lure.Reel();
                     }
                 }
                 break;
@@ -671,7 +671,7 @@ public static class Player {
                 break;
             case PlayerState.Water: {
 
-                    Vector3 lurePosition = Lure.getPosition();
+                    Vector3 lurePosition = Lure.GetPosition();
 
                     // todo: create debug thing to get any fish.
                     Fish fish = FishTank.GetFish(0);
