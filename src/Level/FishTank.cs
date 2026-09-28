@@ -1,3 +1,6 @@
+using FishGame.Graphics;
+using FishGame.Utility;
+
 namespace FishGame.Level;
 
 public static class FishTank {
@@ -8,26 +11,26 @@ public static class FishTank {
 
 
     static void Update() {
-        if (database.length == 0) {
+        if (database.Count == 0) {
             // foreach (i; 0 .. 100) {
-            LargeMouthBass newBass = new LargeMouthBass();
-            writeln("I am uuid: ", newBass.getUUID());
-            database[newBass.getUUID()] = newBass;
-            writeln("spawned new largemouth");
+            LargeMouthBass newBass = new();
+            Console.WriteLine("I am uuid: " + newBass.GetUUID());
+            database[newBass.GetUUID()] = newBass;
+            Console.WriteLine("spawned new largemouth");
             // }
         }
 
-        double delta = Delta.getDelta();
+        float delta = Delta.Get();
 
-        foreach (uuid, fish; database) {
-            fish.update(delta);
+        foreach (var (uuid, fish) in database) {
+            fish.Update(delta);
         }
     }
 
     static void Draw() {
-        foreach (uuid, fish; database) {
+        foreach (var (uuid, fish) in database) {
 
-            ModelHandler.draw(fish.model(), fish.getPosition(), fish.getRotation());
+            ModelManager.Draw(fish.GetModel(), fish.GetPosition(), fish.GetRotation());
 
             // float groundYHeight = Ground.getCollisionPoint(fish.position.x, fish.position.z);
             // DrawCircle3D(Vector3(fish.position.x, groundYHeight, fish.position.z), 1, Vector3(1, 0, 0), 0, Colors
