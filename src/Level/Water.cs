@@ -70,9 +70,9 @@ public static class Water {
 
         waterData = new float[waterWidth + 1, waterHeight + 1];
 
-        resetWaterData();
+        ResetWaterData();
 
-        float[] vertices = loadVertices();
+        float[] vertices = LoadVertices();
         float[] textureCoordinates = loadTextureCoordinates();
 
         ModelManager.NewModelFromMesh("water", vertices, textureCoordinates, true);
@@ -229,33 +229,33 @@ public static class Water {
         }
     }
 
-    static void resetWaterData() {
+    static void ResetWaterData() {
 
-        foreach (x; 0..waterWidth + 1) {
-            foreach (y; 0..waterHeight + 1) {
-                waterData[x][y] = waterLevel;
+        for (int x = 0; x < waterWidth + 1; x++) {
+            for (int y = 0; y < waterHeight + 1; y++) {
+                waterData[x, y] = waterLevel;
             }
         }
     }
 
-    static float[] loadVertices() {
-        float[] vertices = new float[](0);
+    static float[] LoadVertices() {
+        float[] vertices = [];
 
         // todo: updateVertices will reuse the pointer in place
         // todo: from the height data and reupload in place.
 
-        foreach (x; 0..waterWidth) {
-            foreach (y; 0..waterHeight) {
+        for (int x = 0; x < waterWidth; x++) {
+            for (int y = 0; y < waterHeight; y++) {
 
-                immutable float sx = x * tileWidth;
-                immutable float sy = y * tileWidth;
+                float sx = x * tileWidth;
+                float sy = y * tileWidth;
 
-                const Vector3[4] vData = [
-                    Vector3(sx, waterData[x][y], sy), // 0
-                    Vector3(sx, waterData[x][y + 1], sy + tileWidth), // 1
-                    Vector3(sx + tileWidth, waterData[x + 1][y + 1], sy + tileWidth), // 2
-                    Vector3(sx + tileWidth, waterData[x + 1][y], sy) // 3
-                ];
+                Vector3[] vData = [
+                   new Vector3(sx, waterData[x,y], sy), // 0
+                    new Vector3(sx, waterData[x,y + 1], sy + tileWidth), // 1
+                    new Vector3(sx + tileWidth, waterData[x + 1,y + 1], sy + tileWidth), // 2
+                    new Vector3(sx + tileWidth, waterData[x + 1,y], sy) // 3
+               ];
                 // writeln(waterData[x][y]);
 
                 vertices ~= [
