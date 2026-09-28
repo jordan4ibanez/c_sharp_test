@@ -7,16 +7,16 @@ public static class Ground {
     static string currentMap = null;
     static bool loaded = false;
 
-    static float groundShimmerRoll = 0.0;
+    static float groundShimmerRoll = 0.0f;
 
     static int waterHeightUniformLocation = -1;
     static int shimmerRollUniformLocation = -1;
     static int groundScaleUniformLocation = -1;
 
-    immutable static float groundScale = 7.0;
+    readonly static float groundScale = 7.0f;
 
     static void draw() {
-        ModelHandler.draw("ground", Vector3(0, 0, 0));
+        ModelManager.draw("ground", Vector3(0, 0, 0));
     }
 
     static void load(string levelLocation) {
@@ -26,9 +26,9 @@ public static class Ground {
         loadMapData(levelLocation ~"height_map.png");
         createGroundMesh();
         TextureHandler.loadTexture(levelLocation ~"texture_map.png");
-        ModelHandler.setModelTexture("ground", "texture_map.png");
+        ModelManager.setModelTexture("ground", "texture_map.png");
 
-        ModelHandler.setModelShader("ground", "ground");
+        ModelManager.setModelShader("ground", "ground");
 
         waterHeightUniformLocation = ShaderHandler.getUniformLocation("ground", "waterHeight");
 
@@ -197,7 +197,7 @@ public static class Ground {
             }
         }
 
-        ModelHandler.newModelFromMesh("ground", vertices, textureCoordinates);
+        ModelManager.newModelFromMesh("ground", vertices, textureCoordinates);
 
         //todo: set the ground texture from a pallete thing.
     }
