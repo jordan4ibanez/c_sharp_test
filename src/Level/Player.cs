@@ -1,4 +1,5 @@
 using System.Numerics;
+using Raylib_cs;
 
 namespace FishGame.Level;
 
@@ -34,7 +35,7 @@ public static class Player {
     readonly static double castingDistanceMin = 10;
     readonly static double castingDistanceMax = 30;
     // This is how wide of a triangulation you can cast.
-    readonly static double maxAngle = (40 * DEG2RAD);
+    readonly static double maxAngle = 40 * Raylib.DEG2RAD;
 
     static double castTumblePitch = 0;
     static double castTumbleYaw = 0;
