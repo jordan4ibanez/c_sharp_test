@@ -71,6 +71,7 @@ class Game : IDisposable {
     }
 
     public void Dispose() {
+        ShaderManager.Terminate();
         FontManager.Terminate();
         SoundManager.Terminate();
 
