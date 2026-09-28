@@ -7,15 +7,16 @@ static class TextureManager {
     static readonly Dictionary<string, Texture2D> database = [];
 
     public static void Initialize() {
-
+        // Texture Manager should be the very first thing that loads up when it comes to visual assets.
+        Console.WriteLine("-----");
         string[] folders = ["models", "textures"];
-
         foreach (string dir in folders) {
             // Console.WriteLine(dir);
             foreach (string filePath in Directory.EnumerateFiles(dir, "*.png", SearchOption.AllDirectories)) {
                 LoadTexture(filePath);
             }
         }
+        Console.WriteLine("-----");
     }
 
     public static void LoadTexture(string path) {

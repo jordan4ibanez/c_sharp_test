@@ -26,6 +26,8 @@ static class ModelManager {
                 LoadModelFromFile(filePath);
             }
         }
+
+        Console.WriteLine("-----");
         AutoAssignTextures();
     }
 
@@ -38,7 +40,7 @@ static class ModelManager {
                 Console.WriteLine($"[ModelManager]: Applied texture [{textureName}] to [{modelName}].");
             }
         }
-
+        Console.WriteLine("-----");
     }
 
     public static void Draw(string modelName, Vector3 position) {

@@ -20,7 +20,7 @@ public static class ShaderManager {
         }
 
         database[shaderName] = thisShader;
-        Console.WriteLine($"[ShaderManager]: Loaded shader {shaderName}");
+        Console.WriteLine($"[ShaderManager]: Loaded shader [{shaderName}].");
     }
 
     public static int GetUniformLocation(string shaderName, string uniformName) {
