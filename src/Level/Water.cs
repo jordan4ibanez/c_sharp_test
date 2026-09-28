@@ -202,30 +202,30 @@ public static class Water {
 
         if (inPoint == 1) {
 
-            Vector3[3] positionData = [
-                Vector3(pData[0].X, heightData[0], pData[0].Y),
-                Vector3(pData[1].X, heightData[1], pData[1].Y),
-                Vector3(pData[2].X, heightData[2], pData[2].Y),
+            Vector3[] positionData = [
+                new Vector3(pData[0].X, heightData[0], pData[0].Y),
+                new Vector3(pData[1].X, heightData[1], pData[1].Y),
+                new Vector3(pData[2].X, heightData[2], pData[2].Y),
             ];
 
-            DrawLine3D(positionData[0], positionData[1], Colors.GREEN);
-            DrawLine3D(positionData[1], positionData[2], Colors.GREEN);
-            DrawLine3D(positionData[0], positionData[2], Colors.GREEN);
+            Raylib.DrawLine3D(positionData[0], positionData[1], Color.Green);
+            Raylib.DrawLine3D(positionData[1], positionData[2], Color.Green);
+            Raylib.DrawLine3D(positionData[0], positionData[2], Color.Green);
 
-            return calculateY(positionData[0], positionData[1], positionData[2], point);
+            return CollisionMath.CalculateY(positionData[0], positionData[1], positionData[2], point);
 
         } else {
-            Vector3[3] positionData = [
-                Vector3(pData[2].X, heightData[2], pData[2].Y),
-                Vector3(pData[3].X, heightData[3], pData[3].Y),
-                Vector3(pData[0].X, heightData[0], pData[0].Y),
+            Vector3[] positionData = [
+                new Vector3(pData[2].X, heightData[2], pData[2].Y),
+                new Vector3(pData[3].X, heightData[3], pData[3].Y),
+                new Vector3(pData[0].X, heightData[0], pData[0].Y),
             ];
 
-            DrawLine3D(positionData[0], positionData[1], Colors.GREEN);
-            DrawLine3D(positionData[1], positionData[2], Colors.GREEN);
-            DrawLine3D(positionData[0], positionData[2], Colors.GREEN);
+            Raylib.DrawLine3D(positionData[0], positionData[1], Color.Green);
+            Raylib.DrawLine3D(positionData[1], positionData[2], Color.Green);
+            Raylib.DrawLine3D(positionData[0], positionData[2], Color.Green);
 
-            return calculateY(positionData[0], positionData[1], positionData[2], point);
+            return CollisionMath.CalculateY(positionData[0], positionData[1], positionData[2], point);
         }
     }
 
