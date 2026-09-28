@@ -2,6 +2,7 @@
 using System.Reflection;
 using FishGame.Audio;
 using FishGame.Graphics;
+using FishGame.Input;
 using FishGame.Level;
 using FishGame.Utility;
 using Raylib_cs;
@@ -10,10 +11,8 @@ namespace FishGame;
 
 class Game : IDisposable {
 
-    Vector2 windowSize = new(800, 450);
-    readonly String windowTitle = "Fish Game";
 
-    double timer = 0;
+    readonly string windowTitle = "Fish Game";
 
     static bool DEBUG_MODE = false;
 
@@ -74,57 +73,34 @@ class Game : IDisposable {
         FontManager.Update();
     }
 
-
-    float rotation = 0;
-
     public void MainLoop() {
         DoInternals();
 
         float delta = Delta.Get();
 
 
-        timer += delta;
-
-        if (timer >= 1.0) {
-            timer -= 1.0;
-            Console.WriteLine(Raylib.GetFPS());
-            // SoundManager.Play("casting_woosh.ogg");
+        if (Keyboard.IsPressed(KeyboardKey.F1)) {
+            Window.ToggleMaximize();
         }
 
-        rotation += delta;
-        if (rotation > Math.PI * 2) {
-            rotation -= (float)Math.PI * 2;
+        if (Keyboard.IsPressed(KeyboardKey.F2)) {
+            Window.ToggleMouseLock();
         }
 
-        Raylib.SetTargetFPS(0);
-        Raylib.ClearWindowState(ConfigFlags.VSyncHint);
+        if (Keyboard.IsPressed(KeyboardKey.F3)) {
+            LevelManager.TogglePause();
+        }
 
-
+        LevelManager.Update();
 
         Raylib.BeginDrawing();
-
-        CameraManager.SetPosition(new Vector3(1, 1, 1));
-
-        Raylib.SetWindowState(ConfigFlags.VSyncHint);
-
-
-
-        // ModelManager.Destroy("deep_c_110.glb");
-        // ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
-        // ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
-
-
 
         {
             Raylib.ClearBackground(Color.SkyBlue);
 
             Raylib.BeginMode3D(CameraManager.Get());
             {
-
-                // if (renderPerson) {
-                ModelManager.Draw("person.glb", new Vector3(0, 0, 0));
-                // }
-                // ModelManager.Draw("deep_c_110.glb", new Vector3(0, 0, 0), new Vector3(0, rotation, 0));
+                LevelManager.Draw();
             }
             Raylib.EndMode3D();
 
