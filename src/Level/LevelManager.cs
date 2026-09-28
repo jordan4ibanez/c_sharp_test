@@ -1,6 +1,6 @@
 namespace FishGame.Level;
 
-public static class Level {
+public static class LevelManager {
 
     // If you're in a level, this logic container will get called.
 
