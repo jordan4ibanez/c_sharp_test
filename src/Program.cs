@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Reflection;
 using FishGame.Audio;
 using FishGame.Graphics;
 using FishGame.Utility;
@@ -19,6 +20,9 @@ class Game : IDisposable {
     }
 
     void Setup() {
+
+        // Reflection to get the package version of raylib-cs.
+        // Console.WriteLine($"Raylib-cs: {typeof(Raylib_cs.Raylib).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion}");
 
         Raylib.SetTraceLogLevel(TraceLogLevel.Warning);
         Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
