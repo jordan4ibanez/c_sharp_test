@@ -8,7 +8,7 @@ namespace FishGame.Graphics;
 class AnimationContainer {
     public int animationCount = 0;
     public bool hasAnimation = false;
-    public ModelAnimation animationData;
+    public ModelAnimation[] animationData = [];
 }
 
 
@@ -100,15 +100,15 @@ static class ModelManager {
             throw new Exception("[ModelHandler]: Invalid model loaded from file. " + path);
         }
 
-        int animationCount;
-        ModelAnimation thisAnimationData;
-        unsafe {
-            thisAnimationData = *Raylib.LoadModelAnimations((sbyte*)Marshal.StringToHGlobalAnsi(path), &animationCount);
-        }
-        AnimationContainer thisModelAnimation = new AnimationContainer();
-        thisModelAnimation.animationCount = animationCount;
-        thisModelAnimation.animationData = thisAnimationData;
-        thisModelAnimation.hasAnimation = thisAnimationData.KeyFrameCount > 0;
+
+
+        ModelAnimation[] animationArray = Raylib.LoadModelAnimations(path).ToArray();
+
+        AnimationContainer thisModelAnimation = new() {
+            animationCount = animationArray.Length,
+            animationData = animationArray,
+            hasAnimation = animationArray.Length > 0
+        };
 
         database[fileName] = thisModel;
         isCustomDatabase[fileName] = false;
@@ -117,49 +117,47 @@ static class ModelManager {
 
     static void setModelTexture(string modelName, string textureName) {
 
-        if (modelName!in database) {
-            throw new Error(
-                "[ModelManager]: Tried to set texture on non-existent model [" ~modelName ~"]");
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to set texture on non-existent model [" + modelName + "]");
         }
 
-        Model* thisModel = database[modelName];
-        Texture2D* thisTexture = TextureHandler.getTexturePointer(textureName);
+        Model thisModel = database[modelName];
+        Texture2D thisTexture = TextureManager.GetTexture(textureName);
 
-        foreach (index; 0..thisModel.materialCount) {
-            thisModel.materials[index].maps[MATERIAL_MAP_DIFFUSE].texture = *thisTexture;
+        for (int i = 0; i < thisModel.MaterialCount; i++) {
+            unsafe {
+                thisModel.Materials[i].Maps[(int)MaterialMapIndex.Diffuse].Texture = thisTexture;
+            }
         }
     }
 
     static void setModelShader(string modelName, string shaderName) {
 
-        if (modelName!in database) {
-            throw new Error(
-                "[ModelManager]: Tried to set shader on non-existent model [" ~modelName ~"]");
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to set shader on non-existent model [" + modelName + "]");
         }
 
-        Model* thisModel = database[modelName];
-        Shader* thisShader = ShaderHandler.getShaderPointer(shaderName);
-        foreach (index; 0..thisModel.materialCount) {
-            thisModel.materials[index].shader = *thisShader;
-        }
+        Model thisModel = database[modelName];
+        Shader thisShader = ShaderManager.GetShader(shaderName);
+        for (int i = 0; i < thisModel.MaterialCount; i++)
+            unsafe {
+                thisModel.Materials[i].Shader = thisShader;
+            }
+    }
     }
 
-    static Model* getModelPointer(string modelName) {
-        if (modelName!in database) {
-            throw new Error(
-                "[ModelManager]: Tried to set get non-existent model pointer [" ~modelName ~"]");
+    static Model getModel(string modelName) {
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to set get non-existent model pointer [" + modelName + "]");
         }
-
         return database[modelName];
     }
 
     static void updateModelPositionsInGPU(string modelName) {
-        if (modelName!in database) {
-            throw new Error(
-                "[ModelManager]: Tried to update non-existent model [" ~modelName ~"]");
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to update non-existent model [" + modelName + "]");
         }
-
-        const Model* thisModel = database[modelName];
+        Model thisModel = database[modelName];
 
         /*
 #define RL_DEFAULT_SHADER_ATTRIB_LOCATION_POSITION    0
@@ -170,65 +168,60 @@ static class ModelManager {
 #define RL_DEFAULT_SHADER_ATTRIB_LOCATION_TEXCOORD2   5
 #define RL_DEFAULT_SHADER_ATTRIB_LOCATION_INDICES     6
         */
-
-        foreach (i, thisMesh; thisModel.meshes[0..thisModel.meshCount]) {
-            UpdateMeshBuffer(cast(Mesh) thisMesh, 0, &thisMesh.vertices[0], cast(int)(
-                    thisMesh.vertexCount * 3 * float.sizeof), 0);
+        unsafe {
+            for (int i = 0; i < thisModel.MeshCount; i++) {
+                Mesh* meshPtr = &thisModel.Meshes[i];
+                int dataSize = meshPtr->VertexCount * 3 * sizeof(float);
+                Raylib.UpdateMeshBuffer(*meshPtr, 0, meshPtr->Vertices, dataSize, 0);
+            }
         }
     }
 
     static void destroy(string modelName) {
-        if (modelName!in database) {
-            throw new Error("[ModelManager]: Tried to destroy non-existent model. " ~modelName);
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to destroy non-existent model. " + modelName);
         }
 
-        Model* thisModel = database[modelName];
+        Model thisModel = database[modelName];
 
         destroyModel(modelName, thisModel);
 
-        database.remove(modelName);
-        isCustomDatabase.remove(modelName);
-        animationDatabase.remove(modelName);
+        database.Remove(modelName);
+        isCustomDatabase.Remove(modelName);
+        animationDatabase.Remove(modelName);
     }
 
     static void terminate() {
-        foreach (modelName, thisModel; database) {
+        foreach (var (modelName, thisModel) in database) {
             destroyModel(modelName, thisModel);
         }
-        database.clear();
-        isCustomDatabase.clear();
-        animationDatabase.clear();
+        database.Clear();
+        isCustomDatabase.Clear();
+        animationDatabase.Clear();
     }
 
     static void playAnimation(string modelName, int index, int frame) {
-        if (modelName!in database) {
-            throw new Error(
-                "[ModelManager]: Tried to play animation on non-existent model. " ~modelName);
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to play animation on non-existent model. " + modelName);
         }
-
-        Model* thisModel = database[modelName];
-
+        Model thisModel = database[modelName];
         AnimationContainer thisAnimation = animationDatabase[modelName];
-
         if (thisAnimation is null) {
-            throw new Error(
-                "[ModelManager]: Tried to play animation on model with no animation. " ~modelName);
+            throw new Exception("[ModelManager]: Tried to play animation on model with no animation. " + modelName);
         }
-        UpdateModelAnimation(*thisModel, thisAnimation.animationData[index], frame);
+        Raylib.UpdateModelAnimation(thisModel, thisAnimation.animationData[index], frame);
     }
 
     static AnimationContainer getAnimationContainer(string modelName) {
-        if (modelName!in animationDatabase) {
-            throw new Error(
-                "[ModelManager]: Tried to get non-existent animation container. " ~modelName);
+        if (!animationDatabase.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Tried to get non-existent animation container. " + modelName);
         }
-
         return animationDatabase[modelName];
     }
 
-    private:
 
-    static void destroyModel(string modelName, Model* thisModel) {
+
+    static void destroyModel(string modelName, Model thisModel) {
         // If we were using the D runtime to make this model, we'll customize
         // the way we free the items. This makes the GC auto clear.
         if (isCustomDatabase[modelName]) {

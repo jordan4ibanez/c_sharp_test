@@ -38,7 +38,7 @@ public static class ShaderManager {
         }
     }
 
-    public static Shader GetShaderPointer(string shaderName) {
+    public static Shader GetShader(string shaderName) {
         if (database.TryGetValue(shaderName, out Shader shader)) {
             return shader;
         } else {
