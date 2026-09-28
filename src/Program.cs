@@ -111,17 +111,15 @@ class Game : IDisposable {
 
         Raylib.BeginDrawing();
 
-
-        // System.Console.WriteLine(Delta.Get());
-
-
-        // UpdateCamera(camera, CameraMode.CAMERA_ORBITAL);
-
         CameraManager.SetPosition(new Vector3(1, 1, 1));
 
-        ModelManager.Destroy("deep_c_110.glb");
-        ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
-        ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
+        Raylib.SetWindowState(ConfigFlags.VSyncHint);
+
+
+
+        // ModelManager.Destroy("deep_c_110.glb");
+        // ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
+        // ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
 
 
 
