@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Security.Cryptography.X509Certificates;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -71,15 +72,15 @@ public abstract class Fish {
         tightTurn = 0;
     }
 
-    string GetUUID() {
+    public string GetUUID() {
         return uuid;
     }
 
-    Vector3 GetPosition() {
+    public Vector3 GetPosition() {
         return position;
     }
 
-    Vector3 GetRotation() {
+    public Vector3 GetRotation() {
         return rotation;
     }
 
@@ -241,7 +242,7 @@ public abstract class Fish {
         return __model;
     }
 
-    void Update(float delta) {
+    public void Update(float delta) {
 
         // todo: implement this when the Lure is added.
 
@@ -431,7 +432,7 @@ public abstract class Fish {
     }
 }
 
-class LargeMouthBass : Fish {
+public class LargeMouthBass : Fish {
     public LargeMouthBass() {
         __model = "largemouth.glb";
         accelerationRelaxed = 10;
