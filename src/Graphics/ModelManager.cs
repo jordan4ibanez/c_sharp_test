@@ -26,6 +26,19 @@ static class ModelManager {
                 LoadModelFromFile(filePath);
             }
         }
+        AutoAssignTextures();
+    }
+
+    static void AutoAssignTextures() {
+        Console.WriteLine("[ModelManager]: Begin texture auto application.");
+        foreach (var (modelName, _) in database) {
+            string textureName = Path.GetFileNameWithoutExtension(modelName) + ".png";
+            if (TextureManager.HasTexture(textureName)) {
+                SetModelTexture(modelName, textureName);
+                Console.WriteLine($"[ModelManager]: Applied texture [{textureName}] to [{modelName}].");
+            }
+        }
+
     }
 
     public static void Draw(string modelName, Vector3 position) {
