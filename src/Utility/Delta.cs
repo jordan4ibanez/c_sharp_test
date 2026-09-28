@@ -21,8 +21,8 @@ public static class Delta {
         _lastTimestamp = currentTimestamp;
     }
 
-    public static double Get() {
-        return _delta;
+    public static float Get() {
+        return (float)_delta;
     }
 
     // public static void SetMaxDelta(double newDeltaMax) {
