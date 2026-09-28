@@ -38,15 +38,15 @@ public static class Water {
 
     //? Water frequently updates, so this is implemented in a special way.
 
-    static void Draw() {
+    public static void Draw() {
         ModelManager.Draw("water", new Vector3(0, 0, 0), new Vector3(0, 0, 0), 1.0f, new Color(200, 200, 200, 200));
     }
 
-    static float GetWaterLevel() {
+    public static float GetWaterLevel() {
         return waterLevel;
     }
 
-    static void Load() {
+    public static void Load() {
 
         (int, int) groundSize = Ground.GetSize();
 
@@ -92,7 +92,7 @@ public static class Water {
     static float waveSpeed = 0.5f;
     static byte skip = 0;
 
-    static unsafe void Update() {
+    public static unsafe void Update() {
 
         float delta = Delta.Get();
 
@@ -156,11 +156,11 @@ public static class Water {
         ModelManager.UpdateModelPositionsInGPU("water");
     }
 
-    static float getCollisionPoint(float x, float y) {
-        return heightCalculation(Vector2(x, y));
+    public static float GetCollisionPoint(float x, float y) {
+        return heightCalculation(new Vector2(x, y));
     }
 
-    private:
+    //? Begins the private section of the class.
 
     static float getHeightAtNode(int x, int y) {
         return waterData[x][y];
