@@ -50,8 +50,10 @@ public static class SoundManager {
     public static void Initialize() {
         string currentDir = Directory.GetCurrentDirectory();
 
+        string searchFolder = $"{currentDir}/sounds/";
+
         // Recursively scan all .ogg files in the directory tree
-        foreach (string filePath in Directory.GetFiles($"{currentDir}/sounds/", "*.ogg", SearchOption.AllDirectories)) {
+        foreach (string filePath in Directory.GetFiles(searchFolder, "*.ogg", SearchOption.AllDirectories)) {
             string fileName = Path.GetFileName(filePath);
             // Console.WriteLine($"[SoundManager]: Loading {filePath}");
 
