@@ -37,7 +37,7 @@ public static class Level {
         Player.CameraUpdate();
     }
 
-    static void Draw() {
+    public static void Draw() {
         Ground.Draw();
         FishTank.Draw();
         Player.Draw();
