@@ -274,7 +274,7 @@ public static class Water {
     }
 
     static float[] LoadTextureCoordinates() {
-        float[] textureCoordinates = [];
+        List<float> textureCoordinates = [];
 
         for (int x = 0; x < waterWidth; x++) {
             for (int y = 0; y < waterHeight; y++) {
@@ -285,7 +285,7 @@ public static class Water {
                     new Vector2(1.0f, 0.0f), // 3 top right.
                 ];
 
-                textureCoordinates ~= [
+                textureCoordinates.AddRange([
                     // Tri 1.
                     tData[0].X, tData[0].Y,
                     tData[1].X, tData[1].Y,
@@ -294,7 +294,7 @@ public static class Water {
                     tData[2].X, tData[2].Y,
                     tData[3].X, tData[3].Y,
                     tData[0].X, tData[0].Y,
-                ];
+                ]);
             }
         }
 
