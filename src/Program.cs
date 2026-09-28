@@ -41,7 +41,7 @@ class Game : IDisposable {
 
         Rlgl.DisableBackfaceCulling();
 
-        ModelManager.LoadModelFromFile("models/largemouth.glb");
+        // ModelManager.LoadModelFromFile("models/largemouth.glb");
         // ModelManager.setModelTexture("largemouth.glb", "largemouth.png");
         // ModelManager.setModelShader("largemouth.glb", "normal");
 
@@ -54,9 +54,12 @@ class Game : IDisposable {
         // ModelManager.loadModelFromFile("models/fishing_rod.glb");
         // ModelManager.setModelTexture("fishing_rod.glb", "fishing_rod.png");
 
+        ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
+
+
     }
 
-    static void CenterWindow() {
+    void CenterWindow() {
         int currentMonitor = Raylib.GetCurrentMonitor();
         int monitorWidth = Raylib.GetMonitorWidth(currentMonitor);
         int monitorHeight = Raylib.GetMonitorHeight(currentMonitor);
@@ -70,21 +73,67 @@ class Game : IDisposable {
         Raylib.SetWindowPosition(startX, startY);
     }
 
-    public void MainLoop() {
+    void DoInternals() {
+        Delta.CalculateDelta();
+        GUI.Update();
+        FontManager.Update();
+    }
 
-        timer += Delta.Get();
+
+    float rotation = 0;
+
+    public void MainLoop() {
+        DoInternals();
+
+        double delta = Delta.Get();
+
+
+        timer += delta;
 
         if (timer >= 1.0) {
             timer -= 1.0;
-            Console.WriteLine("woosh");
+            Console.WriteLine(Raylib.GetFPS());
             // SoundManager.Play("casting_woosh.ogg");
         }
 
+        rotation += (float)delta;
+        if (rotation > Math.PI * 2) {
+            rotation -= (float)Math.PI * 2;
+        }
+
+        Raylib.SetTargetFPS(0);
+        Raylib.ClearWindowState(ConfigFlags.VSyncHint);
+
+
+
         Raylib.BeginDrawing();
+
 
         // System.Console.WriteLine(Delta.Get());
 
 
+        // UpdateCamera(camera, CameraMode.CAMERA_ORBITAL);
+
+        CameraManager.SetPosition(new Vector3(1, 1, 1));
+
+        ModelManager.Destroy("deep_c_110.glb");
+        ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
+
+
+
+        {
+            Raylib.ClearBackground(Color.SkyBlue);
+
+            Raylib.BeginMode3D(CameraManager.Get());
+            {
+
+                // if (renderPerson) {
+                // ModelHandler.draw("person.glb", Vector3(0, 0, 0));
+                // }
+                ModelManager.Draw("deep_c_110.glb", new Vector3(0, 0, 0), new Vector3(0, rotation, 0));
+            }
+            Raylib.EndMode3D();
+        }
 
 
         Raylib.EndDrawing();
@@ -92,6 +141,7 @@ class Game : IDisposable {
     }
 
     public void Dispose() {
+        ModelManager.Terminate();
         TextureManager.Terminate();
         ShaderManager.Terminate();
         FontManager.Terminate();
@@ -110,9 +160,8 @@ internal static class Program {
         using Game game = new();
 
         while (!Raylib.WindowShouldClose()) {
-            Delta.CalculateDelta();
-            GUI.Update();
-            FontManager.Update();
+
+
             game.MainLoop();
         }
 
