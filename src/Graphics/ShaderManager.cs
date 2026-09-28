@@ -4,10 +4,10 @@ namespace FishGame.Graphics;
 
 public static class ShaderManager {
 
-    static Dictionary<string, Shader> database = [];
+    static readonly Dictionary<string, Shader> database = [];
 
 
-    static void NewShader(string shaderName, string vertCodeLocation, string fragCodeLocation) {
+    public static void NewShader(string shaderName, string vertCodeLocation, string fragCodeLocation) {
 
         if (database.ContainsKey(shaderName)) {
             throw new Exception("[ShaderHandler]: Tried to overwrite shader " + shaderName);
@@ -22,7 +22,7 @@ public static class ShaderManager {
         database[shaderName] = thisShader;
     }
 
-    static int GetUniformLocation(string shaderName, string uniformName) {
+    public static int GetUniformLocation(string shaderName, string uniformName) {
         if (database.TryGetValue(shaderName, out Shader shader)) {
 
             int val = Raylib.GetShaderLocation(shader, uniformName);
@@ -38,7 +38,7 @@ public static class ShaderManager {
         }
     }
 
-    static Shader GetShaderPointer(string shaderName) {
+    public static Shader GetShaderPointer(string shaderName) {
         if (database.TryGetValue(shaderName, out Shader shader)) {
             return shader;
         } else {
@@ -46,7 +46,7 @@ public static class ShaderManager {
         }
     }
 
-    static void SetFloatUniformFloat(string shaderName, int location, float value) {
+    public static void SetFloatUniformFloat(string shaderName, int location, float value) {
         if (database.TryGetValue(shaderName, out Shader shader)) {
             Raylib.SetShaderValue(shader, location, value, ShaderUniformDataType.Float);
         } else {
@@ -54,7 +54,7 @@ public static class ShaderManager {
         }
     }
 
-    static void Terminate() {
+    public static void Terminate() {
         foreach (var (shaderName, thisShader) in database) {
             Raylib.UnloadShader(thisShader);
         }
