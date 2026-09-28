@@ -239,7 +239,7 @@ public static class Water {
     }
 
     static float[] LoadVertices() {
-        float[] vertices = [];
+        List<float> vertices = [];
 
         // todo: updateVertices will reuse the pointer in place
         // todo: from the height data and reupload in place.
@@ -258,16 +258,16 @@ public static class Water {
                ];
                 // writeln(waterData[x][y]);
 
-                vertices ~= [
+                vertices.AddRange([
                     // Tri 1.
-                    vData[0].X, vData[0].Y, vData[0].z,
-                    vData[1].X, vData[1].Y, vData[1].z,
-                    vData[2].X, vData[2].Y, vData[2].z,
+                    vData[0].X, vData[0].Y, vData[0].Z,
+                    vData[1].X, vData[1].Y, vData[1].Z,
+                    vData[2].X, vData[2].Y, vData[2].Z,
                     // Tri 2.
-                    vData[2].X, vData[2].Y, vData[2].z,
-                    vData[3].X, vData[3].Y, vData[3].z,
-                    vData[0].X, vData[0].Y, vData[0].z,
-                ];
+                    vData[2].X, vData[2].Y, vData[2].Z,
+                    vData[3].X, vData[3].Y, vData[3].Z,
+                    vData[0].X, vData[0].Y, vData[0].Z,
+                ]);
             }
         }
         return vertices;
