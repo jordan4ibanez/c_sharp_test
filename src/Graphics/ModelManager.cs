@@ -11,9 +11,9 @@ class AnimationContainer {
 
 static class ModelManager {
 
-    Model*[string] database;
-    bool[string] isCustomDatabase;
-    AnimationContainer[string] animationDatabase;
+    static Dictionary<string, Model> database = [];
+    static Dictionary<string, bool> isCustomDatabase = [];
+    static Dictionary<string, AnimationContainer> animationDatabase = [];
 
     void draw(
         string modelName, Vector3 position, Vector3 rotation = Vector3(0, 0, 0),
