@@ -7,7 +7,7 @@ namespace FishGame.Level;
 
 // todo: rename this to GroundManager.
 public static class Ground {
-    static float[][] mapData;
+    static float[,] mapData = new float[0, 0];
     static int mapWidth = 0;
     static int mapHeight = 0;
     static string currentMap = "";
@@ -84,7 +84,7 @@ public static class Ground {
     //? This starts the internal parts of the api.
 
     static float GetHeightAtNode(int x, int y) {
-        return mapData[x][y];
+        return mapData[x, y];
     }
 
     static float HeightCalculation(Vector2 point) {
@@ -148,52 +148,51 @@ public static class Ground {
     }
 
     static void CreateGroundMesh() {
-        import raylib;
 
-        float[] vertices = new float[](0);
-        float[] textureCoordinates = new float[](0);
+        List<float> vertices = [];
+        List<float> textureCoordinates = [];
 
-        foreach (x; 0..mapWidth) {
-            foreach (y; 0..mapHeight) {
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapWidth; y++) {
 
                 // Raylib is still absolutely ancient with ushort as the indices so I have to convert this mess into raw vertex tris.
 
-                const float[4] heightData = [
-                    GetHeightAtNode(x, y), // 0 - Top Left.
+                float[] heightData = [
+                   GetHeightAtNode(x, y), // 0 - Top Left.
                     GetHeightAtNode(x, y + 1), // 1 - Bottom Left.
                     GetHeightAtNode(x + 1, y + 1), // 2 - Bottom Right.
                     GetHeightAtNode(x + 1, y), // 3 - Top Right.
                 ];
 
-                const Vector3[4] vData = [
-                    Vector3(x, heightData[0], y), // 0
-                    Vector3(x, heightData[1], y + 1), // 1
-                    Vector3(x + 1, heightData[2], y + 1), // 2
-                    Vector3(x + 1, heightData[3], y) // 3
-                ];
+                Vector3[] vData = [
+                   new Vector3(x, heightData[0], y), // 0
+                    new Vector3(x, heightData[1], y + 1), // 1
+                    new Vector3(x + 1, heightData[2], y + 1), // 2
+                    new Vector3(x + 1, heightData[3], y) // 3
+               ];
 
-                vertices ~= [
+                vertices.AddRange([
                     // Tri 1.
-                    vData[0].X, vData[0].Y, vData[0].z,
-                    vData[1].X, vData[1].Y, vData[1].z,
-                    vData[2].X, vData[2].Y, vData[2].z,
+                    vData[0].X, vData[0].Y, vData[0].Z,
+                    vData[1].X, vData[1].Y, vData[1].Z,
+                    vData[2].X, vData[2].Y, vData[2].Z,
                     // Tri 2.
-                    vData[2].X, vData[2].Y, vData[2].z,
-                    vData[3].X, vData[3].Y, vData[3].z,
-                    vData[0].X, vData[0].Y, vData[0].z,
-                ];
+                    vData[2].X, vData[2].Y, vData[2].Z,
+                    vData[3].X, vData[3].Y, vData[3].Z,
+                    vData[0].X, vData[0].Y, vData[0].Z,
+                ]);
 
                 // Same with the texture coordinate data.
 
                 // todo: make this read from a texture map.
-                const Vector2[4] tData = [
-                    Vector2(0.0, 0.0), // 0 top left.
-                    Vector2(0.0, 1.0), // 1 bottom left
-                    Vector2(1.0, 1.0), // 2 bottom right.
-                    Vector2(1.0, 0.0), // 3 top right.
+                Vector2[] tData = [
+                   new Vector2(0.0f, 0.0f), // 0 top left.
+                    new Vector2(0.0f, 1.0f), // 1 bottom left
+                    new Vector2(1.0f, 1.0f), // 2 bottom right.
+                    new Vector2(1.0f, 0.0f), // 3 top right.
                 ];
 
-                textureCoordinates ~= [
+                textureCoordinates.AddRange([
                     // Tri 1.
                     tData[0].X, tData[0].Y,
                     tData[1].X, tData[1].Y,
@@ -202,85 +201,49 @@ public static class Ground {
                     tData[2].X, tData[2].Y,
                     tData[3].X, tData[3].Y,
                     tData[0].X, tData[0].Y,
-                ];
+                ]);
             }
         }
 
-        ModelManager.newModelFromMesh("ground", vertices, textureCoordinates);
+        ModelManager.NewModelFromMesh("ground", vertices.ToArray(), textureCoordinates.ToArray());
 
         //todo: set the ground texture from a pallete thing.
     }
 
-    static void LoadMapData(string location) {
-        Image image;
+    static unsafe void LoadMapData(string location) {
+        // 1. Load the Raylib Image struct
+        Image image = Raylib.LoadImage(location);
 
-        LoadImage(location, &image);
-
-        CheckImage(location, &image);
+        // Validation check
+        if (image.Data == null) {
+            throw new FileNotFoundException($"[Ground]: Failed to load heightmap image at: {location}");
+        }
 
         // -1 because these pixels make quads.
-        mapWidth = image.width - 1;
-        mapHeight = image.height - 1;
+        mapWidth = image.Width - 1;
+        mapHeight = image.Height - 1;
 
-        mapData = new float[][](image.width, image.height);
+        mapData = new float[image.Width, image.Height];
 
-        for (int y = 0; y < image.height; y++) {
+        ushort* pixels = (ushort*)image.Data;
 
-            ushort* scan = cast(ushort *) image.scanptr(y);
+        int width = image.Width;
+        int height = image.Height;
 
-            for (int x = 0; x < image.width(); x++) {
+        for (int y = 0; y < height; y++) {
 
-                ushort rawPixelValue = scan[x];
+            ushort* rowScan = pixels + (y * width);
 
-                float floatingPixelValue = cast(float) rawPixelValue;
+            for (int x = 0; x < width; x++) {
+                ushort rawPixelValue = rowScan[x];
 
-                float finalValue = floatingPixelValue / (cast(float) ushort.max);
+                float floatingPixelValue = rawPixelValue;
 
-                mapData[x][y] = (finalValue - 0.5) * groundScale;
+                float finalValue = floatingPixelValue / ushort.MaxValue;
+
+                mapData[x, y] = (finalValue - 0.5f) * groundScale;
             }
         }
-
-        //? I just left this here in case I need more testing.
-        // foreach (x; 0 .. image.width) {
-        //     foreach (y; 0 .. image.height) {
-        //         writeln(x, " ", y, " ", mapData[x][y]);
-        //     }
-        // }
-    }
-
-    static void LoadImage(string location, Image* image) {
-
-        if (!endsWith(location, ".png")) {
-            throw new Exception("[Heightmap]: Not .png");
-        }
-
-        string[] data = split(location, "/");
-        if (data.length <= 1) {
-            throw new Exception("[Heightmap]: Do not put heightmaps in the root.");
-        }
-        const string output = data[cast(long) data.length - 1];
-        if (output.length <= 0) {
-            throw new Exception("[Heightmap]: String became 0 length.");
-        }
-
-        image.loadFromFile(location);
-    }
-
-    static void CheckImage(string location, Image* image) {
-        if (image.isError()) {
-            throw new Exception(cast(string) image.errorMessage() ~". " ~location);
-        }
-
-        if (!image.isValid) {
-            throw new Exception("[Heightmap]: Invalid image. " ~location);
-        }
-
-        if (!image.is16Bit()) {
-            throw new Exception("[Heightmap]: Not 16 bit. " ~location);
-        }
-
-        if (image.type() != PixelType.l16) {
-            throw new Exception("[Heightmap]: Wrong endianness. " ~location);
-        }
+        Raylib.UnloadImage(image);
     }
 }
