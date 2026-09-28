@@ -41,7 +41,7 @@ static class ModelManager {
         Raylib.DrawModelEx(thisModel, position, axisRotation, Raylib.RAD2DEG * angle, new Vector3(scale, scale, scale), color);
     }
 
-    static unsafe void newModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
+    static unsafe void NewModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
 
         if (database.ContainsKey(modelName)) {
             throw new Exception(
@@ -73,7 +73,7 @@ static class ModelManager {
         isCustomDatabase[modelName] = true;
     }
 
-    static void loadModelFromFile(string path) {
+    static void LoadModelFromFile(string path) {
 
         if (!File.Exists(path)) {
             throw new Exception($"[ModelManager]: {path} is not a file.");
@@ -115,7 +115,7 @@ static class ModelManager {
         animationDatabase[fileName] = thisModelAnimation;
     }
 
-    static void setModelTexture(string modelName, string textureName) {
+    static void SetModelTexture(string modelName, string textureName) {
 
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to set texture on non-existent model [" + modelName + "]");
@@ -131,7 +131,7 @@ static class ModelManager {
         }
     }
 
-    static void setModelShader(string modelName, string shaderName) {
+    static void SetModelShader(string modelName, string shaderName) {
 
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to set shader on non-existent model [" + modelName + "]");
@@ -146,14 +146,14 @@ static class ModelManager {
     }
 
 
-    static Model getModel(string modelName) {
+    static Model GetModel(string modelName) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to set get non-existent model pointer [" + modelName + "]");
         }
         return database[modelName];
     }
 
-    static void updateModelPositionsInGPU(string modelName) {
+    static void UpdateModelPositionsInGPU(string modelName) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to update non-existent model [" + modelName + "]");
         }
@@ -177,30 +177,30 @@ static class ModelManager {
         }
     }
 
-    static void destroy(string modelName) {
+    static void Destroy(string modelName) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to destroy non-existent model. " + modelName);
         }
 
         Model thisModel = database[modelName];
 
-        destroyModel(modelName, thisModel);
+        DestroyModel(modelName, thisModel);
 
         database.Remove(modelName);
         isCustomDatabase.Remove(modelName);
         animationDatabase.Remove(modelName);
     }
 
-    static void terminate() {
+    static void Terminate() {
         foreach (var (modelName, thisModel) in database) {
-            destroyModel(modelName, thisModel);
+            DestroyModel(modelName, thisModel);
         }
         database.Clear();
         isCustomDatabase.Clear();
         animationDatabase.Clear();
     }
 
-    static void playAnimation(string modelName, int index, int frame) {
+    static void PlayAnimation(string modelName, int index, int frame) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to play animation on non-existent model. " + modelName);
         }
@@ -212,7 +212,7 @@ static class ModelManager {
         Raylib.UpdateModelAnimation(thisModel, thisAnimation.animationData[index], frame);
     }
 
-    static AnimationContainer getAnimationContainer(string modelName) {
+    static AnimationContainer GetAnimationContainer(string modelName) {
         if (!animationDatabase.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to get non-existent animation container. " + modelName);
         }
@@ -221,7 +221,7 @@ static class ModelManager {
 
 
 
-    static unsafe void destroyModel(string modelName, Model thisModel) {
+    static unsafe void DestroyModel(string modelName, Model thisModel) {
         // If we were using the D runtime to make this model, we'll customize
         // the way we free the items. This makes the GC auto clear.
         if (isCustomDatabase[modelName]) {
