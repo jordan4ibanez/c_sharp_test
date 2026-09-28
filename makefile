@@ -3,3 +3,6 @@ default:
 
 oneshot:
 	@dotnet run --project src/FishGame.csproj
+
+clean:
+	@dotnet clean src/FishGame.csproj
