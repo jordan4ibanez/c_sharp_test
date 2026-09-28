@@ -4,48 +4,48 @@ public static class Level {
 
     // If you're in a level, this logic container will get called.
 
-    bool loaded = false;
-    bool paused = false;
+    static bool loaded = false;
+    static bool paused = false;
 
-    void load(string levelDirectory) {
+    public static void Load(string levelDirectory) {
         if (loaded) {
-            throw new Error("[Level]: Unload the level first.");
+            throw new Exception("[Level]: Unload the level first.");
         }
         // todo: water level parse.
-        Ground.load(levelDirectory);
-        Water.load();
-        Player.setDefaultPosition();
+        Ground.Load(levelDirectory);
+        Water.Load();
+        Player.SetDefaultPosition();
 
         loaded = true;
     }
 
-    void unload() {
-        throw new Error("[Level]: unloading not implemented");
+    public static void Unload() {
+        throw new Exception("[Level]: unloading not implemented");
         loaded = false;
     }
 
-    void update() {
+    public static void Update() {
         if (paused) {
             return;
         }
 
-        Ground.update();
-        Water.update();
-        FishTank.update();
-        Player.update();
-        Lure.update();
-        Player.cameraUpdate();
+        Ground.Update();
+        Water.Update();
+        FishTank.Update();
+        Player.Update();
+        Lure.Update();
+        Player.CameraUpdate();
     }
 
-    void draw() {
-        Ground.draw();
-        FishTank.draw();
-        Player.draw();
-        Lure.draw();
-        Water.draw();
+    static void Draw() {
+        Ground.Draw();
+        FishTank.Draw();
+        Player.Draw();
+        Lure.Draw();
+        Water.Draw();
     }
 
-    void togglePause() {
+    public static void TogglePause() {
         paused = !paused;
     }
 }
