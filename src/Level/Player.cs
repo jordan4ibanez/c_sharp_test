@@ -31,7 +31,7 @@ public static class Player {
 
     // Casting variables.
     static bool firstCastFrame = true;
-    static float castTimer = 0.0;
+    static float castTimer = 0.0f;
     readonly static int castFrameMax = 230;
     readonly static int castFrameMiddle = 230 / 2;
     readonly static float castingDistanceMin = 10;
@@ -61,7 +61,7 @@ public static class Player {
 
 
 
-    static void Update() {
+    public static void Update() {
         float delta = Delta.Get();
 
         UpdateFloating();
@@ -76,23 +76,23 @@ public static class Player {
         // }
     }
 
-    static void CameraUpdate() {
+    public static void CameraUpdate() {
         DoCameraPositioning();
     }
 
-    static void SetPosition(float x, float y, float z) {
+    public static void SetPosition(float x, float y, float z) {
         position = new Vector3(x, y, z);
     }
 
-    static Vector3 GetPosition() {
+    public static Vector3 GetPosition() {
         return position;
     }
 
-    static Vector3 GetPoleTipPosition() {
+    public static Vector3 GetPoleTipPosition() {
         return poleTipRealtimePosition;
     }
 
-    static void TriggerEmptyReelCompletion() {
+    public static void TriggerEmptyReelCompletion() {
         state = PlayerState.Aiming;
         castTimer = 0;
         // This instantly triggers a frame update.
@@ -101,7 +101,7 @@ public static class Player {
         Lure.setOutOfWater();
     }
 
-    static unsafe void SetDefaultPosition() {
+    public static unsafe void SetDefaultPosition() {
         Vector2 groundSize = Ground.GetSizeFloating();
         position.X = groundSize.X / 2.0f;
         position.Z = groundSize.Y / 2.0f;
@@ -120,14 +120,14 @@ public static class Player {
         }
     }
 
-    static void UpdateFloating() {
+    public static void UpdateFloating() {
         position.Y = Water.GetCollisionPoint(position.X, position.Z);
         position.Y -= 0.1f;
 
         // rotation.Y += Delta.getDelta();
     }
 
-    static void Draw() {
+    public static unsafe void Draw() {
         ModelManager.Draw("boat.glb", position, rotation);
 
         Vector3 playerOnBoat = position;
@@ -157,13 +157,11 @@ public static class Player {
         //? The song and dance you see below is to put the fishing pole in the player's hand.
         //? Thankfully modern x86_64 cpus do this trivialy, but it's a pain in the butt.
 
-        Model* model = ModelManager.getModelPointer("person.glb");
-        AnimationContainer personAnimationContainer = ModelManager.getAnimationContainer(
-            "person.glb");
-        ModelAnimation* animation = personAnimationContainer.animationData;
+        Model model = ModelManager.GetModel("person.glb");
+        AnimationContainer personAnimationContainer = ModelManager.GetAnimationContainer("person.glb");
+        ModelAnimation[] animation = personAnimationContainer.animationData;
 
-        Transform* transform = &animation.framePoses[cast(int) floor(
-                animationFrame)][playerHandBoneIndex];
+        Transform transform = animation[0].FramePoses[(int)Math.Floor(animationFrame)][playerHandBoneIndex];
 
         Quaternion inRotation = model.bindPose[playerHandBoneIndex].rotation;
 
