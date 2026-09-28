@@ -13,4 +13,11 @@ static class MathThings {
             axis = new Vector3(q.X / s, q.Y / s, q.Z / s);
         }
     }
+
+    public static double NextDouble(double min, double max) {
+        return min + (Random.Shared.NextDouble() * (max - min));
+    }
+    public static float NextFloat(float min, float max) {
+        return min + (Random.Shared.NextSingle() * (max - min));
+    }
 }
