@@ -8,24 +8,24 @@ public static class Water {
 
     static float waterRoll = 0;
     static float waveScale = 10;
-    static float waveMagnitude = 0.01;
+    static float waveMagnitude = 0.01f;
 
     // Water has 39 frames.
-    immutable static int minWaterTextureFrame = 0;
-    immutable static int maxWaterTextureFrame = 39;
+    readonly static int minWaterTextureFrame = 0;
+    readonly static int maxWaterTextureFrame = 39;
     static int currentWaterFrame = 0;
 
     static bool loaded = false;
 
-    immutable static float tileWidth = 0.25;
+    readonly static float tileWidth = 0.25f;
 
     // This is how high the water is.
-    static float waterLevel = 2.0;
+    static float waterLevel = 2.0f;
 
     static int waterWidth = 0;
     static int waterHeight = 0;
 
-    static float[][] waterData;
+    static float[,] waterData = new float[0, 0];
 
     static FNLState* noise = null;
 
