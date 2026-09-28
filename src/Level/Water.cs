@@ -157,31 +157,30 @@ public static class Water {
     }
 
     public static float GetCollisionPoint(float x, float y) {
-        return heightCalculation(new Vector2(x, y));
+        return HeightCalculation(new Vector2(x, y));
     }
 
     //? Begins the private section of the class.
 
-    static float getHeightAtNode(int x, int y) {
-        return waterData[x][y];
+    static float GetHeightAtNode(int x, int y) {
+        return waterData[x, y];
     }
 
-    static float heightCalculation(Vector2 point) {
-        import raylib;
+    static float HeightCalculation(Vector2 point) {
 
         // todo: clamp this inside the map after the other clamps are added.
 
-        int adjustedX = cast(int) floor(point.x / tileWidth);
-        int adjustedY = cast(int) floor(point.y / tileWidth);
+        int adjustedX = (int)Math.Floor(point.X / tileWidth);
+        int adjustedY = (int)Math.Floor(point.Y / tileWidth);
 
         float scaledx = adjustedX * tileWidth;
         float scaledY = adjustedY * tileWidth;
 
-        Vector2[4] pData = [
-            Vector2(scaledx, scaledY),
-            Vector2(scaledx, scaledY + tileWidth),
-            Vector2(scaledx + tileWidth, scaledY + tileWidth),
-            Vector2(scaledx + tileWidth, scaledY),
+        Vector2[] pData = [
+            new Vector2(scaledx, scaledY),
+            new Vector2(scaledx, scaledY + tileWidth),
+            new Vector2(scaledx + tileWidth, scaledY + tileWidth),
+            new Vector2(scaledx + tileWidth, scaledY),
         ];
 
         const int inPoint = () {
@@ -195,18 +194,18 @@ public static class Water {
         ();
 
         float[4] heightData = [
-            getHeightAtNode(adjustedX, adjustedY),
-            getHeightAtNode(adjustedX, adjustedY + 1),
-            getHeightAtNode(adjustedX + 1, adjustedY + 1),
-            getHeightAtNode(adjustedX + 1, adjustedY)
+            GetHeightAtNode(adjustedX, adjustedY),
+            GetHeightAtNode(adjustedX, adjustedY + 1),
+            GetHeightAtNode(adjustedX + 1, adjustedY + 1),
+            GetHeightAtNode(adjustedX + 1, adjustedY)
         ];
 
         if (inPoint == 1) {
 
             Vector3[3] positionData = [
-                Vector3(pData[0].x, heightData[0], pData[0].y),
-                Vector3(pData[1].x, heightData[1], pData[1].y),
-                Vector3(pData[2].x, heightData[2], pData[2].y),
+                Vector3(pData[0].X, heightData[0], pData[0].Y),
+                Vector3(pData[1].X, heightData[1], pData[1].Y),
+                Vector3(pData[2].X, heightData[2], pData[2].Y),
             ];
 
             DrawLine3D(positionData[0], positionData[1], Colors.GREEN);
@@ -217,9 +216,9 @@ public static class Water {
 
         } else {
             Vector3[3] positionData = [
-                Vector3(pData[2].x, heightData[2], pData[2].y),
-                Vector3(pData[3].x, heightData[3], pData[3].y),
-                Vector3(pData[0].x, heightData[0], pData[0].y),
+                Vector3(pData[2].X, heightData[2], pData[2].Y),
+                Vector3(pData[3].X, heightData[3], pData[3].Y),
+                Vector3(pData[0].X, heightData[0], pData[0].Y),
             ];
 
             DrawLine3D(positionData[0], positionData[1], Colors.GREEN);
@@ -261,13 +260,13 @@ public static class Water {
 
                 vertices ~= [
                     // Tri 1.
-                    vData[0].x, vData[0].y, vData[0].z,
-                    vData[1].x, vData[1].y, vData[1].z,
-                    vData[2].x, vData[2].y, vData[2].z,
+                    vData[0].X, vData[0].Y, vData[0].z,
+                    vData[1].X, vData[1].Y, vData[1].z,
+                    vData[2].X, vData[2].Y, vData[2].z,
                     // Tri 2.
-                    vData[2].x, vData[2].y, vData[2].z,
-                    vData[3].x, vData[3].y, vData[3].z,
-                    vData[0].x, vData[0].y, vData[0].z,
+                    vData[2].X, vData[2].Y, vData[2].z,
+                    vData[3].X, vData[3].Y, vData[3].z,
+                    vData[0].X, vData[0].Y, vData[0].z,
                 ];
             }
         }
@@ -288,13 +287,13 @@ public static class Water {
 
                 textureCoordinates ~= [
                     // Tri 1.
-                    tData[0].x, tData[0].y,
-                    tData[1].x, tData[1].y,
-                    tData[2].x, tData[2].y,
+                    tData[0].X, tData[0].Y,
+                    tData[1].X, tData[1].Y,
+                    tData[2].X, tData[2].Y,
                     // Tri 2.
-                    tData[2].x, tData[2].y,
-                    tData[3].x, tData[3].y,
-                    tData[0].x, tData[0].y,
+                    tData[2].X, tData[2].Y,
+                    tData[3].X, tData[3].Y,
+                    tData[0].X, tData[0].Y,
                 ];
             }
         }
