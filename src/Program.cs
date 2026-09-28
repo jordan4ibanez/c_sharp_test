@@ -14,7 +14,7 @@ class Game : IDisposable {
 
     readonly string windowTitle = "Fish Game";
 
-    static bool DEBUG_MODE = false;
+    static readonly bool DEBUG_MODE = false;
 
 
     public Game() {
