@@ -1,9 +1,11 @@
+using Raylib_cs;
+
 namespace FishGame.Graphics;
 
 class AnimationContainer {
     int animationCount = 0;
     bool hasAnimation = false;
-    ModelAnimation* animationData = null;
+    ModelAnimation animationData;
 }
 
 
