@@ -10,7 +10,7 @@ public static class FishTank {
     static Dictionary<string, Fish> database = [];
 
 
-    static void Update() {
+    public static void Update() {
         if (database.Count == 0) {
             // foreach (i; 0 .. 100) {
             LargeMouthBass newBass = new();
@@ -27,7 +27,7 @@ public static class FishTank {
         }
     }
 
-    static void Draw() {
+    public static void Draw() {
         foreach (var (uuid, fish) in database) {
 
             ModelManager.Draw(fish.GetModel(), fish.GetPosition(), fish.GetRotation());
