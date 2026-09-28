@@ -15,7 +15,7 @@ static class ModelManager {
     static Dictionary<string, bool> isCustomDatabase = [];
     static Dictionary<string, AnimationContainer> animationDatabase = [];
 
-    void draw(
+    static void draw(
         string modelName, Vector3 position, Vector3 rotation = Vector3(0, 0, 0),
         float scale = 1.0, Color color = Colors.WHITE) {
 
@@ -34,7 +34,7 @@ static class ModelManager {
         DrawModelEx(*thisModel, position, axisRotation, RAD2DEG * angle, Vector3(scale, scale, scale), color);
     }
 
-    void newModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
+    static void newModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
 
         if (modelName in database) {
             throw new Error(
@@ -61,7 +61,7 @@ static class ModelManager {
         isCustomDatabase[modelName] = true;
     }
 
-    void loadModelFromFile(string location) {
+    static void loadModelFromFile(string location) {
 
         // Extract the file name from the location.
         string fileName = () {
@@ -97,7 +97,7 @@ static class ModelManager {
         animationDatabase[fileName] = thisModelAnimation;
     }
 
-    void setModelTexture(string modelName, string textureName) {
+    static void setModelTexture(string modelName, string textureName) {
 
         if (modelName!in database) {
             throw new Error(
@@ -112,7 +112,7 @@ static class ModelManager {
         }
     }
 
-    void setModelShader(string modelName, string shaderName) {
+    static void setModelShader(string modelName, string shaderName) {
 
         if (modelName!in database) {
             throw new Error(
@@ -126,7 +126,7 @@ static class ModelManager {
         }
     }
 
-    Model* getModelPointer(string modelName) {
+    static Model* getModelPointer(string modelName) {
         if (modelName!in database) {
             throw new Error(
                 "[ModelManager]: Tried to set get non-existent model pointer [" ~modelName ~"]");
@@ -135,7 +135,7 @@ static class ModelManager {
         return database[modelName];
     }
 
-    void updateModelPositionsInGPU(string modelName) {
+    static void updateModelPositionsInGPU(string modelName) {
         if (modelName!in database) {
             throw new Error(
                 "[ModelManager]: Tried to update non-existent model [" ~modelName ~"]");
@@ -159,7 +159,7 @@ static class ModelManager {
         }
     }
 
-    void destroy(string modelName) {
+    static void destroy(string modelName) {
         if (modelName!in database) {
             throw new Error("[ModelManager]: Tried to destroy non-existent model. " ~modelName);
         }
@@ -173,7 +173,7 @@ static class ModelManager {
         animationDatabase.remove(modelName);
     }
 
-    void terminate() {
+    static void terminate() {
         foreach (modelName, thisModel; database) {
             destroyModel(modelName, thisModel);
         }
@@ -182,7 +182,7 @@ static class ModelManager {
         animationDatabase.clear();
     }
 
-    void playAnimation(string modelName, int index, int frame) {
+    static void playAnimation(string modelName, int index, int frame) {
         if (modelName!in database) {
             throw new Error(
                 "[ModelManager]: Tried to play animation on non-existent model. " ~modelName);
@@ -199,7 +199,7 @@ static class ModelManager {
         UpdateModelAnimation(*thisModel, thisAnimation.animationData[index], frame);
     }
 
-    AnimationContainer getAnimationContainer(string modelName) {
+    static AnimationContainer getAnimationContainer(string modelName) {
         if (modelName!in animationDatabase) {
             throw new Error(
                 "[ModelManager]: Tried to get non-existent animation container. " ~modelName);
@@ -210,7 +210,7 @@ static class ModelManager {
 
     private:
 
-    void destroyModel(string modelName, Model* thisModel) {
+    static void destroyModel(string modelName, Model* thisModel) {
         // If we were using the D runtime to make this model, we'll customize
         // the way we free the items. This makes the GC auto clear.
         if (isCustomDatabase[modelName]) {
