@@ -1,9 +1,12 @@
+using Raylib_cs;
+
 namespace FishGame.Graphics;
 
 static class TextureManager {
-    Texture2D*[string] database;
 
-    void loadTexture(string location) {
+    static Dictionary<string, Texture2D> database;
+
+    static void loadTexture(string location) {
 
         // Extract the file name from the location.
         string fileName = () {
@@ -34,31 +37,31 @@ static class TextureManager {
         database[fileName] = thisTexture;
     }
 
-    Texture2D* getTexturePointer(string textureName) {
-        if (textureName!in database) {
-            throw new Error("[TextureManager]: Texture does not exist. " ~textureName);
-        }
+    // Texture2D* getTexturePointer(string textureName) {
+    //     if (textureName!in database) {
+    //         throw new Error("[TextureManager]: Texture does not exist. " ~textureName);
+    //     }
 
-        return database[textureName];
-    }
+    //     return database[textureName];
+    // }
 
-    void deleteTexture(string textureName) {
-        if (textureName!in database) {
-            throw new Error(
-                "[TextureManager]: Texture does not exist. Cannot delete. " ~textureName);
-        }
+    // void deleteTexture(string textureName) {
+    //     if (textureName!in database) {
+    //         throw new Error(
+    //             "[TextureManager]: Texture does not exist. Cannot delete. " ~textureName);
+    //     }
 
-        Texture* thisTexture = database[textureName];
-        UnloadTexture(*thisTexture);
-        database.remove(textureName);
-    }
+    //     Texture* thisTexture = database[textureName];
+    //     UnloadTexture(*thisTexture);
+    //     database.remove(textureName);
+    // }
 
-    void terminate() {
-        foreach (textureName, thisTexture; database) {
-            UnloadTexture(*thisTexture);
-        }
+    // void terminate() {
+    //     foreach (textureName, thisTexture; database) {
+    //         UnloadTexture(*thisTexture);
+    //     }
 
-        database.clear();
-    }
+    //     database.clear();
+    // }
 
 }
