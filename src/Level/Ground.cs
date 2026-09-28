@@ -19,69 +19,73 @@ public static class Ground {
 
     readonly static float groundScale = 7.0f;
 
-    static void draw() {
+    static void Draw() {
         ModelManager.Draw("ground", new Vector3(0, 0, 0));
     }
 
-    static void load(string levelLocation) {
+    static void Load(string levelLocation) {
         if (loaded) {
             throw new Exception("[Ground]: Clean up the ground.");
         }
-        loadMapData(levelLocation ~"height_map.png");
-        createGroundMesh();
-        TextureHandler.loadTexture(levelLocation ~"texture_map.png");
-        ModelManager.setModelTexture("ground", "texture_map.png");
+        LoadMapData(levelLocation + "height_map.png");
 
-        ModelManager.setModelShader("ground", "ground");
+        CreateGroundMesh();
 
-        waterHeightUniformLocation = ShaderHandler.getUniformLocation("ground", "waterHeight");
+        TextureManager.LoadTexture(levelLocation + "texture_map.png");
 
-        shimmerRollUniformLocation = ShaderHandler.getUniformLocation("ground", "shimmerRoll");
+        ModelManager.SetModelTexture("ground", "texture_map.png");
 
-        groundScaleUniformLocation = ShaderHandler.getUniformLocation("ground", "groundScale");
+        ModelManager.SetModelShader("ground", "ground");
 
-        ShaderHandler.setFloatUniformFloat("ground", groundScaleUniformLocation, groundScale);
+        waterHeightUniformLocation = ShaderManager.GetUniformLocation("ground", "waterHeight");
+
+        shimmerRollUniformLocation = ShaderManager.GetUniformLocation("ground", "shimmerRoll");
+
+        groundScaleUniformLocation = ShaderManager.GetUniformLocation("ground", "groundScale");
+
+        ShaderManager.SetFloatUniformFloat("ground", groundScaleUniformLocation, groundScale);
 
         loaded = true;
     }
 
-    static void setWaterLevel(float newWaterLevel) {
-        ShaderHandler.setFloatUniformFloat("ground", waterHeightUniformLocation, newWaterLevel);
+    static void SetWaterLevel(float newWaterLevel) {
+        ShaderManager.SetFloatUniformFloat("ground", waterHeightUniformLocation, newWaterLevel);
     }
 
-    Tuple!static (int, int) getSize() {
-        return tuple(mapWidth, mapHeight);
+    static (int, int) GetSize() {
+        return (mapWidth, mapHeight);
     }
 
-    static Vector2 getSizeFloating() {
-        return Vector2(mapWidth, mapHeight);
+    static Vector2 GetSizeFloating() {
+        return new Vector2(mapWidth, mapHeight);
     }
 
-    static float getWidth() {
+    static float GetWidth() {
         return mapWidth;
     }
 
-    static float getHeight() {
+    static float GetHeight() {
         return mapHeight;
     }
 
-    static float getCollisionPoint(float x, float y) {
-        return heightCalculation(Vector2(x, y));
+    static float GetCollisionPoint(float x, float y) {
+        return HeightCalculation(new Vector2(x, y));
     }
 
-    static void update() {
+    static void Update() {
         immutable float delta = Delta.getDelta();
         groundShimmerRoll += delta / 2.0;
-        ShaderHandler.setFloatUniformFloat("ground", shimmerRollUniformLocation, groundShimmerRoll);
+        ShaderManager.setFloatUniformFloat("ground", shimmerRollUniformLocation, groundShimmerRoll);
     }
 
-    private:
 
-    static float getHeightAtNode(int x, int y) {
+    //? This starts the internal parts of the api.
+
+    static float GetHeightAtNode(int x, int y) {
         return mapData[x][y];
     }
 
-    static float heightCalculation(Vector2 point) {
+    static float HeightCalculation(Vector2 point) {
         import raylib;
 
         // todo: clamp this inside the map after the other clamps are added.
@@ -107,10 +111,10 @@ public static class Ground {
         ();
 
         float[4] heightData = [
-            getHeightAtNode(x, y),
-            getHeightAtNode(x, y + 1),
-            getHeightAtNode(x + 1, y + 1),
-            getHeightAtNode(x + 1, y)
+            GetHeightAtNode(x, y),
+            GetHeightAtNode(x, y + 1),
+            GetHeightAtNode(x + 1, y + 1),
+            GetHeightAtNode(x + 1, y)
         ];
 
         if (inPoint == 1) {
@@ -142,7 +146,7 @@ public static class Ground {
         }
     }
 
-    static void createGroundMesh() {
+    static void CreateGroundMesh() {
         import raylib;
 
         float[] vertices = new float[](0);
@@ -154,10 +158,10 @@ public static class Ground {
                 // Raylib is still absolutely ancient with ushort as the indices so I have to convert this mess into raw vertex tris.
 
                 const float[4] heightData = [
-                    getHeightAtNode(x, y), // 0 - Top Left.
-                    getHeightAtNode(x, y + 1), // 1 - Bottom Left.
-                    getHeightAtNode(x + 1, y + 1), // 2 - Bottom Right.
-                    getHeightAtNode(x + 1, y), // 3 - Top Right.
+                    GetHeightAtNode(x, y), // 0 - Top Left.
+                    GetHeightAtNode(x, y + 1), // 1 - Bottom Left.
+                    GetHeightAtNode(x + 1, y + 1), // 2 - Bottom Right.
+                    GetHeightAtNode(x + 1, y), // 3 - Top Right.
                 ];
 
                 const Vector3[4] vData = [
@@ -206,12 +210,12 @@ public static class Ground {
         //todo: set the ground texture from a pallete thing.
     }
 
-    static void loadMapData(string location) {
+    static void LoadMapData(string location) {
         Image image;
 
-        loadImage(location, &image);
+        LoadImage(location, &image);
 
-        checkImage(location, &image);
+        CheckImage(location, &image);
 
         // -1 because these pixels make quads.
         mapWidth = image.width - 1;
@@ -243,7 +247,7 @@ public static class Ground {
         // }
     }
 
-    static void loadImage(string location, Image* image) {
+    static void LoadImage(string location, Image* image) {
 
         if (!endsWith(location, ".png")) {
             throw new Exception("[Heightmap]: Not .png");
@@ -261,7 +265,7 @@ public static class Ground {
         image.loadFromFile(location);
     }
 
-    static void checkImage(string location, Image* image) {
+    static void CheckImage(string location, Image* image) {
         if (image.isError()) {
             throw new Exception(cast(string) image.errorMessage() ~". " ~location);
         }
