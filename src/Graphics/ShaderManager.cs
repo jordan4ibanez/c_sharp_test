@@ -6,6 +6,18 @@ public static class ShaderManager {
 
     static readonly Dictionary<string, Shader> database = [];
 
+    // This will automatically load shaders internally because it really doesn't change in this engine.
+    // They must be named [whatever](.vert/.frag) in the shaders folder.
+    public static void Initialize() {
+        string[] shaders = ["water", "ground", "normal"];
+        string basePath = "shaders/";
+        foreach (string shader in shaders) {
+            string currentPath = basePath + shader;
+            NewShader(shader, currentPath + ".vert", currentPath + ".frag");
+        }
+        Console.WriteLine("-----");
+    }
+
 
     public static void NewShader(string shaderName, string vertCodeLocation, string fragCodeLocation) {
 

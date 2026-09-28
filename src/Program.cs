@@ -38,14 +38,9 @@ class Game : IDisposable {
         FontManager.Initialize();
         TextureManager.Initialize();
         ModelManager.Initialize();
-
-        ShaderManager.NewShader("water", "shaders/water.vert", "shaders/water.frag");
-        ShaderManager.NewShader("ground", "shaders/ground.vert", "shaders/ground.frag");
-        ShaderManager.NewShader("normal", "shaders/normal.vert", "shaders/normal.frag");
+        ShaderManager.Initialize();
 
         CameraManager.Initialize();
-
-
 
         Rlgl.DisableBackfaceCulling();
     }
