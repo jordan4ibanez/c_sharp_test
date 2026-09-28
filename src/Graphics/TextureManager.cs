@@ -45,7 +45,7 @@ static class TextureManager {
         }
 
         database[fileName] = thisTexture;
-        // Console.WriteLine($"[TextureManager]: Loaded {path} as {fileName}");
+        Console.WriteLine($"[TextureManager]: Loaded [{path}] as [{fileName}]");
     }
 
     public static bool HasTexture(string textureName) {
