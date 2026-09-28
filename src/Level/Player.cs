@@ -1,4 +1,5 @@
 using System.Numerics;
+using FishGame.Graphics;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -102,12 +103,12 @@ public static class Player {
 
     static void SetDefaultPosition() {
         Vector2 groundSize = Ground.GetSizeFloating();
-        position.X = groundSize.X / 2.0;
-        position.Z = groundSize.Y / 2.0;
-        ModelHandler.playAnimation("person.glb", 0, 0);
+        position.X = groundSize.X / 2.0f;
+        position.Z = groundSize.Y / 2.0f;
+        ModelManager.PlayAnimation("person.glb", 0, 0);
         rotation.Y = PI / 2;
 
-        Model* personModel = ModelHandler.getModelPointer("person.glb");
+        Model* personModel = ModelManager.getModelPointer("person.glb");
 
         foreach (i; 0..personModel.boneCount) {
             if (personModel.bones[i].name[0..9] == "MiddleI.R") {
@@ -126,12 +127,12 @@ public static class Player {
     }
 
     static void Draw() {
-        ModelHandler.draw("boat.glb", position, rotation);
+        ModelManager.draw("boat.glb", position, rotation);
 
         Vector3 playerOnBoat = position;
         playerOnBoat.Y += 0.6;
 
-        ModelHandler.playAnimation("person.glb", 0, cast(int) floor(animationFrame));
+        ModelManager.playAnimation("person.glb", 0, cast(int) floor(animationFrame));
 
         // Make the player turn with the casting angle if they're in an interaction state.
         // Also, do not render the player if aiming. (first person mode)
@@ -140,11 +141,11 @@ public static class Player {
                 case PlayerState.Casting, PlayerState.CastingArc, PlayerState.Water: {
                         Vector3 combinedRotation = rotation;
                         combinedRotation.Y -= castingYaw;
-                        ModelHandler.draw("person.glb", playerOnBoat, combinedRotation);
+                        ModelManager.draw("person.glb", playerOnBoat, combinedRotation);
                     }
                     break;
                 default: {
-                        ModelHandler.draw("person.glb", playerOnBoat, rotation);
+                        ModelManager.draw("person.glb", playerOnBoat, rotation);
                     }
             }
         }
@@ -152,8 +153,8 @@ public static class Player {
         //? The song and dance you see below is to put the fishing pole in the player's hand.
         //? Thankfully modern x86_64 cpus do this trivialy, but it's a pain in the butt.
 
-        Model* model = ModelHandler.getModelPointer("person.glb");
-        AnimationContainer personAnimationContainer = ModelHandler.getAnimationContainer(
+        Model* model = ModelManager.getModelPointer("person.glb");
+        AnimationContainer personAnimationContainer = ModelManager.getAnimationContainer(
             "person.glb");
         ModelAnimation* animation = personAnimationContainer.animationData;
 
@@ -198,7 +199,7 @@ public static class Player {
 
         translationSpace = Vector3Add(translationSpace, playerOnBoat);
 
-        ModelHandler.draw("fishing_rod.glb", translationSpace, rotationSpace);
+        ModelManager.draw("fishing_rod.glb", translationSpace, rotationSpace);
 
         //? The lure gets kind of complicated lol.
 
