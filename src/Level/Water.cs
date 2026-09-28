@@ -87,9 +87,9 @@ public static class Water {
         loaded = true;
     }
 
-    static double waterUpdateTimer = 0.0;
-    static double targetTime = 1.0 / 15.0;
-    static double waveSpeed = 0.5;
+    static float waterUpdateTimer = 0.0f;
+    static float targetTime = 1.0f / 15.0f;
+    static float waveSpeed = 0.5f;
     static byte skip = 0;
 
     static void Update() {
