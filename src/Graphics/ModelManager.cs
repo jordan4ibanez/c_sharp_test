@@ -79,8 +79,8 @@ static class ModelManager {
             throw new Exception($"[ModelManager]: {path} is not a file.");
         }
 
-        if (!path.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) {
-            throw new Exception($"[ModelManager]: {path} is not a png.");
+        if (!path.EndsWith(".glb", StringComparison.OrdinalIgnoreCase)) {
+            throw new Exception($"[ModelManager]: {path} is not a gltf.");
         }
 
         string fileName = Path.GetFileName(path);
