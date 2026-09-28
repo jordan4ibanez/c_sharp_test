@@ -48,17 +48,7 @@ class Game : IDisposable {
         Rlgl.DisableBackfaceCulling();
 
 
-        // Todo: Maybe a thing to set the texture automatically if the model has a matching texture name.
-        ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
 
-        ModelManager.SetModelTexture("largemouth.glb", "largemouth.png");
-        ModelManager.SetModelShader("largemouth.glb", "normal");
-
-        ModelManager.SetModelTexture("boat.glb", "boat.png");
-
-        ModelManager.SetModelTexture("person.glb", "person.png");
-
-        ModelManager.SetModelTexture("fishing_rod.glb", "fishing_rod.png");
 
     }
 
