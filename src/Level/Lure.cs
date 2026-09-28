@@ -2,34 +2,34 @@ namespace FishGame.Level;
 
 public static class Lure {
 
-    bool inWater = false;
-    bool reeling = false;
+    static bool inWater = false;
+    static bool reeling = false;
 
-    Vector3 position;
-    Vector3 rotation;
+    static Vector3 position;
+    static Vector3 rotation;
     // The actual rotation is stored in rotation.
     // The modified animation rotation is in rotation animated.
-    Vector3 rotationAnimated;
+    static Vector3 rotationAnimated;
 
     // Lure reeling behavioral logic.
-    double swimAnimation = 0;
-    double reelSpeed = 0;
-    double lureFloatVelocity = 0;
-    double oldSwimAngle = 0;
+    static double swimAnimation = 0;
+    static double reelSpeed = 0;
+    static double lureFloatVelocity = 0;
+    static double oldSwimAngle = 0;
 
     // If the lure hits something,I don't want to explode the player's ears.
     // So I set it to only be allowed to trigger the "thunk" noise every 0.25 seconds.
-    double hitThingSoundTimer = 0;
-    immutable double frequencySoundHitThings = 0.3;
+    static double hitThingSoundTimer = 0;
+    immutable static double frequencySoundHitThings = 0.3;
 
-    void loadLureData() {
+    static void loadLureData() {
         ModelHandler.loadModelFromFile("models/lures/deep_c_110.glb");
         TextureHandler.loadTexture("models/lures/deep_c_110.png");
         ModelHandler.setModelTexture("deep_c_110.glb", "deep_c_110.png");
         ModelHandler.setModelShader("deep_c_110.glb", "normal");
     }
 
-    void update() {
+    static void update() {
         if (!inWater) {
             return;
         }
@@ -171,40 +171,40 @@ public static class Lure {
         reeling = false;
     }
 
-    void reel() {
+    static void reel() {
         reeling = true;
     }
 
-    void draw() {
+    static void draw() {
         ModelHandler.draw("deep_c_110.glb", position, rotationAnimated);
     }
 
-    void setPosition(Vector3 newPosition) {
+    static void setPosition(Vector3 newPosition) {
         position = newPosition;
     }
 
-    void setRotation(Vector3 newRotation) {
+    static void setRotation(Vector3 newRotation) {
         rotation = newRotation;
         rotationAnimated = newRotation;
     }
 
-    Vector3 getRotation() {
+    static Vector3 getRotation() {
         return rotation;
     }
 
-    Vector3 getPosition() {
+    static Vector3 getPosition() {
         return position;
     }
 
-    void setInWater() {
+    static void setInWater() {
         inWater = true;
     }
 
-    bool isInWater() {
+    static bool isInWater() {
         return inWater;
     }
 
-    void setOutOfWater() {
+    static void setOutOfWater() {
         inWater = false;
     }
 }
