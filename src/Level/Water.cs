@@ -183,17 +183,17 @@ public static class Water {
             new Vector2(scaledx + tileWidth, scaledY),
         ];
 
-        const int inPoint = () {
-            if (pointInTriangle(point, pData[0], pData[1], pData[2])) {
+        int inPointCheck() {
+            if (CollisionMath.PointInTriangle(point, pData[0], pData[1], pData[2])) {
                 return 1;
-            } else if (pointInTriangle(point, pData[2], pData[3], pData[0])) {
+            } else if (CollisionMath.PointInTriangle(point, pData[2], pData[3], pData[0])) {
                 return 2;
             }
             throw new Exception("In non-existent position.");
         }
-        ();
+        int inPoint = inPointCheck();
 
-        float[4] heightData = [
+        float[] heightData = [
             GetHeightAtNode(adjustedX, adjustedY),
             GetHeightAtNode(adjustedX, adjustedY + 1),
             GetHeightAtNode(adjustedX + 1, adjustedY + 1),
