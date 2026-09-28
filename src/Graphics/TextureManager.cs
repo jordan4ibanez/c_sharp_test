@@ -6,41 +6,33 @@ static class TextureManager {
 
     static Dictionary<string, Texture2D> database;
 
-    static void LoadTexture(string location) {
+    static void LoadTexture(string path) {
 
-        if (!File.Exists(location)) {
-            throw new Exception($"[TextureManager]: {location} is not a file.");
+        if (!File.Exists(path)) {
+            throw new Exception($"[TextureManager]: {path} is not a file.");
         }
 
+        if (!path.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) {
+            throw new Exception($"[TextureManager]: {path} is not a png.");
+        }
 
+        string fileName = Path.GetFileName(path);
 
-        // // Extract the file name from the location.
-        // string fileName = () {
-        //     string[] items = location.split("/");
-        //     int len = cast(int) items.length;
-        //     if (len <= 1) {
-        //         throw new Error("[TextureManager]: Texture must not be in root directory.");
-        //     }
-        //     string outputFileName = items[len - 1];
-        //     if (!outputFileName.endsWith(".png")) {
-        //         throw new Error("[TextureManager]: Not a .png");
-        //     }
-        //     return outputFileName;
-        // }
-        // ();
+        if (fileName.Length == 0) {
+            throw new Exception($"[TextureManager]: {path} returned a blank filename.");
+        }
 
-        // if (fileName in database) {
-        //     throw new Error("[TextureManager]: Tried to overwrite [" ~fileName ~"]");
-        // }
+        if (database.ContainsKey(fileName)) {
+            throw new Exception($"[TextureManager]: Tried to overwrite {path}.");
+        }
 
-        // Texture2D* thisTexture = new Texture2D();
-        // *thisTexture = LoadTexture(toStringz(location));
+        Texture2D thisTexture = Raylib.LoadTexture(path);
 
-        // if (!IsTextureValid(*thisTexture)) {
-        //     throw new Error("[TextureManager]: Texture [" ~location ~"] is invalid.");
-        // }
+        if (!Raylib.IsTextureValid(thisTexture)) {
+            throw new Exception($"[TextureManager]: {path} is an invalid texture.");
+        }
 
-        // database[fileName] = thisTexture;
+        database[fileName] = thisTexture;
     }
 
     // Texture2D* getTexturePointer(string textureName) {
