@@ -53,7 +53,7 @@ public static class SoundManager {
         // Recursively scan all .ogg files in the directory tree
         foreach (string filePath in Directory.GetFiles(currentDir, "*.ogg", SearchOption.AllDirectories)) {
             string fileName = Path.GetFileName(filePath);
-            Console.WriteLine($"Loading {filePath}");
+            // Console.WriteLine($"[SoundManager]: Loading {filePath}");
 
             if (_database.ContainsKey(fileName)) {
                 throw new InvalidOperationException($"{fileName} is a duplicate! Hit in: {filePath}");
