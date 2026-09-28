@@ -26,7 +26,7 @@ public static class Lure {
     // If the lure hits something,I don't want to explode the player's ears.
     // So I set it to only be allowed to trigger the "thunk" noise every 0.25 seconds.
     static float hitThingSoundTimer = 0;
-    readonly static float frequencySoundHitThings = 0.3;
+    readonly static float frequencySoundHitThings = 0.3f;
 
     static void LoadLureData() {
         ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
