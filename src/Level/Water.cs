@@ -73,7 +73,7 @@ public static class Water {
         ResetWaterData();
 
         float[] vertices = LoadVertices();
-        float[] textureCoordinates = loadTextureCoordinates();
+        float[] textureCoordinates = LoadTextureCoordinates();
 
         ModelManager.NewModelFromMesh("water", vertices, textureCoordinates, true);
         ModelManager.SetModelTexture("water", "water.png");
@@ -270,19 +270,19 @@ public static class Water {
                 ]);
             }
         }
-        return vertices;
+        return vertices.ToArray();
     }
 
-    static float[] loadTextureCoordinates() {
-        float[] textureCoordinates = new float[](0);
+    static float[] LoadTextureCoordinates() {
+        float[] textureCoordinates = [];
 
-        foreach (x; 0..waterWidth) {
-            foreach (y; 0..waterHeight) {
-                const Vector2[4] tData = [
-                    Vector2(0.0, 0.0), // 0 top left.
-                    Vector2(0.0, 1.0), // 1 bottom left
-                    Vector2(1.0, 1.0), // 2 bottom right.
-                    Vector2(1.0, 0.0), // 3 top right.
+        for (int x = 0; x < waterWidth; x++) {
+            for (int y = 0; y < waterHeight; y++) {
+                Vector2[] tData = [
+                   new Vector2(0.0f, 0.0f), // 0 top left.
+                    new Vector2(0.0f, 1.0f), // 1 bottom left
+                    new Vector2(1.0f, 1.0f), // 2 bottom right.
+                    new Vector2(1.0f, 0.0f), // 3 top right.
                 ];
 
                 textureCoordinates ~= [
