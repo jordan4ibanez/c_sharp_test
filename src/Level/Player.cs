@@ -18,6 +18,7 @@ public enum PlayerState {
     Water
 }
 
+// todo: This class is a fucking mess clean this shit hole up
 public static class Player {
 
     static Vector3 position;
@@ -435,10 +436,8 @@ public static class Player {
                 }
                 break;
             case PlayerState.CastingArc: {
-
                     break;
                 }
-                break;
             case PlayerState.Menu: {
 
                 }
