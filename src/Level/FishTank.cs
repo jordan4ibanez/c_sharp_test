@@ -7,7 +7,7 @@ public static class FishTank {
     //? This stores all the fish in the level.
     // <>< <>< <>< <><
 
-    static Dictionary<string, Fish> database = [];
+    static readonly Dictionary<string, Fish> database = [];
 
 
     public static void Update() {
@@ -73,7 +73,16 @@ public static class FishTank {
         }
     }
 
-    static Fish GetFish(string uuid) {
+    public static string GetRandomFishUUID() {
+        if (database.Count == 0) return string.Empty;
+
+        // This is as low performance as you can get.
+        string[] keys = database.Keys.ToArray();
+
+        return keys[Randy.NextInt(0, keys.Length)];
+    }
+
+    public static Fish GetFish(string uuid) {
         if (database.TryGetValue(uuid, out var fish)) {
             return fish;
         } else {

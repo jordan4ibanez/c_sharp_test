@@ -42,6 +42,8 @@ public static class Player {
     // This is how wide of a triangulation you can cast.
     readonly static float maxAngle = 40 * Raylib.DEG2RAD;
 
+    static string selectedFishUUID = "";
+
     static float castTumblePitch = 0;
     static float castTumbleYaw = 0;
 
@@ -673,29 +675,39 @@ public static class Player {
 
                     Vector3 lurePosition = Lure.GetPosition();
 
-                    // todo: create debug thing to get any fish.
-                    Fish fish = FishTank.GetFish(0);
+                    static void FishHackjob() {
+                        Fish fish;
 
-                    var fishYaw = (float)(((Raylib.RAD2DEG * fish.GetRotation().Y) + 195) * Raylib.DEG2RAD);
+                        if (selectedFishUUID == "") {
+                            string uuid = FishTank.GetRandomFishUUID();
+                            if (uuid.Length == 0) {
+                                Console.WriteLine("[Player]: No debugging fish! Bailing!");
+                                return;
+                            }
+                        }
+                        fish = FishTank.GetFish(selectedFishUUID);
 
-                    var fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
+                        var fishYaw = (float)(((Raylib.RAD2DEG * fish.GetRotation().Y) + 195) * Raylib.DEG2RAD);
 
-                    CameraManager.SetPosition(Raymath.Vector3Add(fish.GetPosition(), fishDir));
+                        var fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
 
-                    // Now rotate this 180 degrees.
-                    fishYaw += (float)Math.PI;
-                    Console.WriteLine(fishYaw);
-                    fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
+                        CameraManager.SetPosition(Raymath.Vector3Add(fish.GetPosition(), fishDir));
 
-                    CameraManager.SetTarget(Raymath.Vector3Add(fish.GetPosition(), fishDir));
+                        // Now rotate this 180 degrees.
+                        fishYaw += (float)Math.PI;
+                        Console.WriteLine(fishYaw);
+                        fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
 
-                    // CameraManager.setTarget(lurePosition);
-                    // lurePosition.X -= 1;
-                    // lurePosition.Y += 1;
-                    // lurePosition.Z -= 1;
-                    // CameraManager.setPosition(lurePosition);
-                    // CameraManager.setTarget(FishTank.whereDatFish());
+                        CameraManager.SetTarget(Raymath.Vector3Add(fish.GetPosition(), fishDir));
 
+                        // CameraManager.setTarget(lurePosition);
+                        // lurePosition.X -= 1;
+                        // lurePosition.Y += 1;
+                        // lurePosition.Z -= 1;
+                        // CameraManager.setPosition(lurePosition);
+                        // CameraManager.setTarget(FishTank.whereDatFish());
+                    }
+                    FishHackjob();
                 }
                 break;
             default: {
