@@ -6,42 +6,42 @@ public static class Water {
     // Level size x * 4 and y * 4
     // Try to update with sin cos etc.
 
-    float waterRoll = 0;
-    float waveScale = 10;
-    float waveMagnitude = 0.01;
+    static float waterRoll = 0;
+    static float waveScale = 10;
+    static float waveMagnitude = 0.01;
 
     // Water has 39 frames.
-    immutable int minWaterTextureFrame = 0;
-    immutable int maxWaterTextureFrame = 39;
-    int currentWaterFrame = 0;
+    immutable static int minWaterTextureFrame = 0;
+    immutable static int maxWaterTextureFrame = 39;
+    static int currentWaterFrame = 0;
 
-    bool loaded = false;
+    static bool loaded = false;
 
-    immutable float tileWidth = 0.25;
+    immutable static float tileWidth = 0.25;
 
     // This is how high the water is.
-    float waterLevel = 2.0;
+    static float waterLevel = 2.0;
 
-    int waterWidth = 0;
-    int waterHeight = 0;
+    static int waterWidth = 0;
+    static int waterHeight = 0;
 
-    float[][] waterData;
+    static float[][] waterData;
 
-    FNLState* noise = null;
+    static FNLState* noise = null;
 
-    int waterHeightUniformLocation = -1;
+    static int waterHeightUniformLocation = -1;
 
     //? Water frequently updates, so this is implemented in a special way.
 
-    void draw() {
+    static void draw() {
         ModelHandler.draw("water", Vector3(0, 0, 0), Vector3(0, 0, 0), 1.0, Color(200, 200, 200, 200));
     }
 
-    float getWaterLevel() {
+    static float getWaterLevel() {
         return waterLevel;
     }
 
-    void load() {
+    static void load() {
 
         Tuple!(int, int) groundSize = Ground.getSize();
 
@@ -83,12 +83,12 @@ public static class Water {
         loaded = true;
     }
 
-    double waterUpdateTimer = 0.0;
-    double targetTime = 1.0 / 15.0;
-    double waveSpeed = 0.5;
-    byte skip = 0;
+    static double waterUpdateTimer = 0.0;
+    static double targetTime = 1.0 / 15.0;
+    static double waveSpeed = 0.5;
+    static byte skip = 0;
 
-    void update() {
+    static void update() {
 
         immutable delta = Delta.getDelta();
 
@@ -151,17 +151,17 @@ public static class Water {
         ModelHandler.updateModelPositionsInGPU("water");
     }
 
-    float getCollisionPoint(float x, float y) {
+    static float getCollisionPoint(float x, float y) {
         return heightCalculation(Vector2(x, y));
     }
 
     private:
 
-    float getHeightAtNode(int x, int y) {
+    static float getHeightAtNode(int x, int y) {
         return waterData[x][y];
     }
 
-    float heightCalculation(Vector2 point) {
+    static float heightCalculation(Vector2 point) {
         import raylib;
 
         // todo: clamp this inside the map after the other clamps are added.
@@ -225,7 +225,7 @@ public static class Water {
         }
     }
 
-    void resetWaterData() {
+    static void resetWaterData() {
 
         foreach (x; 0..waterWidth + 1) {
             foreach (y; 0..waterHeight + 1) {
@@ -234,7 +234,7 @@ public static class Water {
         }
     }
 
-    float[] loadVertices() {
+    static float[] loadVertices() {
         float[] vertices = new float[](0);
 
         // todo: updateVertices will reuse the pointer in place
@@ -269,7 +269,7 @@ public static class Water {
         return vertices;
     }
 
-    float[] loadTextureCoordinates() {
+    static float[] loadTextureCoordinates() {
         float[] textureCoordinates = new float[](0);
 
         foreach (x; 0..waterWidth) {
