@@ -1,3 +1,5 @@
+using System.Numerics;
+using FishGame.Utility;
 using Raylib_cs;
 
 namespace FishGame.Graphics;
@@ -15,30 +17,34 @@ static class ModelManager {
     static Dictionary<string, bool> isCustomDatabase = [];
     static Dictionary<string, AnimationContainer> animationDatabase = [];
 
-    static void draw(
-        string modelName, Vector3 position, Vector3 rotation = Vector3(0, 0, 0),
-        float scale = 1.0, Color color = Colors.WHITE) {
+    static void Draw(string modelName, Vector3 position) {
+        Draw(modelName, position, new Vector3(0, 0, 0), 1.0f, Color.White);
+    }
+    static void Draw(string modelName, Vector3 position, Vector3 rotation) {
+        Draw(modelName, position, rotation, 1.0f, Color.White);
+    }
+    static void Draw(string modelName, Vector3 position, Vector3 rotation, float scale) {
+        Draw(modelName, position, rotation, scale, Color.White);
+    }
+    static void Draw(string modelName, Vector3 position, Vector3 rotation, float scale, Color color) {
 
-        if (modelName!in database) {
-            throw new Error("[ModelManager]: Cannot draw model that does not exist. " ~modelName);
+        if (!database.ContainsKey(modelName)) {
+            throw new Exception("[ModelManager]: Cannot draw model that does not exist. " + modelName);
         }
 
-        Model* thisModel = database[modelName];
+        Model thisModel = database[modelName];
 
         // Have to jump through some hoops to rotate the model correctly.
-        Quaternion quat = QuaternionFromEuler(rotation.x, rotation.y, rotation.z);
-        Vector3 axisRotation;
-        float angle;
-        QuaternionToAxisAngle(quat, &axisRotation, &angle);
-
-        DrawModelEx(*thisModel, position, axisRotation, RAD2DEG * angle, Vector3(scale, scale, scale), color);
+        Quaternion quat = Raymath.QuaternionFromEuler(rotation.X, rotation.Y, rotation.Z);
+        quat.ToAxisAngle(out Vector3 axisRotation, out float angle);
+        Raylib.DrawModelEx(thisModel, position, axisRotation, Raylib.RAD2DEG * angle, new Vector3(scale, scale, scale), color);
     }
 
     static void newModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
 
-        if (modelName in database) {
-            throw new Error(
-                "[ModelManager]: Tried to overwrite mesh [" ~modelName ~"]. Delete it first.");
+        if (database.ContainsKey(modelName)) {
+            throw new Exception(
+                "[ModelManager]: Tried to overwrite mesh [" + modelName + "]. Delete it first.");
         }
 
         Mesh* thisMesh = new Mesh();
