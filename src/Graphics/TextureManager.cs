@@ -4,7 +4,11 @@ namespace FishGame.Graphics;
 
 static class TextureManager {
 
-    static Dictionary<string, Texture2D> database;
+    static readonly Dictionary<string, Texture2D> database = [];
+
+    static void Initialize() {
+
+    }
 
     static void LoadTexture(string path) {
 
