@@ -48,6 +48,10 @@ static class TextureManager {
         // Console.WriteLine($"[TextureManager]: Loaded {path} as {fileName}");
     }
 
+    public static bool HasTexture(string textureName) {
+        return database.ContainsKey(textureName);
+    }
+
     public static Texture2D GetTexture(string textureName) {
         if (!database.ContainsKey(textureName)) {
             throw new Exception($"[TextureManager]: Texture {textureName} does not exist.");
