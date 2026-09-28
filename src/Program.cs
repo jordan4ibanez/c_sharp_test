@@ -135,6 +135,18 @@ class Game : IDisposable {
                 ModelManager.Draw("deep_c_110.glb", new Vector3(0, 0, 0), new Vector3(0, rotation, 0));
             }
             Raylib.EndMode3D();
+
+            // 
+            // ? This is the fake copyright info for this build. :P
+            Vector2 windowSize = Window.GetSize();
+            Vector2 textSize = FontManager.GetTextSize("© METABASS GENERAL LURES INC.");
+
+            FontManager.DrawShadowed("© METABASS GENERAL LURES INC.", 1, windowSize.Y - (
+                    textSize.Y * 2) + 10);
+            FontManager.DrawShadowed("PROTOTYPE BUILD. DO NOT DISTRIBUTE.", 2, windowSize.Y - textSize.Y + 5);
+            //
+
+            FontManager.DrawShadowed("FPS: " + Raylib.GetFPS(), 0, -5);
         }
 
 
