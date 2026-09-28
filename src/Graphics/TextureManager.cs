@@ -8,7 +8,9 @@ static class TextureManager {
 
     public static void Initialize() {
         // Texture Manager should be the very first thing that loads up when it comes to visual assets.
-        Console.WriteLine("-----");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine("-----");
+        }
         string[] folders = ["models", "textures"];
         foreach (string dir in folders) {
             // Console.WriteLine(dir);
@@ -16,7 +18,9 @@ static class TextureManager {
                 LoadTexture(filePath);
             }
         }
-        Console.WriteLine("-----");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine("-----");
+        }
     }
 
     public static void LoadTexture(string path) {
@@ -46,7 +50,9 @@ static class TextureManager {
         }
 
         database[fileName] = thisTexture;
-        Console.WriteLine($"[TextureManager]: Loaded [{path}] as [{fileName}]");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine($"[TextureManager]: Loaded [{path}] as [{fileName}]");
+        }
     }
 
     public static bool HasTexture(string textureName) {

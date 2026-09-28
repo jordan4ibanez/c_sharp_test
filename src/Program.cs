@@ -15,9 +15,15 @@ class Game : IDisposable {
 
     double timer = 0;
 
+    static bool DEBUG_MODE = false;
+
 
     public Game() {
         Setup();
+    }
+
+    public static bool IsDebugMode() {
+        return DEBUG_MODE;
     }
 
     void Setup() {

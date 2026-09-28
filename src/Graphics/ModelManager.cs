@@ -27,20 +27,28 @@ static class ModelManager {
             }
         }
 
-        Console.WriteLine("-----");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine("-----");
+        }
         AutoAssignTextures();
     }
 
     static void AutoAssignTextures() {
-        Console.WriteLine("[ModelManager]: Begin texture auto application.");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine("[ModelManager]: Begin texture auto application.");
+        }
         foreach (var (modelName, _) in database) {
             string textureName = Path.GetFileNameWithoutExtension(modelName) + ".png";
             if (TextureManager.HasTexture(textureName)) {
                 SetModelTexture(modelName, textureName);
-                Console.WriteLine($"[ModelManager]: Applied texture [{textureName}] to [{modelName}].");
+                if (Game.IsDebugMode()) {
+                    Console.WriteLine($"[ModelManager]: Applied texture [{textureName}] to [{modelName}].");
+                }
             }
         }
-        Console.WriteLine("-----");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine("-----");
+        }
     }
 
     public static void Draw(string modelName, Vector3 position) {
@@ -142,7 +150,9 @@ static class ModelManager {
         isCustomDatabase[fileName] = false;
         animationDatabase[fileName] = thisModelAnimation;
 
-        Console.WriteLine($"[ModelManager]: Loaded model {fileName}");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine($"[ModelManager]: Loaded model {fileName}");
+        }
     }
 
     public static void SetModelTexture(string modelName, string textureName) {

@@ -15,7 +15,9 @@ public static class ShaderManager {
             string currentPath = basePath + shader;
             NewShader(shader, currentPath + ".vert", currentPath + ".frag");
         }
-        Console.WriteLine("-----");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine("-----");
+        }
     }
 
 
@@ -32,7 +34,9 @@ public static class ShaderManager {
         }
 
         database[shaderName] = thisShader;
-        Console.WriteLine($"[ShaderManager]: Loaded shader [{shaderName}].");
+        if (Game.IsDebugMode()) {
+            Console.WriteLine($"[ShaderManager]: Loaded shader [{shaderName}].");
+        }
     }
 
     public static int GetUniformLocation(string shaderName, string uniformName) {
