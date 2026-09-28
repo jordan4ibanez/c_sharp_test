@@ -80,7 +80,7 @@ public static class Player {
     }
 
     static void SetPosition(float x, float y, float z) {
-        position = Vector3(x, y, z);
+        position = new Vector3(x, y, z);
     }
 
     static Vector3 GetPosition() {
@@ -102,10 +102,10 @@ public static class Player {
 
     static void SetDefaultPosition() {
         Vector2 groundSize = Ground.GetSizeFloating();
-        position.x = groundSize.x / 2.0;
-        position.z = groundSize.y / 2.0;
+        position.X = groundSize.X / 2.0;
+        position.Z = groundSize.Y / 2.0;
         ModelHandler.playAnimation("person.glb", 0, 0);
-        rotation.y = PI / 2;
+        rotation.Y = PI / 2;
 
         Model* personModel = ModelHandler.getModelPointer("person.glb");
 
@@ -119,17 +119,17 @@ public static class Player {
     }
 
     static void UpdateFloating() {
-        position.y = Water.getCollisionPoint(position.x, position.z);
-        position.y -= 0.1;
+        position.Y = Water.getCollisionPoint(position.X, position.Z);
+        position.Y -= 0.1;
 
-        // rotation.y += Delta.getDelta();
+        // rotation.Y += Delta.getDelta();
     }
 
     static void Draw() {
         ModelHandler.draw("boat.glb", position, rotation);
 
         Vector3 playerOnBoat = position;
-        playerOnBoat.y += 0.6;
+        playerOnBoat.Y += 0.6;
 
         ModelHandler.playAnimation("person.glb", 0, cast(int) floor(animationFrame));
 
@@ -139,7 +139,7 @@ public static class Player {
             switch (state) {
                 case PlayerState.Casting, PlayerState.CastingArc, PlayerState.Water: {
                         Vector3 combinedRotation = rotation;
-                        combinedRotation.y -= castingYaw;
+                        combinedRotation.Y -= castingYaw;
                         ModelHandler.draw("person.glb", playerOnBoat, combinedRotation);
                     }
                     break;
@@ -170,19 +170,19 @@ public static class Player {
         Matrix matrixTransform = QuaternionToMatrix(matrixRotate);
 
         // Translate socket to its position in the current animation
-        matrixTransform = MatrixMultiply(matrixTransform, MatrixTranslate(transform.translation.x, transform
-                .translation.y, transform.translation.z));
+        matrixTransform = MatrixMultiply(matrixTransform, MatrixTranslate(transform.translation.X, transform
+                .translation.Y, transform.translation.Z));
 
         // If the player is in an interactive state, we want the animation components to rotate with their
         // aiming yaw. So we shall do that.
         switch (state) {
             case PlayerState.Aiming, PlayerState.Casting, PlayerState.CastingArc, PlayerState.Water: {
                     matrixTransform = MatrixMultiply(matrixTransform, MatrixRotateY(
-                            rotation.y - castingYaw));
+                            rotation.Y - castingYaw));
                 }
                 break;
             default: {
-                    matrixTransform = MatrixMultiply(matrixTransform, MatrixRotateY(rotation.y));
+                    matrixTransform = MatrixMultiply(matrixTransform, MatrixRotateY(rotation.Y));
                 }
         }
 
@@ -214,7 +214,7 @@ public static class Player {
         poleTipRealtimePosition = lureTranslation;
 
         // This is a trick to simulate the lure swinging during a cast.
-        Vector2 poleTipPosition = Vector2(lureTranslation.x, lureTranslation.z);
+        Vector2 poleTipPosition = Vector2(lureTranslation.X, lureTranslation.Z);
         float poleTipDeltaDistance = Vector2Distance(poleTipPosition, oldPoleTipPosition);
 
         // Only draw the target when aiming.
@@ -224,16 +224,16 @@ public static class Player {
 
         switch (state) {
             case PlayerState.Aiming, PlayerState.Menu: {
-                    lureTranslation.y -= 0.1;
+                    lureTranslation.Y -= 0.1;
                     Lure.setPosition(lureTranslation);
-                    Lure.setRotation(Vector3(0, rotation.y + -castingYaw, 0));
+                    Lure.setRotation(Vector3(0, rotation.Y + -castingYaw, 0));
                 }
                 break;
             case PlayerState.Casting: {
 
                     // If this is the first cast tick, save and abort.
                     if (firstCastFrame) {
-                        oldPoleTipPosition = Vector2(lureTranslation.x, lureTranslation.z);
+                        oldPoleTipPosition = Vector2(lureTranslation.X, lureTranslation.Z);
                         firstCastFrame = false;
                         SoundManager.play("reel_open_bail.ogg");
                         break;
@@ -244,19 +244,19 @@ public static class Player {
                         Vector2 poleTipSwingDirection = Vector2Normalize(Vector2Subtract(oldPoleTipPosition,
                                 poleTipPosition));
 
-                        float dx = oldPoleTipPosition.x - poleTipPosition.x;
-                        float dy = oldPoleTipPosition.y - poleTipPosition.y;
+                        float dx = oldPoleTipPosition.X - poleTipPosition.X;
+                        float dy = oldPoleTipPosition.Y - poleTipPosition.Y;
                         float yaw = (-atan2(dy, dx)) - (PI / 2);
 
-                        oldPoleTipPosition = Vector2(lureTranslation.x, lureTranslation.z);
+                        oldPoleTipPosition = Vector2(lureTranslation.X, lureTranslation.Z);
 
-                        lureTranslation.y -= 0.1;
+                        lureTranslation.Y -= 0.1;
 
-                        float swingX = poleTipSwingDirection.x * poleTipDeltaDistance;
-                        float swingZ = poleTipSwingDirection.y * poleTipDeltaDistance;
+                        float swingX = poleTipSwingDirection.X * poleTipDeltaDistance;
+                        float swingZ = poleTipSwingDirection.Y * poleTipDeltaDistance;
 
-                        lureTranslation.x += swingX;
-                        lureTranslation.z += swingZ;
+                        lureTranslation.X += swingX;
+                        lureTranslation.Z += swingZ;
 
                         Lure.setPosition(lureTranslation);
 
@@ -276,7 +276,7 @@ public static class Player {
                     arcHeight -= Lerp(0.1, 0.0, castProgress);
 
                     Vector3 progress = Vector3Lerp(lureTranslation, GetCastTarget(), castProgress);
-                    progress.y += arcHeight;
+                    progress.Y += arcHeight;
 
                     Lure.setPosition(progress);
 
@@ -343,9 +343,9 @@ public static class Player {
                         double current = cast(double) i + 1;
                         double application = current * 0.1;
 
-                        v.y -= delta * application;
-                        if (v.y <= waterLevel) {
-                            v.y = waterLevel;
+                        v.Y -= delta * application;
+                        if (v.Y <= waterLevel) {
+                            v.Y = waterLevel;
                         }
                     }
 
@@ -367,8 +367,8 @@ public static class Player {
                             // When the state changes into the water state, we do some "magic" to snap everything into place.
 
                             Vector3 lurePosition = Lure.getPosition();
-                            double x = position.x - lurePosition.x;
-                            double z = position.z - lurePosition.z;
+                            double x = position.X - lurePosition.X;
+                            double z = position.Z - lurePosition.Z;
                             double lureYaw = atan2(x, z);
                             Lure.setRotation(Vector3(0, lureYaw, 0));
 
@@ -387,8 +387,8 @@ public static class Player {
 
                         Vector3 currentRotation = Lure.getRotation();
 
-                        currentRotation.y += Delta.getDelta() * castTumbleYaw;
-                        currentRotation.x += Delta.getDelta() * castTumblePitch;
+                        currentRotation.Y += Delta.getDelta() * castTumbleYaw;
+                        currentRotation.X += Delta.getDelta() * castTumblePitch;
 
                         Lure.setRotation(currentRotation);
 
@@ -456,7 +456,7 @@ public static class Player {
 
                     double oldCastingDistance = castingDistance;
 
-                    castingDistance -= mouseDelta.y / 100.0;
+                    castingDistance -= mouseDelta.Y / 100.0;
 
                     // Keep the distance within range.
                     if (castingDistance < castingDistanceMin) {
@@ -476,7 +476,7 @@ public static class Player {
 
                     double oldCastingYaw = castingYaw;
 
-                    castingYaw += mouseDelta.x / 1500.0;
+                    castingYaw += mouseDelta.X / 1500.0;
 
                     if (castingYaw < -maxAngle) {
                         castingYaw = -maxAngle;
@@ -582,18 +582,18 @@ public static class Player {
             case PlayerState.Aiming: {
                     readonly float waterLevel = Water.getWaterLevel();
                     Vector3 newCameraPosition = Vector3();
-                    newCameraPosition.x = position.x;
+                    newCameraPosition.X = position.X;
                     // This is at the level of the player's chest but it looks better.
-                    newCameraPosition.y = waterLevel + 1.6;
-                    newCameraPosition.z = position.z;
+                    newCameraPosition.Y = waterLevel + 1.6;
+                    newCameraPosition.Z = position.Z;
 
                     CameraHandler.setPosition(newCameraPosition);
 
                     //! Debugging.
                     // Vector3 target = getCastTarget();
-                    // target.x -= 0.5;
-                    // target.y += 0.5;
-                    // target.z -= 0.5;
+                    // target.X -= 0.5;
+                    // target.Y += 0.5;
+                    // target.Z -= 0.5;
 
                     // CameraHandler.setPosition(target);
 
@@ -606,14 +606,14 @@ public static class Player {
                     readonly float distance = 2;
                     readonly float waterLevel = Water.getWaterLevel();
 
-                    float rotated = (rotation.y + (PI / shift)) + castingYaw;
+                    float rotated = (rotation.Y + (PI / shift)) + castingYaw;
                     float x = cos(rotated) * distance;
                     float z = sin(rotated) * distance;
 
                     Vector3 newCameraPosition = Vector3();
-                    newCameraPosition.x = position.x + x;
-                    newCameraPosition.y = waterLevel + 1.6;
-                    newCameraPosition.z = position.z + z;
+                    newCameraPosition.X = position.X + x;
+                    newCameraPosition.Y = waterLevel + 1.6;
+                    newCameraPosition.Z = position.Z + z;
 
                     CameraHandler.setPosition(newCameraPosition);
 
@@ -623,9 +623,9 @@ public static class Player {
                     z = sin(rotated) * distance;
 
                     Vector3 newTargetPosition = Vector3();
-                    newTargetPosition.x = position.x + x;
-                    newTargetPosition.y = waterLevel + 1.6;
-                    newTargetPosition.z = position.z + z;
+                    newTargetPosition.X = position.X + x;
+                    newTargetPosition.Y = waterLevel + 1.6;
+                    newTargetPosition.Z = position.Z + z;
 
                     CameraHandler.setTarget(newTargetPosition);
                 }
@@ -636,26 +636,26 @@ public static class Player {
                     readonly float distance = 8;
                     readonly float waterLevel = Water.getWaterLevel();
 
-                    float rotated = (-rotation.y) - (PI / shiftFront);
+                    float rotated = (-rotation.Y) - (PI / shiftFront);
                     float x = cos(rotated) * distance;
                     float z = sin(rotated) * distance;
 
                     Vector3 newCameraPosition = Vector3();
-                    newCameraPosition.x = position.x + x;
-                    newCameraPosition.y = waterLevel + 2;
-                    newCameraPosition.z = position.z + z;
+                    newCameraPosition.X = position.X + x;
+                    newCameraPosition.Y = waterLevel + 2;
+                    newCameraPosition.Z = position.Z + z;
 
                     CameraHandler.setPosition(newCameraPosition);
 
-                    rotated = (-rotation.y) + (PI / shiftBack);
+                    rotated = (-rotation.Y) + (PI / shiftBack);
 
                     x = cos(rotated) * distance;
                     z = sin(rotated) * distance;
 
                     Vector3 newTargetPosition = Vector3();
-                    newTargetPosition.x = position.x + x;
-                    newTargetPosition.y = waterLevel + 2;
-                    newTargetPosition.z = position.z + z;
+                    newTargetPosition.X = position.X + x;
+                    newTargetPosition.Y = waterLevel + 2;
+                    newTargetPosition.Z = position.Z + z;
 
                     CameraHandler.setTarget(newTargetPosition);
                 }
@@ -666,7 +666,7 @@ public static class Player {
 
                     Fish fish = FishTank.getFish(0);
 
-                    auto fishYaw = ((RAD2DEG * fish.getRotation().y) + 195) * DEG2RAD;
+                    auto fishYaw = ((RAD2DEG * fish.getRotation().Y) + 195) * DEG2RAD;
 
                     auto fishDir = Vector3(sin(fishYaw), 0.0f, cos(fishYaw));
 
@@ -680,9 +680,9 @@ public static class Player {
                     CameraHandler.setTarget(fish.getPosition().Vector3Add(fishDir));
 
                     // CameraHandler.setTarget(lurePosition);
-                    // lurePosition.x -= 1;
-                    // lurePosition.y += 1;
-                    // lurePosition.z -= 1;
+                    // lurePosition.X -= 1;
+                    // lurePosition.Y += 1;
+                    // lurePosition.Z -= 1;
                     // CameraHandler.setPosition(lurePosition);
                     // CameraHandler.setTarget(FishTank.whereDatFish());
 
@@ -704,22 +704,22 @@ public static class Player {
     static Vector3 GetCastTarget() {
         Vector3 castTarget;
 
-        double totalYaw = (rotation.y + castingYaw) - (PI / 2);
+        double totalYaw = (rotation.Y + castingYaw) - (PI / 2);
 
-        castTarget.x = (cos(totalYaw) * castingDistance) + position.x;
-        castTarget.z = (sin(totalYaw) * castingDistance) + position.z;
+        castTarget.X = (cos(totalYaw) * castingDistance) + position.X;
+        castTarget.Z = (sin(totalYaw) * castingDistance) + position.Z;
 
-        castTarget.y = Water.getCollisionPoint(castTarget.x, castTarget.z);
+        castTarget.Y = Water.getCollisionPoint(castTarget.X, castTarget.Z);
 
         return castTarget;
     }
 
     static bool LureCollidesWithShore() {
 
-        double totalYaw = (rotation.y + castingYaw) - (PI / 2);
+        double totalYaw = (rotation.Y + castingYaw) - (PI / 2);
 
-        float x = (cos(totalYaw) * castingDistance) + position.x;
-        float z = (sin(totalYaw) * castingDistance) + position.z;
+        float x = (cos(totalYaw) * castingDistance) + position.X;
+        float z = (sin(totalYaw) * castingDistance) + position.Z;
 
         float waterHeight = Water.getCollisionPoint(x, z);
         float groundHeight = Ground.getCollisionPoint(x, z);
