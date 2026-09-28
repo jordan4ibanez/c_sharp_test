@@ -14,49 +14,49 @@ public enum PlayerState {
 
 public static class Player {
 
-    Vector3 position;
-    Vector3 rotation;
-    Vector2 oldPoleTipPosition;
-    Vector3 poleTipRealtimePosition;
+    static Vector3 position;
+    static Vector3 rotation;
+    static Vector2 oldPoleTipPosition;
+    static Vector3 poleTipRealtimePosition;
 
-    PlayerState state = PlayerState.Aiming;
-    int playerHandBoneIndex = -1;
+    static PlayerState state = PlayerState.Aiming;
+    static int playerHandBoneIndex = -1;
 
-    double animationFrame = 0f;
+    static double animationFrame = 0f;
 
     // Casting variables.
-    bool firstCastFrame = true;
-    double castTimer = 0.0;
-    immutable int castFrameMax = 230;
-    immutable int castFrameMiddle = 230 / 2;
-    immutable double castingDistanceMin = 10;
-    immutable double castingDistanceMax = 30;
+    static bool firstCastFrame = true;
+    static double castTimer = 0.0;
+    immutable static int castFrameMax = 230;
+    immutable static int castFrameMiddle = 230 / 2;
+    immutable static double castingDistanceMin = 10;
+    immutable static double castingDistanceMax = 30;
     // This is how wide of a triangulation you can cast.
-    immutable double maxAngle = (40 * DEG2RAD);
+    immutable static double maxAngle = (40 * DEG2RAD);
 
-    double castTumblePitch = 0;
-    double castTumbleYaw = 0;
+    static double castTumblePitch = 0;
+    static double castTumbleYaw = 0;
 
-    double castProgressDistance = 0;
-    double castProgress = 0;
+    static double castProgressDistance = 0;
+    static double castProgress = 0;
 
-    double lineCreationProgress = 0;
-    Vector3[] lineData;
-    double lineFallRestTimer = 0;
-    bool lureSplashPlayed = false;
+    static double lineCreationProgress = 0;
+    static Vector3[] lineData;
+    static double lineFallRestTimer = 0;
+    static bool lureSplashPlayed = false;
 
     //! Note: these need to be reset when the player changes spots.
-    double castingYaw = 0.0;
-    double castingDistance = castingDistanceMin;
+    static double castingYaw = 0.0;
+    static double castingDistance = castingDistanceMin;
 
     //!! NOTE:
     // Animation seems to be double the blender keyframes. So frame 30 is 60-ish. 
 
-    bool inittrigger = true;
+    static bool inittrigger = true;
 
     public:
 
-    void update() {
+    static void update() {
         double delta = Delta.getDelta();
 
         updateFloating();
@@ -71,23 +71,23 @@ public static class Player {
         // }
     }
 
-    void cameraUpdate() {
+    static void cameraUpdate() {
         doCameraPositioning();
     }
 
-    void setPosition(float x, float y, float z) {
+    static void setPosition(float x, float y, float z) {
         position = Vector3(x, y, z);
     }
 
-    Vector3 getPosition() {
+    static Vector3 getPosition() {
         return position;
     }
 
-    Vector3 getPoleTipPosition() {
+    static Vector3 getPoleTipPosition() {
         return poleTipRealtimePosition;
     }
 
-    void triggerEmptyReelCompletion() {
+    static void triggerEmptyReelCompletion() {
         state = PlayerState.Aiming;
         castTimer = 0;
         // This instantly triggers a frame update.
@@ -96,7 +96,7 @@ public static class Player {
         Lure.setOutOfWater();
     }
 
-    void setDefaultPosition() {
+    static void setDefaultPosition() {
         Vector2 groundSize = Ground.getSizeFloating();
         position.x = groundSize.x / 2.0;
         position.z = groundSize.y / 2.0;
@@ -114,14 +114,14 @@ public static class Player {
         }
     }
 
-    void updateFloating() {
+    static void updateFloating() {
         position.y = Water.getCollisionPoint(position.x, position.z);
         position.y -= 0.1;
 
         // rotation.y += Delta.getDelta();
     }
 
-    void draw() {
+    static void draw() {
         ModelHandler.draw("boat.glb", position, rotation);
 
         Vector3 playerOnBoat = position;
@@ -306,7 +306,7 @@ public static class Player {
 
     private:
 
-    void doLogic(double delta) {
+    static void doLogic(double delta) {
         switch (state) {
             case PlayerState.Aiming: {
 
@@ -410,7 +410,7 @@ public static class Player {
         }
     }
 
-    void doAnimation() {
+    static void doAnimation() {
         switch (state) {
             case PlayerState.Aiming: {
 
@@ -439,7 +439,7 @@ public static class Player {
         }
     }
 
-    void doControls() {
+    static void doControls() {
 
         double delta = Delta.getDelta();
 
@@ -552,7 +552,7 @@ public static class Player {
 
     const targetFrameTime = 1.0 / 60.0;
 
-    void doCastAnimation() {
+    static void doCastAnimation() {
 
         double delta = Delta.getDelta();
 
@@ -573,7 +573,7 @@ public static class Player {
         }
     }
 
-    void doCameraPositioning() {
+    static void doCameraPositioning() {
         switch (state) {
             case PlayerState.Aiming: {
                     immutable float waterLevel = Water.getWaterLevel();
@@ -697,7 +697,7 @@ public static class Player {
     }
 
     // This will compose the imaginary yaw and distance into the real world position.
-    Vector3 getCastTarget() {
+    static Vector3 getCastTarget() {
         Vector3 castTarget;
 
         double totalYaw = (rotation.y + castingYaw) - (PI / 2);
@@ -710,7 +710,7 @@ public static class Player {
         return castTarget;
     }
 
-    bool lureCollidesWithShore() {
+    static bool lureCollidesWithShore() {
 
         double totalYaw = (rotation.y + castingYaw) - (PI / 2);
 
