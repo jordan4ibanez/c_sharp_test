@@ -39,11 +39,13 @@ class Game : IDisposable {
         TextureManager.Initialize();
         ModelManager.Initialize();
 
-        CameraManager.Initialize();
-
         ShaderManager.NewShader("water", "shaders/water.vert", "shaders/water.frag");
         ShaderManager.NewShader("ground", "shaders/ground.vert", "shaders/ground.frag");
         ShaderManager.NewShader("normal", "shaders/normal.vert", "shaders/normal.frag");
+
+        CameraManager.Initialize();
+
+
 
         Rlgl.DisableBackfaceCulling();
     }
@@ -141,9 +143,9 @@ class Game : IDisposable {
     }
 
     public void Dispose() {
+        ShaderManager.Terminate();
         ModelManager.Terminate();
         TextureManager.Terminate();
-        ShaderManager.Terminate();
         FontManager.Terminate();
         SoundManager.Terminate();
 
