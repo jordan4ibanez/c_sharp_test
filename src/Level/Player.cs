@@ -1,4 +1,5 @@
 using System.Numerics;
+using FishGame.Utility;
 using Raylib_cs;
 
 namespace FishGame.Level;
@@ -44,7 +45,7 @@ public static class Player {
     static double castProgress = 0;
 
     static double lineCreationProgress = 0;
-    static Vector3[] lineData;
+    static Vector3[] lineData = [];
     static double lineFallRestTimer = 0;
     static bool lureSplashPlayed = false;
 
@@ -57,10 +58,10 @@ public static class Player {
 
     static bool inittrigger = true;
 
-    public:
+
 
     static void update() {
-        double delta = Delta.getDelta();
+        double delta = Delta.Get();
 
         updateFloating();
         doControls();
