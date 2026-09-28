@@ -1,5 +1,6 @@
 using System.Numerics;
 using FishGame.Graphics;
+using FishGame.Utility;
 
 namespace FishGame.Level;
 
@@ -73,9 +74,9 @@ public static class Ground {
     }
 
     static void Update() {
-        immutable float delta = Delta.getDelta();
-        groundShimmerRoll += delta / 2.0;
-        ShaderManager.setFloatUniformFloat("ground", shimmerRollUniformLocation, groundShimmerRoll);
+        float delta = Delta.Get();
+        groundShimmerRoll += delta / 2.0f;
+        ShaderManager.SetFloatUniformFloat("ground", shimmerRollUniformLocation, groundShimmerRoll);
     }
 
 
@@ -86,12 +87,11 @@ public static class Ground {
     }
 
     static float HeightCalculation(Vector2 point) {
-        import raylib;
 
         // todo: clamp this inside the map after the other clamps are added.
 
-        int x = cast(int) floor(point.x);
-        int y = cast(int) floor(point.y);
+        int x = (int)Math.Floor(point.X);
+        int y = (int)Math.Floor(point.Y);
 
         Vector2[4] pData = [
             Vector2(x, y),
@@ -101,9 +101,9 @@ public static class Ground {
         ];
 
         const int inPoint = () {
-            if (pointInTriangle(Vector2(point.x, point.y), pData[0], pData[1], pData[2])) {
+            if (pointInTriangle(Vector2(point.X, point.Y), pData[0], pData[1], pData[2])) {
                 return 1;
-            } else if (pointInTriangle(Vector2(point.x, point.y), pData[2], pData[3], pData[0])) {
+            } else if (pointInTriangle(Vector2(point.X, point.Y), pData[2], pData[3], pData[0])) {
                 return 2;
             }
             throw new Error("In non-existent position.");
@@ -120,9 +120,9 @@ public static class Ground {
         if (inPoint == 1) {
 
             Vector3[3] positionData = [
-                Vector3(pData[0].x, heightData[0], pData[0].y),
-                Vector3(pData[1].x, heightData[1], pData[1].y),
-                Vector3(pData[2].x, heightData[2], pData[2].y),
+                Vector3(pData[0].X, heightData[0], pData[0].Y),
+                Vector3(pData[1].X, heightData[1], pData[1].Y),
+                Vector3(pData[2].X, heightData[2], pData[2].Y),
             ];
 
             DrawLine3D(positionData[0], positionData[1], Colors.RED);
@@ -133,9 +133,9 @@ public static class Ground {
 
         } else {
             Vector3[3] positionData = [
-                Vector3(pData[2].x, heightData[2], pData[2].y),
-                Vector3(pData[3].x, heightData[3], pData[3].y),
-                Vector3(pData[0].x, heightData[0], pData[0].y),
+                Vector3(pData[2].X, heightData[2], pData[2].Y),
+                Vector3(pData[3].X, heightData[3], pData[3].Y),
+                Vector3(pData[0].X, heightData[0], pData[0].Y),
             ];
 
             DrawLine3D(positionData[0], positionData[1], Colors.RED);
@@ -173,13 +173,13 @@ public static class Ground {
 
                 vertices ~= [
                     // Tri 1.
-                    vData[0].x, vData[0].y, vData[0].z,
-                    vData[1].x, vData[1].y, vData[1].z,
-                    vData[2].x, vData[2].y, vData[2].z,
+                    vData[0].X, vData[0].Y, vData[0].z,
+                    vData[1].X, vData[1].Y, vData[1].z,
+                    vData[2].X, vData[2].Y, vData[2].z,
                     // Tri 2.
-                    vData[2].x, vData[2].y, vData[2].z,
-                    vData[3].x, vData[3].y, vData[3].z,
-                    vData[0].x, vData[0].y, vData[0].z,
+                    vData[2].X, vData[2].Y, vData[2].z,
+                    vData[3].X, vData[3].Y, vData[3].z,
+                    vData[0].X, vData[0].Y, vData[0].z,
                 ];
 
                 // Same with the texture coordinate data.
@@ -194,13 +194,13 @@ public static class Ground {
 
                 textureCoordinates ~= [
                     // Tri 1.
-                    tData[0].x, tData[0].y,
-                    tData[1].x, tData[1].y,
-                    tData[2].x, tData[2].y,
+                    tData[0].X, tData[0].Y,
+                    tData[1].X, tData[1].Y,
+                    tData[2].X, tData[2].Y,
                     // Tri 2.
-                    tData[2].x, tData[2].y,
-                    tData[3].x, tData[3].y,
-                    tData[0].x, tData[0].y,
+                    tData[2].X, tData[2].Y,
+                    tData[3].X, tData[3].Y,
+                    tData[0].X, tData[0].Y,
                 ];
             }
         }
