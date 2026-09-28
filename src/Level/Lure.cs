@@ -35,7 +35,7 @@ public static class Lure {
         ModelManager.SetModelShader("deep_c_110.glb", "normal");
     }
 
-    static void Update() {
+    public static void Update() {
         if (!inWater) {
             return;
         }
@@ -177,40 +177,40 @@ public static class Lure {
         reeling = false;
     }
 
-    static void Reel() {
+    public static void Reel() {
         reeling = true;
     }
 
-    static void Draw() {
+    public static void Draw() {
         ModelManager.Draw("deep_c_110.glb", position, rotationAnimated);
     }
 
-    static void SetPosition(Vector3 newPosition) {
+    public static void SetPosition(Vector3 newPosition) {
         position = newPosition;
     }
 
-    static void SetRotation(Vector3 newRotation) {
+    public static void SetRotation(Vector3 newRotation) {
         rotation = newRotation;
         rotationAnimated = newRotation;
     }
 
-    static Vector3 GetRotation() {
+    public static Vector3 GetRotation() {
         return rotation;
     }
 
-    static Vector3 GetPosition() {
+    public static Vector3 GetPosition() {
         return position;
     }
 
-    static void SetInWater() {
+    public static void SetInWater() {
         inWater = true;
     }
 
-    static bool IsInWater() {
+    public static bool IsInWater() {
         return inWater;
     }
 
-    static void SetOutOfWater() {
+    public static void SetOutOfWater() {
         inWater = false;
     }
 }
