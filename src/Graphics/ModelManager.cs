@@ -18,16 +18,16 @@ static class ModelManager {
     static Dictionary<string, bool> isCustomDatabase = [];
     static Dictionary<string, AnimationContainer> animationDatabase = [];
 
-    static void Draw(string modelName, Vector3 position) {
+    public static void Draw(string modelName, Vector3 position) {
         Draw(modelName, position, new Vector3(0, 0, 0), 1.0f, Color.White);
     }
-    static void Draw(string modelName, Vector3 position, Vector3 rotation) {
+    public static void Draw(string modelName, Vector3 position, Vector3 rotation) {
         Draw(modelName, position, rotation, 1.0f, Color.White);
     }
-    static void Draw(string modelName, Vector3 position, Vector3 rotation, float scale) {
+    public static void Draw(string modelName, Vector3 position, Vector3 rotation, float scale) {
         Draw(modelName, position, rotation, scale, Color.White);
     }
-    static void Draw(string modelName, Vector3 position, Vector3 rotation, float scale, Color color) {
+    public static void Draw(string modelName, Vector3 position, Vector3 rotation, float scale, Color color) {
 
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Cannot draw model that does not exist. " + modelName);
@@ -41,7 +41,7 @@ static class ModelManager {
         Raylib.DrawModelEx(thisModel, position, axisRotation, Raylib.RAD2DEG * angle, new Vector3(scale, scale, scale), color);
     }
 
-    static unsafe void NewModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
+    public static unsafe void NewModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
 
         if (database.ContainsKey(modelName)) {
             throw new Exception(
@@ -73,7 +73,7 @@ static class ModelManager {
         isCustomDatabase[modelName] = true;
     }
 
-    static void LoadModelFromFile(string path) {
+    public static void LoadModelFromFile(string path) {
 
         if (!File.Exists(path)) {
             throw new Exception($"[ModelManager]: {path} is not a file.");
@@ -115,7 +115,7 @@ static class ModelManager {
         animationDatabase[fileName] = thisModelAnimation;
     }
 
-    static void SetModelTexture(string modelName, string textureName) {
+    public static void SetModelTexture(string modelName, string textureName) {
 
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to set texture on non-existent model [" + modelName + "]");
@@ -131,7 +131,7 @@ static class ModelManager {
         }
     }
 
-    static void SetModelShader(string modelName, string shaderName) {
+    public static void SetModelShader(string modelName, string shaderName) {
 
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to set shader on non-existent model [" + modelName + "]");
@@ -146,14 +146,14 @@ static class ModelManager {
     }
 
 
-    static Model GetModel(string modelName) {
+    public static Model GetModel(string modelName) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to set get non-existent model pointer [" + modelName + "]");
         }
         return database[modelName];
     }
 
-    static void UpdateModelPositionsInGPU(string modelName) {
+    public static void UpdateModelPositionsInGPU(string modelName) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to update non-existent model [" + modelName + "]");
         }
@@ -177,7 +177,7 @@ static class ModelManager {
         }
     }
 
-    static void Destroy(string modelName) {
+    public static void Destroy(string modelName) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to destroy non-existent model. " + modelName);
         }
@@ -191,7 +191,7 @@ static class ModelManager {
         animationDatabase.Remove(modelName);
     }
 
-    static void Terminate() {
+    public static void Terminate() {
         foreach (var (modelName, thisModel) in database) {
             DestroyModel(modelName, thisModel);
         }
@@ -200,7 +200,7 @@ static class ModelManager {
         animationDatabase.Clear();
     }
 
-    static void PlayAnimation(string modelName, int index, int frame) {
+    public static void PlayAnimation(string modelName, int index, int frame) {
         if (!database.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to play animation on non-existent model. " + modelName);
         }
@@ -212,13 +212,12 @@ static class ModelManager {
         Raylib.UpdateModelAnimation(thisModel, thisAnimation.animationData[index], frame);
     }
 
-    static AnimationContainer GetAnimationContainer(string modelName) {
+    public static AnimationContainer GetAnimationContainer(string modelName) {
         if (!animationDatabase.ContainsKey(modelName)) {
             throw new Exception("[ModelManager]: Tried to get non-existent animation container. " + modelName);
         }
         return animationDatabase[modelName];
     }
-
 
 
     static unsafe void DestroyModel(string modelName, Model thisModel) {
