@@ -43,13 +43,13 @@ static class TextureManager {
     }
 
     static void DeleteTexture(string textureName) {
-        if (!database.ContainsKey(textureName)) {
+        if (database.TryGetValue(textureName, out Texture2D texture)) {
+            Texture2D thisTexture = database[textureName];
+            Raylib.UnloadTexture(thisTexture);
+            database.Remove(textureName);
+        } else {
             throw new Exception($"[TextureManager]: Texture {textureName} does not exist. Cannot delete.");
         }
-
-        Texture2D thisTexture = database[textureName];
-        Raylib.UnloadTexture(thisTexture);
-        database.Remove(textureName);
     }
 
     static void Terminate() {
