@@ -71,7 +71,7 @@ class Game : IDisposable {
     public void MainLoop() {
         DoInternals();
 
-        double delta = Delta.Get();
+        float delta = Delta.Get();
 
 
         timer += delta;
@@ -82,7 +82,7 @@ class Game : IDisposable {
             // SoundManager.Play("casting_woosh.ogg");
         }
 
-        rotation += (float)delta;
+        rotation += delta;
         if (rotation > Math.PI * 2) {
             rotation -= (float)Math.PI * 2;
         }
