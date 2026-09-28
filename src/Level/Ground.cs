@@ -1,25 +1,25 @@
 namespace FishGame.Level;
 
 public static class Ground {
-    float[][] mapData;
-    int mapWidth = 0;
-    int mapHeight = 0;
-    string currentMap = null;
-    bool loaded = false;
+    static float[][] mapData;
+    static int mapWidth = 0;
+    static int mapHeight = 0;
+    static string currentMap = null;
+    static bool loaded = false;
 
-    float groundShimmerRoll = 0.0;
+    static float groundShimmerRoll = 0.0;
 
-    int waterHeightUniformLocation = -1;
-    int shimmerRollUniformLocation = -1;
-    int groundScaleUniformLocation = -1;
+    static int waterHeightUniformLocation = -1;
+    static int shimmerRollUniformLocation = -1;
+    static int groundScaleUniformLocation = -1;
 
-    immutable float groundScale = 7.0;
+    immutable static float groundScale = 7.0;
 
-    void draw() {
+    static void draw() {
         ModelHandler.draw("ground", Vector3(0, 0, 0));
     }
 
-    void load(string levelLocation) {
+    static void load(string levelLocation) {
         if (loaded) {
             throw new Error("Clean up the ground.");
         }
@@ -41,31 +41,31 @@ public static class Ground {
         loaded = true;
     }
 
-    void setWaterLevel(float newWaterLevel) {
+    static void setWaterLevel(float newWaterLevel) {
         ShaderHandler.setFloatUniformFloat("ground", waterHeightUniformLocation, newWaterLevel);
     }
 
-    Tuple!(int, int) getSize() {
+    Tuple!static (int, int) getSize() {
         return tuple(mapWidth, mapHeight);
     }
 
-    Vector2 getSizeFloating() {
+    static Vector2 getSizeFloating() {
         return Vector2(mapWidth, mapHeight);
     }
 
-    float getWidth() {
+    static float getWidth() {
         return mapWidth;
     }
 
-    float getHeight() {
+    static float getHeight() {
         return mapHeight;
     }
 
-    float getCollisionPoint(float x, float y) {
+    static float getCollisionPoint(float x, float y) {
         return heightCalculation(Vector2(x, y));
     }
 
-    void update() {
+    static void update() {
         immutable float delta = Delta.getDelta();
         groundShimmerRoll += delta / 2.0;
         ShaderHandler.setFloatUniformFloat("ground", shimmerRollUniformLocation, groundShimmerRoll);
@@ -73,11 +73,11 @@ public static class Ground {
 
     private:
 
-    float getHeightAtNode(int x, int y) {
+    static float getHeightAtNode(int x, int y) {
         return mapData[x][y];
     }
 
-    float heightCalculation(Vector2 point) {
+    static float heightCalculation(Vector2 point) {
         import raylib;
 
         // todo: clamp this inside the map after the other clamps are added.
@@ -138,7 +138,7 @@ public static class Ground {
         }
     }
 
-    void createGroundMesh() {
+    static void createGroundMesh() {
         import raylib;
 
         float[] vertices = new float[](0);
@@ -202,7 +202,7 @@ public static class Ground {
         //todo: set the ground texture from a pallete thing.
     }
 
-    void loadMapData(string location) {
+    static void loadMapData(string location) {
         Image image;
 
         loadImage(location, &image);
@@ -239,7 +239,7 @@ public static class Ground {
         // }
     }
 
-    void loadImage(string location, Image* image) {
+    static void loadImage(string location, Image* image) {
 
         if (!endsWith(location, ".png")) {
             throw new Exception("[Heightmap]: Not .png");
@@ -257,7 +257,7 @@ public static class Ground {
         image.loadFromFile(location);
     }
 
-    void checkImage(string location, Image* image) {
+    static void checkImage(string location, Image* image) {
         if (image.isError()) {
             throw new Exception(cast(string) image.errorMessage() ~". " ~location);
         }
