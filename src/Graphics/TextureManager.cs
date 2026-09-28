@@ -6,11 +6,21 @@ static class TextureManager {
 
     static readonly Dictionary<string, Texture2D> database = [];
 
-    static void Initialize() {
+    public static void Initialize() {
+
+        string[] folders = ["models", "textures"];
+
+        foreach (string dir in folders) {
+            Console.WriteLine(dir);
+        }
+
+        // foreach (string filePath in Directory.EnumerateFiles(folderPath, "*.png", SearchOption.AllDirectories)) {
+        //     Console.WriteLine(filePath);
+        // }
 
     }
 
-    static void LoadTexture(string path) {
+    public static void LoadTexture(string path) {
 
         if (!File.Exists(path)) {
             throw new Exception($"[TextureManager]: {path} is not a file.");
@@ -39,14 +49,14 @@ static class TextureManager {
         database[fileName] = thisTexture;
     }
 
-    static Texture2D GetTexture(string textureName) {
+    public static Texture2D GetTexture(string textureName) {
         if (!database.ContainsKey(textureName)) {
             throw new Exception($"[TextureManager]: Texture {textureName} does not exist.");
         }
         return database[textureName];
     }
 
-    static void DeleteTexture(string textureName) {
+    public static void DeleteTexture(string textureName) {
         if (database.TryGetValue(textureName, out Texture2D texture)) {
             Texture2D thisTexture = database[textureName];
             Raylib.UnloadTexture(thisTexture);
@@ -56,7 +66,7 @@ static class TextureManager {
         }
     }
 
-    static void Terminate() {
+    public static void Terminate() {
         foreach (var (textureName, thisTexture) in database) {
             Raylib.UnloadTexture(thisTexture);
         }

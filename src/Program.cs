@@ -33,6 +33,7 @@ class Game : IDisposable {
 
         SoundManager.Initialize();
         FontManager.Initialize();
+        TextureManager.Initialize();
     }
 
     static void CenterWindow() {
@@ -71,6 +72,7 @@ class Game : IDisposable {
     }
 
     public void Dispose() {
+        TextureManager.Terminate();
         ShaderManager.Terminate();
         FontManager.Terminate();
         SoundManager.Terminate();
