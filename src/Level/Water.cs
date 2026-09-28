@@ -1,3 +1,8 @@
+using System.Numerics;
+using FishGame.Graphics;
+using FishGame.Utility;
+using Raylib_cs;
+
 namespace FishGame.Level;
 
 public static class Water {
@@ -33,52 +38,51 @@ public static class Water {
 
     //? Water frequently updates, so this is implemented in a special way.
 
-    static void draw() {
-        ModelHandler.draw("water", Vector3(0, 0, 0), Vector3(0, 0, 0), 1.0, Color(200, 200, 200, 200));
+    static void Draw() {
+        ModelManager.Draw("water", new Vector3(0, 0, 0), new Vector3(0, 0, 0), 1.0f, new Color(200, 200, 200, 200));
     }
 
-    static float getWaterLevel() {
+    static float GetWaterLevel() {
         return waterLevel;
     }
 
-    static void load() {
+    static void Load() {
 
-        Tuple!(int, int) groundSize = Ground.getSize();
+        (int, int) groundSize = Ground.GetSize();
 
         if (loaded) {
-            throw new Error("Clean up the water gpu memory or reuse it.");
+            throw new Exception("Clean up the water gpu memory or reuse it.");
         } else {
             // foreach (i; minWaterTextureFrame .. maxWaterTextureFrame + 1) {
-            TextureHandler.loadTexture("textures/water.png");
+            TextureManager.LoadTexture("textures/water.png");
             // }
         }
 
-        noise = new FNLState();
 
-        *noise = fnlCreateState();
 
-        noise.seed = unpredictableSeed();
-        noise.noise_type = FNLNoiseType.FNL_NOISE_PERLIN;
-        noise.frequency = 1;
 
-        waterWidth = groundSize[0] * 4;
-        waterHeight = groundSize[1] * 4;
+        noise.SetSeed(Randy.NextInt(0, 1000000));
+        noise.SetNoiseType(FastNoiseLite.NoiseType.Value);
+        noise.SetFrequency(1);
 
-        waterData = new float[][](waterWidth + 1, waterHeight + 1);
+        waterWidth = groundSize.Item1 * 4;
+        waterHeight = groundSize.Item2 * 4;
+
+        waterData = new float[waterWidth + 1, waterHeight + 1];
 
         resetWaterData();
 
         float[] vertices = loadVertices();
         float[] textureCoordinates = loadTextureCoordinates();
 
-        ModelHandler.newModelFromMesh("water", vertices, textureCoordinates, true);
-        ModelHandler.setModelTexture("water", "water.png");
-        ModelHandler.setModelShader("water", "water");
+        ModelManager.NewModelFromMesh("water", vertices, textureCoordinates, true);
+        ModelManager.SetModelTexture("water", "water.png");
+        ModelManager.SetModelShader("water", "water");
 
-        waterHeightUniformLocation = ShaderHandler.getUniformLocation("water", "waterHeight");
-        ShaderHandler.setFloatUniformFloat("water", waterHeightUniformLocation, waterLevel);
+        waterHeightUniformLocation = ShaderManager.GetUniformLocation("water", "waterHeight");
+        ShaderManager.SetFloatUniformFloat("water", waterHeightUniformLocation, waterLevel);
 
-        Ground.setWaterLevel(waterLevel);
+        Ground.SetWaterLevel(waterLevel);
 
         loaded = true;
     }
@@ -88,9 +92,9 @@ public static class Water {
     static double waveSpeed = 0.5;
     static byte skip = 0;
 
-    static void update() {
+    static void Update() {
 
-        immutable delta = Delta.getDelta();
+        float delta = Delta.Get();
 
         waterUpdateTimer += delta;
 
@@ -111,7 +115,7 @@ public static class Water {
         }
 
         // This also automatically uploads the new water data into the gpu.
-        Model* thisModel = ModelHandler.getModelPointer("water");
+        Model* thisModel = ModelManager.getModelPointer("water");
         Mesh* thisMesh = thisModel.meshes;
 
         float[] blah = thisMesh.vertices[0..thisMesh.vertexCount * 3];
@@ -148,7 +152,7 @@ public static class Water {
             }
         }
 
-        ModelHandler.updateModelPositionsInGPU("water");
+        ModelManager.updateModelPositionsInGPU("water");
     }
 
     static float getCollisionPoint(float x, float y) {
@@ -185,7 +189,7 @@ public static class Water {
             } else if (pointInTriangle(point, pData[2], pData[3], pData[0])) {
                 return 2;
             }
-            throw new Error("In non-existent position.");
+            throw new Exception("In non-existent position.");
         }
         ();
 
