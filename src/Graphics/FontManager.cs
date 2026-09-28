@@ -38,12 +38,12 @@ public static class FontManager {
         Raylib.DrawTextEx(font, text, new Vector2(x - 1, y - 1), currentFontSize, spacing, foregroundColor);
     }
 
-    public static void Terminate() {
-        Raylib.UnloadFont(font);
-    }
-
     public static void Update() {
         // This allows the font to look slightly off, like it's a texture font.
         currentFontSize = (float)(font.BaseSize * (GUI.GetGUIScale() * 0.75));
+    }
+
+    public static void Terminate() {
+        Raylib.UnloadFont(font);
     }
 }
