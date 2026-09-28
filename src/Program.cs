@@ -130,9 +130,9 @@ class Game : IDisposable {
             {
 
                 // if (renderPerson) {
-                // ModelHandler.draw("person.glb", Vector3(0, 0, 0));
+                ModelManager.Draw("person.glb", new Vector3(0, 0, 0));
                 // }
-                ModelManager.Draw("deep_c_110.glb", new Vector3(0, 0, 0), new Vector3(0, rotation, 0));
+                // ModelManager.Draw("deep_c_110.glb", new Vector3(0, 0, 0), new Vector3(0, rotation, 0));
             }
             Raylib.EndMode3D();
 
