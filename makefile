@@ -4,5 +4,8 @@ default:
 oneshot:
 	@dotnet run --project src/FishGame.csproj
 
+gdb:
+	@gdb --args dotnet src/bin/Debug/net10.0/FishGame.dll
+
 clean:
 	@dotnet clean src/FishGame.csproj
