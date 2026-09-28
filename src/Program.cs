@@ -46,10 +46,6 @@ class Game : IDisposable {
         ShaderManager.NewShader("normal", "shaders/normal.vert", "shaders/normal.frag");
 
         Rlgl.DisableBackfaceCulling();
-
-
-
-
     }
 
     void CenterWindow() {
