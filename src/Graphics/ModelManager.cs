@@ -1,13 +1,14 @@
 using System.Numerics;
+using System.Runtime.InteropServices;
 using FishGame.Utility;
 using Raylib_cs;
 
 namespace FishGame.Graphics;
 
 class AnimationContainer {
-    int animationCount = 0;
-    bool hasAnimation = false;
-    ModelAnimation animationData;
+    public int animationCount = 0;
+    public bool hasAnimation = false;
+    public ModelAnimation animationData;
 }
 
 
@@ -40,63 +41,74 @@ static class ModelManager {
         Raylib.DrawModelEx(thisModel, position, axisRotation, Raylib.RAD2DEG * angle, new Vector3(scale, scale, scale), color);
     }
 
-    static void newModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
+    static unsafe void newModelFromMesh(string modelName, float[] vertices, float[] textureCoordinates, bool dynamic = false) {
 
         if (database.ContainsKey(modelName)) {
             throw new Exception(
                 "[ModelManager]: Tried to overwrite mesh [" + modelName + "]. Delete it first.");
         }
 
-        Mesh* thisMesh = new Mesh();
+        Mesh thisMesh = new();
 
-        thisMesh.vertexCount = cast(int) vertices.length / 3;
-        thisMesh.triangleCount = thisMesh.vertexCount / 3;
-        thisMesh.vertices = vertices.ptr;
-        thisMesh.texcoords = textureCoordinates.ptr;
+        thisMesh.VertexCount = vertices.Length / 3;
+        thisMesh.TriangleCount = thisMesh.VertexCount / 3;
 
-        UploadMesh(thisMesh, dynamic);
+        fixed (float* ptr = vertices) {
+            thisMesh.Vertices = ptr;
+        }
+        fixed (float* ptr = textureCoordinates) {
+            thisMesh.TexCoords = ptr;
+        }
 
-        Model* thisModel = new Model();
-        *thisModel = LoadModelFromMesh(*thisMesh);
+        Raylib.UploadMesh(&thisMesh, dynamic);
 
-        if (!IsModelValid(*thisModel)) {
-            throw new Error("[ModelHandler]: Invalid model loaded from mesh. " ~modelName);
+        Model thisModel = new();
+        thisModel = Raylib.LoadModelFromMesh(thisMesh);
+
+        if (!Raylib.IsModelValid(thisModel)) {
+            throw new Exception("[ModelHandler]: Invalid model loaded from mesh. " + modelName);
         }
 
         database[modelName] = thisModel;
         isCustomDatabase[modelName] = true;
     }
 
-    static void loadModelFromFile(string location) {
+    static void loadModelFromFile(string path) {
 
-        // Extract the file name from the location.
-        string fileName = () {
-            string[] items = location.split("/");
-            int len = cast(int) items.length;
-            if (len <= 1) {
-                throw new Error("[ModelManager]: Model must not be in root directory.");
-            }
-            string outputFileName = items[len - 1];
-            return outputFileName;
+        if (!File.Exists(path)) {
+            throw new Exception($"[ModelManager]: {path} is not a file.");
         }
-        ();
 
-        Model* thisModel = new Model();
+        if (!path.EndsWith(".png", StringComparison.OrdinalIgnoreCase)) {
+            throw new Exception($"[ModelManager]: {path} is not a png.");
+        }
 
-        auto cStr = location.toStringz();
+        string fileName = Path.GetFileName(path);
 
-        *thisModel = LoadModel(cStr);
+        if (fileName.Length == 0) {
+            throw new Exception($"[ModelManager]: {path} returned a blank filename.");
+        }
 
-        if (!IsModelValid(*thisModel)) {
-            throw new Error("[ModelHandler]: Invalid model loaded from file. " ~location);
+        if (database.ContainsKey(fileName)) {
+            throw new Exception($"[ModelManager]: Tried to overwrite {path}.");
+        }
+
+
+        Model thisModel = Raylib.LoadModel(path);
+
+        if (!Raylib.IsModelValid(thisModel)) {
+            throw new Exception("[ModelHandler]: Invalid model loaded from file. " + path);
         }
 
         int animationCount;
-        ModelAnimation* thisAnimationData = LoadModelAnimations(cStr, &animationCount);
+        ModelAnimation thisAnimationData;
+        unsafe {
+            thisAnimationData = *Raylib.LoadModelAnimations((sbyte*)Marshal.StringToHGlobalAnsi(path), &animationCount);
+        }
         AnimationContainer thisModelAnimation = new AnimationContainer();
         thisModelAnimation.animationCount = animationCount;
         thisModelAnimation.animationData = thisAnimationData;
-        thisModelAnimation.hasAnimation = thisAnimationData != null;
+        thisModelAnimation.hasAnimation = thisAnimationData.KeyFrameCount > 0;
 
         database[fileName] = thisModel;
         isCustomDatabase[fileName] = false;
