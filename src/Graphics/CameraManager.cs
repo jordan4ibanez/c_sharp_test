@@ -15,23 +15,23 @@ public static class CameraManager {
         camera.Projection = CameraProjection.Perspective;
     }
 
-    static void SetPosition(Vector3 newPosition) {
+    public static void SetPosition(Vector3 newPosition) {
         camera.Position = newPosition;
     }
 
-    static void SetTarget(Vector3 newTarget) {
+    public static void SetTarget(Vector3 newTarget) {
         camera.Target = newTarget;
     }
 
-    static float GetFOV() {
+    public static float GetFOV() {
         return camera.FovY;
     }
 
-    static void SetFOV(float newFOV) {
+    public static void SetFOV(float newFOV) {
         camera.FovY = newFOV;
     }
 
-    static Camera3D Get() {
+    public static Camera3D Get() {
         return camera;
     }
 
