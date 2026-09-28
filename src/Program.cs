@@ -41,18 +41,18 @@ class Game : IDisposable {
 
         Rlgl.DisableBackfaceCulling();
 
-        ModelHandler.loadModelFromFile("models/largemouth.glb");
-        ModelHandler.setModelTexture("largemouth.glb", "largemouth.png");
-        ModelHandler.setModelShader("largemouth.glb", "normal");
+        ModelManager.LoadModelFromFile("models/largemouth.glb");
+        // ModelManager.setModelTexture("largemouth.glb", "largemouth.png");
+        // ModelManager.setModelShader("largemouth.glb", "normal");
 
-        ModelHandler.loadModelFromFile("models/boat.glb");
-        ModelHandler.setModelTexture("boat.glb", "boat.png");
+        // ModelManager.loadModelFromFile("models/boat.glb");
+        // ModelManager.setModelTexture("boat.glb", "boat.png");
 
-        ModelHandler.loadModelFromFile("models/person.glb");
-        ModelHandler.setModelTexture("person.glb", "person.png");
+        // ModelManager.loadModelFromFile("models/person.glb");
+        // ModelManager.setModelTexture("person.glb", "person.png");
 
-        ModelHandler.loadModelFromFile("models/fishing_rod.glb");
-        ModelHandler.setModelTexture("fishing_rod.glb", "fishing_rod.png");
+        // ModelManager.loadModelFromFile("models/fishing_rod.glb");
+        // ModelManager.setModelTexture("fishing_rod.glb", "fishing_rod.png");
 
     }
 
