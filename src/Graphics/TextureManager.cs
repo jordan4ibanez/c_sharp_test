@@ -8,6 +8,10 @@ static class TextureManager {
 
     static void LoadTexture(string location) {
 
+        if (!File.Exists(location)) {
+            throw new Exception($"[TextureManager]: {location} is not a file.");
+        }
+
 
 
         // // Extract the file name from the location.
