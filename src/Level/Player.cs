@@ -1,6 +1,7 @@
 using System.Numerics;
 using FishGame.Audio;
 using FishGame.Graphics;
+using FishGame.Input;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -413,8 +414,7 @@ public static class Player {
                 }
                 break;
             case PlayerState.Water: {
-                    // todo: mouse, bleh.
-                    if (Mouse.isButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
+                    if (Mouse.IsButtonDown(MouseButton.MOUSE_BUTTON_LEFT)) {
                         Lure.Reel();
                     }
                 }
@@ -459,7 +459,7 @@ public static class Player {
         switch (state) {
             case PlayerState.Aiming: {
 
-                    Vector2 mouseDelta = Mouse.getDelta();
+                    Vector2 mouseDelta = Mouse.GetDelta();
 
                     // Begin forwards/backwards lure aiming control.
 
@@ -508,7 +508,7 @@ public static class Player {
                         }
                     }
 
-                    if (Mouse.isButtonPressed(MouseButton.Left)) {
+                    if (Mouse.IsButtonPressed(MouseButton.Left)) {
                         state = PlayerState.Casting;
                         castTimer = 0;
                         castProgressDistance = 0;
@@ -552,7 +552,7 @@ public static class Player {
                 }
                 break;
             case PlayerState.Water: {
-                    if (Mouse.isButtonDown(MouseButton.Left)) {
+                    if (Mouse.IsButtonDown(MouseButton.Left)) {
                         Lure.Reel();
                     }
                 }
