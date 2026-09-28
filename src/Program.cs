@@ -15,9 +15,7 @@ class Game : IDisposable {
 
 
     public Game() {
-        System.Console.WriteLine("created");
         Setup();
-
     }
 
     void Setup() {
