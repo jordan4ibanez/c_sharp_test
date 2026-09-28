@@ -73,7 +73,7 @@ static class ModelManager {
         isCustomDatabase[modelName] = true;
     }
 
-    public static void LoadModelFromFile(string path) {
+    public static unsafe void LoadModelFromFile(string path) {
 
         if (!File.Exists(path)) {
             throw new Exception($"[ModelManager]: {path} is not a file.");
@@ -100,12 +100,15 @@ static class ModelManager {
             throw new Exception("[ModelHandler]: Invalid model loaded from file. " + path);
         }
 
-
-
-        ModelAnimation[] animationArray = Raylib.LoadModelAnimations(path).ToArray();
+        int animationCount = 0;
+        ModelAnimation[] animationArray;
+        fixed (byte* ptr = "my_model.obj"u8) {
+            ModelAnimation* animsPtr = Raylib.LoadModelAnimations((sbyte*)ptr, &animationCount);
+            animationArray = new Span<ModelAnimation>(animsPtr, animationCount).ToArray();
+        }
 
         AnimationContainer thisModelAnimation = new() {
-            animationCount = animationArray.Length,
+            animationCount = animationCount,
             animationData = animationArray,
             hasAnimation = animationArray.Length > 0
         };
@@ -113,6 +116,8 @@ static class ModelManager {
         database[fileName] = thisModel;
         isCustomDatabase[fileName] = false;
         animationDatabase[fileName] = thisModelAnimation;
+
+        Console.WriteLine($"[ModelManager]: Loaded model {fileName}");
     }
 
     public static void SetModelTexture(string modelName, string textureName) {
