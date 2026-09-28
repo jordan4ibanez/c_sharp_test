@@ -101,17 +101,18 @@ public static class Player {
         Lure.setOutOfWater();
     }
 
-    static void SetDefaultPosition() {
+    static unsafe void SetDefaultPosition() {
         Vector2 groundSize = Ground.GetSizeFloating();
         position.X = groundSize.X / 2.0f;
         position.Z = groundSize.Y / 2.0f;
         ModelManager.PlayAnimation("person.glb", 0, 0);
-        rotation.Y = PI / 2;
+        rotation.Y = (float)Math.PI / 2.0f;
 
-        Model* personModel = ModelManager.getModelPointer("person.glb");
+        Model personModel = ModelManager.GetModel("person.glb");
 
-        foreach (i; 0..personModel.boneCount) {
-            if (personModel.bones[i].name[0..9] == "MiddleI.R") {
+        for (int i = 0; i < personModel.BoneCount; i++) {
+            ReadOnlySpan<byte> nameSpan = new(personModel.Bones[i].Name, 9);
+            if (nameSpan.StartsWith("MiddleI.R"u8)) {
                 // writeln("index ", i);
                 playerHandBoneIndex = i;
                 break;
