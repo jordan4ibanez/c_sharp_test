@@ -35,31 +35,28 @@ static class TextureManager {
         database[fileName] = thisTexture;
     }
 
-    // Texture2D* getTexturePointer(string textureName) {
-    //     if (textureName!in database) {
-    //         throw new Error("[TextureManager]: Texture does not exist. " ~textureName);
-    //     }
+    static Texture2D GetTexture(string textureName) {
+        if (!database.ContainsKey(textureName)) {
+            throw new Exception($"[TextureManager]: Texture {textureName} does not exist.");
+        }
+        return database[textureName];
+    }
 
-    //     return database[textureName];
-    // }
+    static void DeleteTexture(string textureName) {
+        if (!database.ContainsKey(textureName)) {
+            throw new Exception($"[TextureManager]: Texture {textureName} does not exist. Cannot delete.");
+        }
 
-    // void deleteTexture(string textureName) {
-    //     if (textureName!in database) {
-    //         throw new Error(
-    //             "[TextureManager]: Texture does not exist. Cannot delete. " ~textureName);
-    //     }
+        Texture2D thisTexture = database[textureName];
+        Raylib.UnloadTexture(thisTexture);
+        database.Remove(textureName);
+    }
 
-    //     Texture* thisTexture = database[textureName];
-    //     UnloadTexture(*thisTexture);
-    //     database.remove(textureName);
-    // }
-
-    // void terminate() {
-    //     foreach (textureName, thisTexture; database) {
-    //         UnloadTexture(*thisTexture);
-    //     }
-
-    //     database.clear();
-    // }
+    static void Terminate() {
+        foreach (var (textureName, thisTexture) in database) {
+            Raylib.UnloadTexture(thisTexture);
+        }
+        database.Clear();
+    }
 
 }
