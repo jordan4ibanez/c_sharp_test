@@ -112,37 +112,36 @@ public abstract class Fish {
         position = position + new Vector3(xVelocity, 0, zVelocity);
 
         // Todo: find where this came from.
-        // BoundsCheck();
+        BoundsCheck();
 
         // todo: fix the rest of this when the ground is created.
-        // float minY = Ground.getCollisionPoint(position.X, position.Z) + collisionVertical;
-        // float maxY = Water.getCollisionPoint(position.X, position.Z) - collisionVertical;
+        float minY = Ground.GetCollisionPoint(position.X, position.Z) + collisionVertical;
+        float maxY = Water.GetCollisionPoint(position.X, position.Z) - collisionVertical;
 
-        // // If the fish is trying to go on land, let the lerp of rotation continue, but stop from moving.
-        // if (maxY - minY < (collisionVertical * 2)) {
-        //     // Simulate the jank of PS1 physics by pushing it out inverse with a fixed amount.
-        //     Vector2 inverseDir = Vector2Normalize(Vector2Subtract(Vector2(
-        //             oldPosition.X, oldPosition.Z), Vector2(position.X, position.Z)));
+        // If the fish is trying to go on land, let the lerp of rotation continue, but stop from moving.
+        if (maxY - minY < (collisionVertical * 2)) {
+            // Simulate the jank of PS1 physics by pushing it out inverse with a fixed amount.
+            Vector2 inverseDir = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(oldPosition.X, oldPosition.Z), new Vector2(position.X, position.Z)));
 
-        //     inverseDir = Vector2Multiply(inverseDir, Vector2(0.1, 0.1));
+            inverseDir = Raymath.Vector2Multiply(inverseDir, new Vector2(0.1f, 0.1f));
 
-        //     Vector2 ploppedOutPosition = Vector2Add(Vector2(oldPosition.X, oldPosition.Z), inverseDir);
+            Vector2 ploppedOutPosition = Raymath.Vector2Add(new Vector2(oldPosition.X, oldPosition.Z), inverseDir);
 
-        //     position = Vector3(ploppedOutPosition.X, oldPosition.Y, ploppedOutPosition.Y);
+            position = new Vector3(ploppedOutPosition.X, oldPosition.Y, ploppedOutPosition.Y);
 
-        //     BoundsCheck();
-        //     return;
-        // }
+            BoundsCheck();
+            return;
+        }
 
-        // float yVelocity = (sin(-rotation.X) * delta) * movementSpeed;
+        float yVelocity = (float)(Math.Sin(-rotation.X) * delta) * movementSpeed;
 
-        // position.Y += yVelocity;
+        position.Y += yVelocity;
 
-        // if (position.Y < minY) {
-        //     position.Y = minY;
-        // } else if (position.Y > maxY) {
-        //     position.Y = maxY;
-        // }
+        if (position.Y < minY) {
+            position.Y = minY;
+        } else if (position.Y > maxY) {
+            position.Y = maxY;
+        }
 
     }
 
