@@ -91,12 +91,16 @@ class Game : IDisposable {
             LevelManager.TogglePause();
         }
 
+        LevelManager.Unload();
+        LevelManager.Load("levels/map_lake/");
+
         LevelManager.Update();
 
         Raylib.BeginDrawing();
 
         {
             Raylib.ClearBackground(Color.SkyBlue);
+            CameraManager.SetPosition(new Vector3(128, 128, 128));
 
             Raylib.BeginMode3D(CameraManager.Get());
             {
