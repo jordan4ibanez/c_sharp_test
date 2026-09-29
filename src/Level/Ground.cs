@@ -53,6 +53,16 @@ public static class Ground {
         loaded = true;
     }
 
+    public static void Unload() {
+
+        TextureManager.DeleteTexture("texture_map.png");
+        ModelManager.Destroy("ground");
+
+        currentLevelLocation = "";
+
+        loaded = false;
+    }
+
     public static void SetWaterLevel(float newWaterLevel) {
         ShaderManager.SetFloatUniformFloat("ground", waterHeightUniformLocation, newWaterLevel);
     }
