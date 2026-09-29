@@ -20,7 +20,8 @@ public static class LevelManager {
     }
 
     public static void Unload() {
-        throw new Exception("[Level]: unloading not implemented");
+        Ground.Unload();
+        Water.Unload();
         loaded = false;
     }
 
