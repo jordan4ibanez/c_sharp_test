@@ -28,13 +28,6 @@ public static class Lure {
     static float hitThingSoundTimer = 0;
     readonly static float frequencySoundHitThings = 0.3f;
 
-    static void LoadLureData() {
-        ModelManager.LoadModelFromFile("models/lures/deep_c_110.glb");
-        TextureManager.LoadTexture("models/lures/deep_c_110.png");
-        ModelManager.SetModelTexture("deep_c_110.glb", "deep_c_110.png");
-        ModelManager.SetModelShader("deep_c_110.glb", "normal");
-    }
-
     public static void Update() {
         if (!inWater) {
             return;

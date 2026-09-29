@@ -48,6 +48,12 @@ class Game : IDisposable {
 
         CameraManager.Initialize();
 
+        // todo: this should probably be done automatically somehow with fish definitions.
+        ModelManager.SetModelShader("largemouth.glb", "normal");
+
+        // todo: this should probably be done automatically somehow with lure definitions.
+        ModelManager.SetModelShader("deep_c_110.glb", "normal");
+
         Rlgl.DisableBackfaceCulling();
 
         LevelManager.Load("levels/map_lake/");
