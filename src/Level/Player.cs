@@ -589,6 +589,9 @@ public static class Player {
     }
 
     static void DoCameraPositioning() {
+
+
+
         switch (state) {
             case PlayerState.Aiming: {
                     float waterLevel = Water.GetWaterLevel();
@@ -675,45 +678,48 @@ public static class Player {
 
                     Vector3 lurePosition = Lure.GetPosition();
 
-                    static void FishHackjob() {
-                        Fish fish;
 
-                        if (selectedFishUUID == "") {
-                            selectedFishUUID = FishTank.GetRandomFishUUID();
-                            if (selectedFishUUID.Length == 0) {
-                                Console.WriteLine("[Player]: No debugging fish! Bailing!");
-                                return;
-                            }
-                        }
-                        fish = FishTank.GetFish(selectedFishUUID);
-
-                        var fishYaw = (float)(((Raylib.RAD2DEG * fish.GetRotation().Y) + 195) * Raylib.DEG2RAD);
-
-                        var fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
-
-                        CameraManager.SetPosition(Raymath.Vector3Add(fish.GetPosition(), fishDir));
-
-                        // Now rotate this 180 degrees.
-                        fishYaw += (float)Math.PI;
-                        Console.WriteLine(fishYaw);
-                        fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
-
-                        CameraManager.SetTarget(Raymath.Vector3Add(fish.GetPosition(), fishDir));
-
-                        // CameraManager.setTarget(lurePosition);
-                        // lurePosition.X -= 1;
-                        // lurePosition.Y += 1;
-                        // lurePosition.Z -= 1;
-                        // CameraManager.setPosition(lurePosition);
-                        // CameraManager.setTarget(FishTank.whereDatFish());
-                    }
-                    FishHackjob();
                 }
                 break;
             default: {
                     throw new Exception("Oops");
                 }
         }
+
+        //! Note: this used to be in PlayerState.Water
+        static void FishHackjob() {
+            Fish fish;
+
+            if (selectedFishUUID == "") {
+                selectedFishUUID = FishTank.GetRandomFishUUID();
+                if (selectedFishUUID.Length == 0) {
+                    Console.WriteLine("[Player]: No debugging fish! Bailing!");
+                    return;
+                }
+            }
+            fish = FishTank.GetFish(selectedFishUUID);
+
+            var fishYaw = (float)(((Raylib.RAD2DEG * fish.GetRotation().Y) + 195) * Raylib.DEG2RAD);
+
+            var fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
+
+            CameraManager.SetPosition(Raymath.Vector3Add(fish.GetPosition(), fishDir));
+
+            // Now rotate this 180 degrees.
+            fishYaw += (float)Math.PI;
+            // Console.WriteLine(fishYaw);
+            fishDir = new Vector3((float)Math.Sin(fishYaw), 0.0f, (float)Math.Cos(fishYaw));
+
+            CameraManager.SetTarget(Raymath.Vector3Add(fish.GetPosition(), fishDir));
+
+            // CameraManager.setTarget(lurePosition);
+            // lurePosition.X -= 1;
+            // lurePosition.Y += 1;
+            // lurePosition.Z -= 1;
+            // CameraManager.setPosition(lurePosition);
+            // CameraManager.setTarget(FishTank.whereDatFish());
+        }
+        FishHackjob();
 
         if (state == PlayerState.Menu) {
 
