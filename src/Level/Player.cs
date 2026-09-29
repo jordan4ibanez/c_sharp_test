@@ -679,8 +679,8 @@ public static class Player {
                         Fish fish;
 
                         if (selectedFishUUID == "") {
-                            string uuid = FishTank.GetRandomFishUUID();
-                            if (uuid.Length == 0) {
+                            selectedFishUUID = FishTank.GetRandomFishUUID();
+                            if (selectedFishUUID.Length == 0) {
                                 Console.WriteLine("[Player]: No debugging fish! Bailing!");
                                 return;
                             }
