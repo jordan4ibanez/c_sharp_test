@@ -250,16 +250,24 @@ public abstract class Fish {
 
         // This is just a prototype game after all. The fish doesn't even think, it just goes to the lure.
 
-        if (Lure.IsInWater()) {
-            lookTarget = Lure.GetPosition();
-            state = FishState.Following;
-        } else if (state == FishState.Following) {
-            if (Randy.NextFloat(0.0f, 1.0f) > 0.5f) {
-                state = FishState.Idle;
-            } else {
-                state = FishState.RandomTarget;
-            }
+        switch (state) {
+            case (FishState.Idle or FishState.Looking or FishState.RandomTarget):
+                if (Lure.IsInWater()) {
+                    lookTarget = Lure.GetPosition();
+                    state = FishState.Following;
+
+                }
+                //  else if (state == FishState.Following) {
+                //     if (Randy.NextFloat(0.0f, 1.0f) > 0.5f) {
+                //         state = FishState.Idle;
+                //     } else {
+                //         state = FishState.RandomTarget;
+                //     }
+                // }
+                break;
         }
+
+
 
         switch (state) {
             case FishState.Idle: {
