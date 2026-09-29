@@ -47,6 +47,9 @@ public static class Water {
     }
 
     public static void Load() {
+        if (loaded) {
+            throw new Exception("[Water]: Unload water before loading.");
+        }
 
         (int, int) groundSize = Ground.GetSize();
 
@@ -85,6 +88,11 @@ public static class Water {
         Ground.SetWaterLevel(waterLevel);
 
         loaded = true;
+    }
+
+    public static void Unload() {
+        ModelManager.Destroy("water");
+        loaded = false;
     }
 
     static float waterUpdateTimer = 0.0f;
