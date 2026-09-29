@@ -54,10 +54,9 @@ public abstract class Fish {
         uuid = Guid.NewGuid().ToString();
         behaviorTimer = Randy.NextFloat(1.5f, 4.0f);
 
-        // todo: uhhh fix this mess
-        // Vector2 mapSize = Ground.getSizeFloating();
-        // position.X = mapSize.X / 2.0;
-        // position.Z = mapSize.Y / 2.0;
+        Vector2 mapSize = Ground.GetSizeFloating();
+        position.X = mapSize.X / 2.0f;
+        position.Z = mapSize.Y / 2.0f;
     }
 
     FishState RandomState() {
