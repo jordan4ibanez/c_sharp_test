@@ -239,55 +239,53 @@ public abstract class Fish {
 
     public void Update(float delta) {
 
-        // todo: implement this when the Lure is added.
-
-        // // if (state != oldState) {
-        // // writeln("in state: ", state);
-        // // }
-
-        // turnToTarget(delta);
-        // MoveToTarget(delta);
-
-        // oldState = state;
-
-        // // This is just a prototype game after all. The fish doesn't even think, it just goes to the lure.
-
-        // if (Lure.isInWater()) {
-        //     lookTarget = Lure.getPosition();
-        //     state = FishState.Following;
-        // } else if (state == FishState.Following) {
-        //     if (giveRandomDouble(0.0, 1.0) > 0.5) {
-        //         state = FishState.Idle;
-        //     } else {
-        //         state = FishState.RandomTarget;
-        //     }
+        // if (state != oldState) {
+        // writeln("in state: ", state);
         // }
 
-        // switch (state) {
-        //     case FishState.Idle: {
-        //             idle(delta);
-        //             break;
-        //         }
-        //     case FishState.Looking: {
-        //             looking(delta);
-        //             break;
-        //         }
-        //     case FishState.RandomTarget: {
-        //             randomTarget(delta);
-        //             break;
-        //         }
-        //     case FishState.Following: {
-        //             following(delta);
-        //             break;
-        //         }
-        //     case FishState.Fight: {
-        //             fight(delta);
-        //             break;
-        //         }
-        //     default: {
-        //             throw new Error("I don't know how this got to here.");
-        //         }
-        // }
+        TurnToTarget(delta);
+        MoveToTarget(delta);
+
+        oldState = state;
+
+        // This is just a prototype game after all. The fish doesn't even think, it just goes to the lure.
+
+        if (Lure.IsInWater()) {
+            lookTarget = Lure.GetPosition();
+            state = FishState.Following;
+        } else if (state == FishState.Following) {
+            if (Randy.NextFloat(0.0f, 1.0f) > 0.5f) {
+                state = FishState.Idle;
+            } else {
+                state = FishState.RandomTarget;
+            }
+        }
+
+        switch (state) {
+            case FishState.Idle: {
+                    Idle(delta);
+                    break;
+                }
+            case FishState.Looking: {
+                    Looking(delta);
+                    break;
+                }
+            case FishState.RandomTarget: {
+                    RandomTarget(delta);
+                    break;
+                }
+            case FishState.Following: {
+                    Following(delta);
+                    break;
+                }
+            case FishState.Fight: {
+                    Fight(delta);
+                    break;
+                }
+            default: {
+                    throw new Exception("I don't know how this got to here.");
+                }
+        }
     }
 
     void Idle(float delta) {
