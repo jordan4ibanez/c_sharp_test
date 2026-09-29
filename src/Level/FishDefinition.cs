@@ -197,40 +197,39 @@ public abstract class Fish {
     }
 
     void SelectRandomTargetPosition() {
-        // todo: fix this when the ground is added.
-        // Vector2 map2dRange = Ground.getSizeFloating();
+        Vector2 map2dRange = Ground.GetSizeFloating();
 
-        // // Limit the range.
-        // map2dRange.X -= 1;
-        // map2dRange.Y -= 1;
+        // Limit the range.
+        map2dRange.X -= 1;
+        map2dRange.Y -= 1;
 
-        // float selectedX;
-        // float selectedZ;
-        // float minY;
-        // float maxY;
+        float selectedX;
+        float selectedZ;
+        float minY;
+        float maxY;
 
-        // // Reroll until the fish can fit in the spot.
-        // while (true) {
-        //     selectedX = giveRandomFloat(1.0, map2dRange.X);
-        //     selectedZ = giveRandomFloat(1.0, map2dRange.Y);
-        //     minY = Ground.getCollisionPoint(selectedX, selectedZ) + collisionVertical;
-        //     maxY = Water.getCollisionPoint(selectedX, selectedZ) - collisionVertical;
-        //     if (minY <= maxY) {
-        //         break;
-        //     }
-        // }
+        // Reroll until the fish can fit in the spot.
+        while (true) {
+            selectedX = Randy.NextFloat(1.0f, map2dRange.X);
+            selectedZ = Randy.NextFloat(1.0f, map2dRange.Y);
+            minY = Ground.GetCollisionPoint(selectedX, selectedZ) + collisionVertical;
+            maxY = Water.GetCollisionPoint(selectedX, selectedZ) - collisionVertical;
+            if (minY <= maxY) {
+                break;
+            }
+        }
 
-        // //? Useful for debugging.
-        // // selectedX = giveRandomFloat(position.X - 3, position.X + 3);
-        // // selectedZ = giveRandomFloat(position.X - 3, position.X + 3);
-        // // minY = Ground.getCollisionPoint(selectedX, selectedZ) + collisionVertical;
-        // // maxY = Water.getCollisionPoint(selectedX, selectedZ) - collisionVertical;
+        //? Useful for debugging.
+        // selectedX = giveRandomFloat(position.X - 3, position.X + 3);
+        // selectedZ = giveRandomFloat(position.X - 3, position.X + 3);
+        // minY = Ground.getCollisionPoint(selectedX, selectedZ) + collisionVertical;
+        // maxY = Water.getCollisionPoint(selectedX, selectedZ) - collisionVertical;
 
-        // float selectedY = giveRandomFloat(minY, maxY);
+        float selectedY = Randy.NextFloat(minY, maxY);
 
-        // lookTarget = Vector3(selectedX, selectedY, selectedZ);
+        lookTarget = new Vector3(selectedX, selectedY, selectedZ);
 
-        // // turnLerpProgress = 0;
+        // turnLerpProgress = 0;
 
     }
 
