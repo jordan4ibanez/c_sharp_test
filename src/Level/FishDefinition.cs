@@ -111,10 +111,8 @@ public abstract class Fish {
 
         position = position + new Vector3(xVelocity, 0, zVelocity);
 
-        // Todo: find where this came from.
         BoundsCheck();
 
-        // todo: fix the rest of this when the ground is created.
         float minY = Ground.GetCollisionPoint(position.X, position.Z) + collisionVertical;
         float maxY = Water.GetCollisionPoint(position.X, position.Z) - collisionVertical;
 
