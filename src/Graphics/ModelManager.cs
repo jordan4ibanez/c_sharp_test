@@ -277,7 +277,7 @@ static class ModelManager {
         //  Unload animations if they exist.
         if (animationDatabase.TryGetValue(modelName, out AnimationContainer? thisAnimations) && thisAnimations != null) {
             if (thisAnimations.hasAnimation && thisAnimations.animationData != null) {
-                // Unload individual animation bone tracks without letting Raylib free the managed C# array
+                // Unload individual animation bone tracks without letting Raylib free the managed C# array.
                 for (int i = 0; i < thisAnimations.animationCount; i++) {
                     Raylib.UnloadModelAnimation(thisAnimations.animationData[i]);
                 }
