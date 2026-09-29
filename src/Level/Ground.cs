@@ -224,36 +224,29 @@ public static class Ground {
     }
 
     static unsafe void LoadMapData(string location) {
-        // 1. Load the Raylib Image struct
         Image image = Raylib.LoadImage(location);
 
-        // Validation check
         if (image.Data == null) {
             throw new FileNotFoundException($"[Ground]: Failed to load heightmap image at: {location}");
         }
 
-        // -1 because these pixels make quads.
+        // Enforce 8 bit.
+        Raylib.ImageFormat(ref image, PixelFormat.UncompressedGrayscale);
+
         mapWidth = image.Width - 1;
         mapHeight = image.Height - 1;
-
-        mapData = new float[image.Width, image.Height];
-
-        ushort* pixels = (ushort*)image.Data;
 
         int width = image.Width;
         int height = image.Height;
 
+        mapData = new float[width, height];
+
+        ReadOnlySpan<byte> pixelSpan = new(image.Data, width * height);
         for (int y = 0; y < height; y++) {
-
-            ushort* rowScan = pixels + (y * width);
-
+            int rowOffset = y * width;
             for (int x = 0; x < width; x++) {
-                ushort rawPixelValue = rowScan[x];
-
-                float floatingPixelValue = rawPixelValue;
-
-                float finalValue = floatingPixelValue / ushort.MaxValue;
-
+                byte rawPixelValue = pixelSpan[rowOffset + x];
+                float finalValue = rawPixelValue / 255.0f;
                 mapData[x, y] = (finalValue - 0.5f) * groundScale;
             }
         }
