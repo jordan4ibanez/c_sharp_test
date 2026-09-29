@@ -83,22 +83,22 @@ public abstract class Fish {
         return rotation;
     }
 
-    // todo: fix this.
-    // void BoundsCheck() {
-    //     Vector2 mapSize = Ground.getSizeFloating();
 
-    //     if (position.X < 1) {
-    //         position.X = 1;
-    //     } else if (position.X > mapSize.X - 1) {
-    //         position.X = mapSize.X - 1;
-    //     }
+    void BoundsCheck() {
+        Vector2 mapSize = Ground.GetSizeFloating();
 
-    //     if (position.Z < 1) {
-    //         position.Z = 1;
-    //     } else if (position.Z > mapSize.Y - 1) {
-    //         position.Z = mapSize.Y - 1;
-    //     }
-    // }
+        if (position.X < 1) {
+            position.X = 1;
+        } else if (position.X > mapSize.X - 1) {
+            position.X = mapSize.X - 1;
+        }
+
+        if (position.Z < 1) {
+            position.Z = 1;
+        } else if (position.Z > mapSize.Y - 1) {
+            position.Z = mapSize.Y - 1;
+        }
+    }
 
     void MoveToTarget(float delta) {
 
