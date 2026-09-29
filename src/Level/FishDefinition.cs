@@ -380,44 +380,44 @@ public abstract class Fish {
 
         // todo: implement this when the lure is implemented.
 
-        // tightTurn = 2;
+        tightTurn = 2;
 
-        // var distance = Raymath.Vector3Distance(position, Lure.getPosition());
+        var distance = Raymath.Vector3Distance(position, Lure.GetPosition());
 
-        // if (distance < 0.5) {
-        //     movementSpeed -= delta * 30;
-        //     if (movementSpeed < 0) {
-        //         movementSpeed = 0;
-        //     }
-        //     // writeln("stage 3");
-        // } else if (distance < 1) {
-        //     if (movementSpeed > 2) {
-        //         movementSpeed -= delta * 10;
-        //     } else if (movementSpeed > 0) {
-        //         movementSpeed -= delta * 5;
+        if (distance < 0.5) {
+            movementSpeed -= delta * 30;
+            if (movementSpeed < 0) {
+                movementSpeed = 0;
+            }
+            // writeln("stage 3");
+        } else if (distance < 1) {
+            if (movementSpeed > 2) {
+                movementSpeed -= delta * 10;
+            } else if (movementSpeed > 0) {
+                movementSpeed -= delta * 5;
 
-        //     }
-        //     if (movementSpeed < 0) {
-        //         movementSpeed = 0;
-        //     }
-        //     // writeln("stage 2");
+            }
+            if (movementSpeed < 0) {
+                movementSpeed = 0;
+            }
+            // writeln("stage 2");
 
-        // } else if (distance < 3) {
-        //     if (movementSpeed > 2) {
-        //         movementSpeed -= delta * 10;
-        //     } else if (movementSpeed <= 1) {
-        //         movementSpeed += delta * 2;
-        //     }
-        //     if (movementSpeed < 0) {
-        //         movementSpeed = 0;
-        //     }
-        //     // writeln("stage 1");
+        } else if (distance < 3) {
+            if (movementSpeed > 2) {
+                movementSpeed -= delta * 10;
+            } else if (movementSpeed <= 1) {
+                movementSpeed += delta * 2;
+            }
+            if (movementSpeed < 0) {
+                movementSpeed = 0;
+            }
+            // writeln("stage 1");
 
-        // } else {
-        //     if (movementSpeed < 4) {
-        //         movementSpeed += delta * 2;
-        //     }
-        // }
+        } else {
+            if (movementSpeed < 4) {
+                movementSpeed += delta * 2;
+            }
+        }
     }
 
     void Fight(float delta) {
