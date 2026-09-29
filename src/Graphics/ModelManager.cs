@@ -87,12 +87,19 @@ static class ModelManager {
         thisMesh.VertexCount = vertices.Length / 3;
         thisMesh.TriangleCount = thisMesh.VertexCount / 3;
 
-        fixed (float* ptr = vertices) {
-            thisMesh.Vertices = ptr;
+        // This must use native memory or else raylib crashes.
+        int vertSizeBytes = vertices.Length * sizeof(float);
+        thisMesh.Vertices = (float*)NativeMemory.Alloc((nuint)vertSizeBytes);
+        fixed (float* src = vertices) {
+            Buffer.MemoryCopy(src, thisMesh.Vertices, vertSizeBytes, vertSizeBytes);
         }
-        fixed (float* ptr = textureCoordinates) {
-            thisMesh.TexCoords = ptr;
+
+        int texSizeBytes = textureCoordinates.Length * sizeof(float);
+        thisMesh.TexCoords = (float*)NativeMemory.Alloc((nuint)texSizeBytes);
+        fixed (float* src = textureCoordinates) {
+            Buffer.MemoryCopy(src, thisMesh.TexCoords, texSizeBytes, texSizeBytes);
         }
+        // End native memory.
 
         Raylib.UploadMesh(&thisMesh, dynamic);
 
@@ -261,27 +268,25 @@ static class ModelManager {
     }
 
 
-    static unsafe void DestroyModel(string modelName, Model thisModel) {
-        // If we were using the D runtime to make this model, we'll customize
-        // the way we free the items. This makes the GC auto clear.
-        if (isCustomDatabase[modelName]) {
-            Mesh thisMeshInModel = thisModel.Meshes[0];
-            thisMeshInModel.VertexCount = 0;
-            thisMeshInModel.Vertices = null;
-            thisMeshInModel.TexCoords = null;
-            Raylib.UnloadMesh(thisMeshInModel);
-            thisModel.Meshes = null;
-            thisModel.MeshCount = 0;
+    static void DestroyModel(string modelName, Model thisModel) {
+        // Unload the Raylib model. [frees GPU VBOs/VAOs and calls RL_FREE on mesh pointers]
+        if (Raylib.IsModelValid(thisModel)) {
             Raylib.UnloadModel(thisModel);
-        } else {
-            Raylib.UnloadModel(thisModel);
-            AnimationContainer thisAnimations = animationDatabase[modelName];
-            if (thisAnimations != null && thisAnimations.hasAnimation) {
-                fixed (ModelAnimation* ptr = thisAnimations.animationData) {
-                    Raylib.UnloadModelAnimations(ptr, animationDatabase[modelName].animationCount);
+        }
+
+        //  Unload animations if they exist.
+        if (animationDatabase.TryGetValue(modelName, out AnimationContainer? thisAnimations) && thisAnimations != null) {
+            if (thisAnimations.hasAnimation && thisAnimations.animationData != null) {
+                // Unload individual animation bone tracks without letting Raylib free the managed C# array
+                for (int i = 0; i < thisAnimations.animationCount; i++) {
+                    Raylib.UnloadModelAnimation(thisAnimations.animationData[i]);
                 }
             }
+            animationDatabase.Remove(modelName);
         }
+
+        database.Remove(modelName);
+        isCustomDatabase.Remove(modelName);
     }
 
 }
