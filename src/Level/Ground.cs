@@ -10,7 +10,7 @@ public static class Ground {
     static float[,] mapData = new float[0, 0];
     static int mapWidth = 0;
     static int mapHeight = 0;
-    static string currentMap = "";
+    static string currentLevelLocation = "";
     static bool loaded = false;
 
     static float groundShimmerRoll = 0.0f;
@@ -29,13 +29,14 @@ public static class Ground {
         if (loaded) {
             throw new Exception("[Ground]: Clean up the ground.");
         }
-        LoadMapData(levelLocation + "height_map.png");
+
+        currentLevelLocation = levelLocation;
+
+        LoadMapData(currentLevelLocation + "height_map.png");
 
         CreateGroundMesh();
 
-
-
-        TextureManager.LoadTexture(levelLocation + "texture_map.png");
+        TextureManager.LoadTexture(currentLevelLocation + "texture_map.png");
 
         ModelManager.SetModelTexture("ground", "texture_map.png");
 
