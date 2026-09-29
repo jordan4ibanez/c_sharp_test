@@ -1,0 +1,24 @@
+static class CoolThing {
+    static readonly int width = 8;
+    static readonly int height = 8;
+    static int currentFrame = 0;
+    static int currentAnimation = 0;
+
+    /// <summary>
+    /// Draw a sprite sheet.
+    /// </summary>
+    public static void RenderSpriteSheet() {
+        // You can change this to select a different animation.
+        currentAnimation = 0;
+        currentFrame++;
+        if (currentFrame >= width) {
+            currentFrame = 0;
+        }
+        Texture2D texture = TextureManager.GetTexture("character.png");
+        Vector2 dimensions = texture.Dimensions;
+        Rectangle source = new(dimensions.X / width * currentFrame, dimensions.Y / height * currentAnimation, dimensions.X / width, dimensions.Y / height);
+        Rectangle dest = new(0, 0, 512, 512);
+        Vector2 origin = new();
+        Raylib.DrawTexturePro(texture, source, dest, origin, 0f, Color.White);
+    }
+}
