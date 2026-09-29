@@ -91,8 +91,9 @@ class Game : IDisposable {
             LevelManager.TogglePause();
         }
 
-        LevelManager.Unload();
-        LevelManager.Load("levels/map_lake/");
+        //? This is to ensure the game doesn't explode.
+        // LevelManager.Unload();
+        // LevelManager.Load("levels/map_lake/");
 
         LevelManager.Update();
 
@@ -100,7 +101,7 @@ class Game : IDisposable {
 
         {
             Raylib.ClearBackground(Color.SkyBlue);
-            CameraManager.SetPosition(new Vector3(128, 128, 128));
+            // CameraManager.SetPosition(new Vector3(128, 128, 128));
 
             Raylib.BeginMode3D(CameraManager.Get());
             {
@@ -127,6 +128,7 @@ class Game : IDisposable {
     }
 
     public void Dispose() {
+        LevelManager.Unload();
         ShaderManager.Terminate();
         ModelManager.Terminate();
         TextureManager.Terminate();
