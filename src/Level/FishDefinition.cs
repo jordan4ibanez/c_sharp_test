@@ -6,7 +6,13 @@ using Raylib_cs;
 namespace FishGame.Level;
 
 
-public enum FishState {
+enum FishTurnSpeed {
+    Normal,
+    Medium,
+    Fast
+}
+
+enum FishState {
     Idle,
     Looking,
     RandomTarget,
@@ -45,7 +51,7 @@ public abstract class Fish {
 
     protected float accelerationRelaxed = 1;
 
-    protected byte tightTurn = 0;
+    FishTurnSpeed tightTurn = FishTurnSpeed.Normal;
 
     protected string __model = "undefined";
 
@@ -163,17 +169,16 @@ public abstract class Fish {
 
         // Yaw calculation.
         {
-            if (tightTurn == 1) {
-                lookSpeed *= 3;
+            if (tightTurn == FishTurnSpeed.Medium) {
+                lookSpeed *= 1.5f;
+            } else if (tightTurn == FishTurnSpeed.Fast) {
+                lookSpeed *= 3f;
             }
 
             float oldTargetYaw = targetYaw;
             targetYaw = Raymath.Lerp(currentYaw, targetYaw, (float)(delta * lookSpeed));
-            // TightTurn 2 basically just looks straight at it.
 
-            if (tightTurn == 2) {
-                targetYaw = oldTargetYaw;
-            }
+
             // Raymath can cause Lerp to go into negative or positive infinity.
             // NaN check is because I want to make sure it doesn't crash.
             if (float.IsInfinity(Math.Abs(targetYaw)) || float.IsNaN(Math.Abs(targetYaw))) {
@@ -184,23 +189,36 @@ public abstract class Fish {
 
 
         // Calculating pitch.
-        float distance = Raymath.Vector2Distance(new Vector2(position.X, position.Z), new Vector2(lookTarget.X, lookTarget.Z));
-        Vector2 pitchNormalized = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(distance, lookTarget.Y), new Vector2(0, position.Y)));
-        float targetPitch = (float)Math.Asin(-pitchNormalized.Y);
-        float currentPitch = rotation.X;
+        {
+            float distance = Raymath.Vector2Distance(new Vector2(position.X, position.Z), new Vector2(lookTarget.X, lookTarget.Z));
+            Vector2 pitchNormalized = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(distance, lookTarget.Y), new Vector2(0, position.Y)));
+            float targetPitch = (float)Math.Asin(-pitchNormalized.Y);
+            float currentPitch = rotation.X;
 
-        targetPitch = Raymath.Lerp(currentPitch, targetPitch, (float)(delta * lookSpeed));
+
+            float multiplier = 1.0f;
+
+            if (tightTurn == FishTurnSpeed.Medium) {
+                multiplier *= 1.5f;
+            } else if (tightTurn == FishTurnSpeed.Fast) {
+                multiplier *= 3f;
+            }
 
 
-        // Raymath can cause Lerp to go into negative or positive infinity.
-        // NaN check is because I want to make sure it doesn't crash.
-        if (float.IsInfinity(targetPitch) || float.IsNaN(Math.Abs(targetPitch))) {
-            targetPitch = currentPitch;
+
+            targetPitch = Raymath.Lerp(currentPitch, targetPitch, (float)(delta * lookSpeed * multiplier));
+
+            // Raymath can cause Lerp to go into negative or positive infinity.
+            // NaN check is because I want to make sure it doesn't crash.
+            if (float.IsInfinity(targetPitch) || float.IsNaN(Math.Abs(targetPitch))) {
+                targetPitch = currentPitch;
+            }
+
+            // Clamp the output to 45 degrees.
+            targetPitch = (float)Math.Clamp(targetPitch, -Math.PI / 4.0, Math.PI / 4.0);
+
+            rotation.X = targetPitch;
         }
-
-        // Console.WriteLine(targetYaw);
-
-        rotation.X = targetPitch;
 
     }
 
@@ -378,7 +396,8 @@ public abstract class Fish {
             SelectRandomTargetPosition();
             ResetStateData();
         } else if (distance < 3.0) {
-            tightTurn = 1;
+            // The fish is moving around randomly, but it may miss it's target so look at it faster.
+            tightTurn = FishTurnSpeed.Fast;
         }
 
         if (behaviorTimer <= 0.0) {
@@ -399,21 +418,15 @@ public abstract class Fish {
         var distance = Raymath.Vector2Distance(new Vector2(position.X, position.Z), new Vector2(lurePosition.X, lurePosition.Z));
 
 
-
-
-
         Vector3 diff = Raymath.Vector3Subtract(lookTarget, this.position);
 
         Vector2 angle = Raymath.Vector3Angle(lookTarget, this.position);
 
         lookTarget = Lure.GetPosition();
 
+        tightTurn = FishTurnSpeed.Medium;
 
-        // todo: implement this when the lure is implemented.
-
-        tightTurn = 2;
-
-        Console.WriteLine(movementSpeed);
+        // Console.WriteLine(movementSpeed);
 
         const float MAX_SPEED = 3.0f;
 
