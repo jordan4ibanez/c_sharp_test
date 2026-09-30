@@ -261,9 +261,7 @@ public abstract class Fish {
         switch (state) {
             case FishState.Idle or FishState.Looking or FishState.RandomTarget:
                 if (Lure.IsInWater()) {
-                    lookTarget = Lure.GetPosition();
                     state = FishState.Following;
-
                 }
                 //  else if (state == FishState.Following) {
                 //     if (Randy.NextFloat(0.0f, 1.0f) > 0.5f) {
