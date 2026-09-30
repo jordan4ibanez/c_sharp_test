@@ -79,7 +79,7 @@ public abstract class Fish {
     FishState RandomState() {
         ReadOnlySpan<FishState> states = [FishState.Idle, FishState.Looking, FishState.RandomTarget];
         FishState output = states[Randy.NextInt(0, 3)];
-        output = FishState.RandomTarget;
+        // output = FishState.RandomTarget;
         Console.WriteLine(output + " " + uuid);
         return output;
 
