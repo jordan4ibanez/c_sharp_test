@@ -58,7 +58,7 @@ public abstract class Fish {
 
 
     static bool selected = false;
-    bool debugFishSelectionREMOVETHIS = false;
+    public bool debugFishSelectionREMOVETHIS = false;
 
 
     public Fish() {
@@ -79,6 +79,7 @@ public abstract class Fish {
     FishState RandomState() {
         ReadOnlySpan<FishState> states = [FishState.Idle, FishState.Looking, FishState.RandomTarget];
         FishState output = states[Randy.NextInt(0, 3)];
+        output = FishState.RandomTarget;
         Console.WriteLine(output + " " + uuid);
         return output;
 
@@ -186,7 +187,7 @@ public abstract class Fish {
                 lookSpeed *= 3f;
             }
 
-            float oldTargetYaw = targetYaw;
+            // float oldTargetYaw = targetYaw;
             targetYaw = Raymath.Lerp(currentYaw, targetYaw, (float)(delta * lookSpeed));
 
 
@@ -335,7 +336,7 @@ public abstract class Fish {
         }
 
         if (state != oldState) {
-            SoundManager.PlayPitched("water_bubble.ogg");
+            SoundManager.PlayPitched("water_bubble.ogg", 0.5f);
         }
     }
 

@@ -12,12 +12,12 @@ public static class FishTank {
 
     public static void Update() {
         if (database.Count == 0) {
-            // foreach (i; 0 .. 100) {
-            LargeMouthBass newBass = new();
-            Console.WriteLine("I am uuid: " + newBass.GetUUID());
-            database[newBass.GetUUID()] = newBass;
-            Console.WriteLine("spawned new largemouth");
-            // }
+            for (int i = 0; i < 100; i++) {
+                LargeMouthBass newBass = new();
+                Console.WriteLine("I am uuid: " + newBass.GetUUID());
+                database[newBass.GetUUID()] = newBass;
+                Console.WriteLine("spawned new largemouth");
+            }
         }
 
         float delta = Delta.Get();
@@ -73,13 +73,25 @@ public static class FishTank {
         }
     }
 
-    public static string GetRandomFishUUID() {
+    // public static string GetRandomFishUUID() {
+    //     if (database.Count == 0) return string.Empty;
+
+    //     // This is as low performance as you can get.
+    //     string[] keys = database.Keys.ToArray();
+
+    //     return keys[Randy.NextInt(0, keys.Length)];
+    // }
+
+    public static string GetDebugFishUUID() {
         if (database.Count == 0) return string.Empty;
 
-        // This is as low performance as you can get.
-        string[] keys = database.Keys.ToArray();
+        foreach (var (uuid, fish) in database) {
+            if (fish.debugFishSelectionREMOVETHIS) {
+                return uuid;
+            }
+        }
 
-        return keys[Randy.NextInt(0, keys.Length)];
+        throw new Exception("something bad happened");
     }
 
     public static Fish GetFish(string uuid) {
