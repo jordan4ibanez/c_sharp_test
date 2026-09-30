@@ -181,6 +181,15 @@ public abstract class Fish {
 
         // Yaw calculation.
         {
+
+            // If the yaw isn't wrapped, the fish will bounce it's yaw back and forth correcting.
+            float diff = targetYaw - currentYaw;
+            if (diff > Math.PI) {
+                targetYaw -= (float)(Math.PI * 2);
+            } else if (diff < -Math.PI) {
+                targetYaw += (float)(Math.PI * 2);
+            }
+
             if (tightTurn == FishTurnSpeed.Medium) {
                 lookSpeed *= 1.5f;
             } else if (tightTurn == FishTurnSpeed.Fast) {
