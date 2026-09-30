@@ -195,11 +195,11 @@ public abstract class Fish {
         targetPitch = Raymath.Lerp(currentPitch, targetPitch, (float)(delta * lookSpeed));
         // Raymath can cause Lerp to go into negative or positive infinity.
         // NaN check is because I want to make sure it doesn't crash.
-        if (Math.Abs(targetPitch) == float.PositiveInfinity || float.IsNaN(Math.Abs(targetPitch))) {
-            // writeln("Caught nan pitch.");
+        if (float.IsInfinity(targetPitch) || float.IsNaN(Math.Abs(targetPitch))) {
             targetPitch = currentPitch;
         }
 
+        // Console.WriteLine(targetYaw);
         rotation.X = targetPitch;
         rotation.Y = targetYaw;
     }
