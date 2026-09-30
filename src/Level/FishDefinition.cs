@@ -61,7 +61,10 @@ public abstract class Fish {
 
     FishState RandomState() {
         ReadOnlySpan<FishState> states = [FishState.Idle, FishState.Looking, FishState.RandomTarget];
-        return states[Randy.NextInt(0, 3)];
+        FishState output = states[Randy.NextInt(0, 3)];
+        Console.WriteLine(output);
+        return output;
+
     }
 
     void ResetStateData() {
@@ -69,6 +72,11 @@ public abstract class Fish {
         retrigger = false;
         recalculateTimer = true;
         tightTurn = 0;
+    }
+
+    void DoNewRandomState() {
+        ResetStateData();
+        state = RandomState();
     }
 
     public string GetUUID() {
@@ -109,7 +117,7 @@ public abstract class Fish {
 
         Vector3 oldPosition = position;
 
-        position = position + new Vector3(xVelocity, 0, zVelocity);
+        position += new Vector3(xVelocity, 0, zVelocity);
 
         BoundsCheck();
 
@@ -171,7 +179,7 @@ public abstract class Fish {
 
         // Raymath can cause Lerp to go into negative or positive infinity.
         // NaN check is because I want to make sure it doesn't crash.
-        if (Math.Abs(targetYaw) == float.PositiveInfinity || float.IsNaN(Math.Abs(targetYaw))) {
+        if (float.IsInfinity(Math.Abs(targetYaw)) || float.IsNaN(Math.Abs(targetYaw))) {
             // writeln("Caught nan yaw.");
             targetYaw = currentYaw;
         }
@@ -251,7 +259,7 @@ public abstract class Fish {
         // This is just a prototype game after all. The fish doesn't even think, it just goes to the lure.
 
         switch (state) {
-            case (FishState.Idle or FishState.Looking or FishState.RandomTarget):
+            case FishState.Idle or FishState.Looking or FishState.RandomTarget:
                 if (Lure.IsInWater()) {
                     lookTarget = Lure.GetPosition();
                     state = FishState.Following;
@@ -314,8 +322,7 @@ public abstract class Fish {
         behaviorTimer -= delta;
 
         if (behaviorTimer <= 0.0) {
-            state = RandomState();
-            ResetStateData();
+            DoNewRandomState();
         }
     }
 
@@ -326,8 +333,7 @@ public abstract class Fish {
             if (retrigger) {
                 // The fish can keep looking around.
                 if (Randy.NextFloat(0.0f, 1.0f) > 0.5) {
-                    ResetStateData();
-                    state = RandomState();
+                    DoNewRandomState();
                 }
             } else {
                 // If the fish was idling, let it enjoy looking around.
@@ -378,13 +384,16 @@ public abstract class Fish {
         }
 
         if (behaviorTimer <= 0.0) {
-            state = RandomState();
+            DoNewRandomState();
             SelectRandomTargetPosition();
-            ResetStateData();
         }
     }
 
     void Following(float delta) {
+
+        if (!Lure.IsInWater()) {
+            DoNewRandomState();
+        }
 
         // todo: implement this when the lure is implemented.
 
