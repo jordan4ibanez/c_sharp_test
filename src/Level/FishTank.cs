@@ -7,16 +7,19 @@ public static class FishTank {
     //? This stores all the fish in the level.
     // <>< <>< <>< <><
 
+    static int fishCount = 0;
+
     static readonly Dictionary<string, Fish> database = [];
 
 
     public static void Update() {
         if (database.Count == 0) {
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 300; i++) {
                 LargeMouthBass newBass = new();
-                Console.WriteLine("I am uuid: " + newBass.GetUUID());
+                // Console.WriteLine("I am uuid: " + newBass.GetUUID());
                 database[newBass.GetUUID()] = newBass;
                 Console.WriteLine("spawned new largemouth");
+                fishCount++;
             }
         }
 
@@ -25,6 +28,10 @@ public static class FishTank {
         foreach (var (uuid, fish) in database) {
             fish.Update(delta);
         }
+    }
+
+    public static int GetFishCount() {
+        return fishCount;
     }
 
     public static void Draw() {
