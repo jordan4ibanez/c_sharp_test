@@ -12,3 +12,6 @@ https://freesound.org/people/imnotdubMass/sounds/679982/
 
 lure_hit_water
 https://freesound.org/people/Kraftaggregat/sounds/737644/
+
+water_bubble
+https://freesound.org/people/madic536/sounds/537136/
