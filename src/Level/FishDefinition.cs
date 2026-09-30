@@ -22,7 +22,7 @@ enum FishState {
 }
 
 
-
+// fixme: the fish tries to go outside the map
 public abstract class Fish {
     // Vector3 oldPosition = Vector3(0, 0, 0);
     Vector3 position = new(0, 0, 0);
