@@ -57,7 +57,17 @@ public abstract class Fish {
     protected string __model = "undefined";
 
 
+    static bool selected = false;
+    bool debugFishSelectionREMOVETHIS = false;
+
+
     public Fish() {
+
+        if (!selected) {
+            selected = true;
+            debugFishSelectionREMOVETHIS = true;
+        }
+
         uuid = Guid.NewGuid().ToString();
         behaviorTimer = Randy.NextFloat(1.5f, 4.0f);
 
@@ -69,7 +79,7 @@ public abstract class Fish {
     FishState RandomState() {
         ReadOnlySpan<FishState> states = [FishState.Idle, FishState.Looking, FishState.RandomTarget];
         FishState output = states[Randy.NextInt(0, 3)];
-        Console.WriteLine(output);
+        Console.WriteLine(output + " " + uuid);
         return output;
 
     }
@@ -278,20 +288,22 @@ public abstract class Fish {
         oldState = state;
 
         // This is just a prototype game after all. The fish doesn't even think, it just goes to the lure.
-
-        switch (state) {
-            case FishState.Idle or FishState.Looking or FishState.RandomTarget:
-                if (Lure.IsInWater()) {
-                    state = FishState.Following;
-                }
-                //  else if (state == FishState.Following) {
-                //     if (Randy.NextFloat(0.0f, 1.0f) > 0.5f) {
-                //         state = FishState.Idle;
-                //     } else {
-                //         state = FishState.RandomTarget;
-                //     }
-                // }
-                break;
+        //! DEBUGGING: Only the selected fish goes after the lure.
+        if (debugFishSelectionREMOVETHIS) {
+            switch (state) {
+                case FishState.Idle or FishState.Looking or FishState.RandomTarget:
+                    if (Lure.IsInWater()) {
+                        state = FishState.Following;
+                    }
+                    //  else if (state == FishState.Following) {
+                    //     if (Randy.NextFloat(0.0f, 1.0f) > 0.5f) {
+                    //         state = FishState.Idle;
+                    //     } else {
+                    //         state = FishState.RandomTarget;
+                    //     }
+                    // }
+                    break;
+            }
         }
 
 
