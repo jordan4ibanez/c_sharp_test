@@ -156,39 +156,36 @@ public abstract class Fish {
         Vector2 goalDir = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(lookTarget.X, lookTarget.Z), new Vector2(position.X, position.Z)));
 
         float targetYaw = (float)Math.Atan2(goalDir.X, goalDir.Y);
-        float currentYaw = rotation.Y;
-        float diff = targetYaw - currentYaw;
 
-        if (diff > Math.PI) {
-            targetYaw -= (float)(Math.PI * 2);
-        } else if (diff < -Math.PI) {
-            targetYaw += (float)(Math.PI * 2);
-        }
+        float currentYaw = rotation.Y;
 
         float lookSpeed = relaxedLookSpeed;
-        if (tightTurn == 1) {
-            lookSpeed *= 3;
-        }
-        float oldTargetYaw = targetYaw;
-        targetYaw = Raymath.Lerp(currentYaw, targetYaw, (float)(delta * lookSpeed));
 
-        // TightTurn 2 basically just looks straight at it.
-        if (tightTurn == 2) {
-            targetYaw = oldTargetYaw;
+        // Yaw calculation.
+        {
+            if (tightTurn == 1) {
+                lookSpeed *= 3;
+            }
+
+            float oldTargetYaw = targetYaw;
+            targetYaw = Raymath.Lerp(currentYaw, targetYaw, (float)(delta * lookSpeed));
+            // TightTurn 2 basically just looks straight at it.
+
+            if (tightTurn == 2) {
+                targetYaw = oldTargetYaw;
+            }
+            // Raymath can cause Lerp to go into negative or positive infinity.
+            // NaN check is because I want to make sure it doesn't crash.
+            if (float.IsInfinity(Math.Abs(targetYaw)) || float.IsNaN(Math.Abs(targetYaw))) {
+                targetYaw = currentYaw;
+            }
+            rotation.Y = targetYaw;
         }
 
-        // Raymath can cause Lerp to go into negative or positive infinity.
-        // NaN check is because I want to make sure it doesn't crash.
-        if (float.IsInfinity(Math.Abs(targetYaw)) || float.IsNaN(Math.Abs(targetYaw))) {
-            // writeln("Caught nan yaw.");
-            targetYaw = currentYaw;
-        }
 
         // Calculating pitch.
-        float distance = Raymath.Vector2Distance(new Vector2(position.X, position.Z), new Vector2(lookTarget.X, lookTarget
-                .Z));
-        Vector2 pitchNormalized = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(distance, lookTarget.Y), new Vector2(0, position
-                .Y)));
+        float distance = Raymath.Vector2Distance(new Vector2(position.X, position.Z), new Vector2(lookTarget.X, lookTarget.Z));
+        Vector2 pitchNormalized = Raymath.Vector2Normalize(Raymath.Vector2Subtract(new Vector2(distance, lookTarget.Y), new Vector2(0, position.Y)));
         float targetPitch = (float)Math.Asin(-pitchNormalized.Y);
         float currentPitch = rotation.X;
 
@@ -204,7 +201,7 @@ public abstract class Fish {
         // Console.WriteLine(targetYaw);
 
         rotation.X = targetPitch;
-        rotation.Y = targetYaw;
+
     }
 
     void SelectRandomTargetPosition() {
@@ -397,23 +394,49 @@ public abstract class Fish {
         }
 
 
-        var distance = Raymath.Vector3Distance(position, Lure.GetPosition());
+        Vector3 lurePosition = Lure.GetPosition();
+
+        var distance = Raymath.Vector2Distance(new Vector2(position.X, position.Z), new Vector2(lurePosition.X, lurePosition.Z));
+
+
+
+
+
         Vector3 diff = Raymath.Vector3Subtract(lookTarget, this.position);
 
         Vector2 angle = Raymath.Vector3Angle(lookTarget, this.position);
 
-        // Console.WriteLine(angle);
-        if (Math.Abs(angle.Y) > 0.019) {
-            lookTarget = Lure.GetPosition();
-        }
+        lookTarget = Lure.GetPosition();
+
 
         // todo: implement this when the lure is implemented.
 
         tightTurn = 2;
 
+        Console.WriteLine(movementSpeed);
+
+        const float MAX_SPEED = 3.0f;
+
+        if (distance > 2) {
+
+            movementSpeed += delta * 2.0f;
+            movementSpeed = (float)Math.Clamp(movementSpeed, 0.0, MAX_SPEED);
+
+        } else if (distance > 1) {
+            if (movementSpeed > 1.0) {
+                movementSpeed -= delta * 4.0f;
+                movementSpeed = (float)Math.Clamp(movementSpeed, 0.0, MAX_SPEED);
+            } else {
+                movementSpeed += delta * 2.0f;
+                movementSpeed = (float)Math.Clamp(movementSpeed, 0.0, MAX_SPEED);
+            }
+
+        } else {
+            movementSpeed -= delta * 2.0f;
+            movementSpeed = (float)Math.Clamp(movementSpeed, 0.0, MAX_SPEED);
 
 
-        this.movementSpeed = distance;
+        }
 
         // if (distance < 0.5) {
         //     movementSpeed -= delta * 30;
