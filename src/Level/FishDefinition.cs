@@ -80,7 +80,7 @@ public abstract class Fish {
         ReadOnlySpan<FishState> states = [FishState.Idle, FishState.Looking, FishState.RandomTarget];
         FishState output = states[Randy.NextInt(0, 3)];
         // output = FishState.RandomTarget;
-        Console.WriteLine(output + " " + uuid);
+        // Console.WriteLine(output + " " + uuid);
         return output;
 
     }
@@ -345,7 +345,8 @@ public abstract class Fish {
         }
 
         if (state != oldState) {
-            SoundManager.PlayPitched("water_bubble.ogg", 0.5f);
+            // todo: re-enable this when debugging is over
+            // SoundManager.PlayPitched("water_bubble.ogg", 0.5f);
         }
     }
 
