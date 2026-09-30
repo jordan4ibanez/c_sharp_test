@@ -193,6 +193,8 @@ public abstract class Fish {
         float currentPitch = rotation.X;
 
         targetPitch = Raymath.Lerp(currentPitch, targetPitch, (float)(delta * lookSpeed));
+
+
         // Raymath can cause Lerp to go into negative or positive infinity.
         // NaN check is because I want to make sure it doesn't crash.
         if (float.IsInfinity(targetPitch) || float.IsNaN(Math.Abs(targetPitch))) {
@@ -200,6 +202,7 @@ public abstract class Fish {
         }
 
         // Console.WriteLine(targetYaw);
+
         rotation.X = targetPitch;
         rotation.Y = targetYaw;
     }
@@ -393,46 +396,59 @@ public abstract class Fish {
             DoNewRandomState();
         }
 
+
+        var distance = Raymath.Vector3Distance(position, Lure.GetPosition());
+        Vector3 diff = Raymath.Vector3Subtract(lookTarget, this.position);
+
+        Vector2 angle = Raymath.Vector3Angle(lookTarget, this.position);
+
+        // Console.WriteLine(angle);
+        if (Math.Abs(angle.Y) > 0.019) {
+            lookTarget = Lure.GetPosition();
+        }
+
         // todo: implement this when the lure is implemented.
 
         tightTurn = 2;
 
-        var distance = Raymath.Vector3Distance(position, Lure.GetPosition());
 
-        if (distance < 0.5) {
-            movementSpeed -= delta * 30;
-            if (movementSpeed < 0) {
-                movementSpeed = 0;
-            }
-            // writeln("stage 3");
-        } else if (distance < 1) {
-            if (movementSpeed > 2) {
-                movementSpeed -= delta * 10;
-            } else if (movementSpeed > 0) {
-                movementSpeed -= delta * 5;
 
-            }
-            if (movementSpeed < 0) {
-                movementSpeed = 0;
-            }
-            // writeln("stage 2");
+        this.movementSpeed = distance;
 
-        } else if (distance < 3) {
-            if (movementSpeed > 2) {
-                movementSpeed -= delta * 10;
-            } else if (movementSpeed <= 1) {
-                movementSpeed += delta * 2;
-            }
-            if (movementSpeed < 0) {
-                movementSpeed = 0;
-            }
-            // writeln("stage 1");
+        // if (distance < 0.5) {
+        //     movementSpeed -= delta * 30;
+        //     if (movementSpeed < 0) {
+        //         movementSpeed = 0;
+        //     }
+        //     // writeln("stage 3");
+        // } else if (distance < 1) {
+        //     if (movementSpeed > 2) {
+        //         movementSpeed -= delta * 10;
+        //     } else if (movementSpeed > 0) {
+        //         movementSpeed -= delta * 5;
 
-        } else {
-            if (movementSpeed < 4) {
-                movementSpeed += delta * 2;
-            }
-        }
+        //     }
+        //     if (movementSpeed < 0) {
+        //         movementSpeed = 0;
+        //     }
+        //     // writeln("stage 2");
+
+        // } else if (distance < 3) {
+        //     if (movementSpeed > 2) {
+        //         movementSpeed -= delta * 10;
+        //     } else if (movementSpeed <= 1) {
+        //         movementSpeed += delta * 2;
+        //     }
+        //     if (movementSpeed < 0) {
+        //         movementSpeed = 0;
+        //     }
+        //     // writeln("stage 1");
+
+        // } else {
+        //     if (movementSpeed < 4) {
+        //         movementSpeed += delta * 2;
+        //     }
+        // }
     }
 
     void Fight(float delta) {
