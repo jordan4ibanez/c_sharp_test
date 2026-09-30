@@ -1,5 +1,6 @@
 using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
+using FishGame.Audio;
 using FishGame.Utility;
 using Raylib_cs;
 
@@ -265,6 +266,8 @@ public abstract class Fish {
 
     public void Update(float delta) {
 
+        FishState oldState = state;
+
         // if (state != oldState) {
         // writeln("in state: ", state);
         // }
@@ -317,6 +320,10 @@ public abstract class Fish {
             default: {
                     throw new Exception("I don't know how this got to here.");
                 }
+        }
+
+        if (state != oldState) {
+            SoundManager.PlayPitched("water_bubble.ogg");
         }
     }
 
