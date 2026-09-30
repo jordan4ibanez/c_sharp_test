@@ -115,6 +115,10 @@ class Game : IDisposable {
             }
             Raylib.EndMode3D();
 
+            FontManager.DrawShadowed("FPS: " + Raylib.GetFPS(), 0, -3 * GUI.GetGUIScale());
+            FontManager.DrawShadowed("Bass Count: " + FishTank.GetFishCount(), 0, 32 * GUI.GetGUIScale());
+
+
             // 
             // ? This is the fake copyright info for this build. :P
             Vector2 windowSize = Window.GetSize();
@@ -125,7 +129,7 @@ class Game : IDisposable {
             FontManager.DrawShadowed("PROTOTYPE BUILD. DO NOT DISTRIBUTE.", 2, windowSize.Y - textSize.Y + 5);
             //
 
-            FontManager.DrawShadowed("FPS: " + Raylib.GetFPS(), 0, -5);
+
         }
 
 
